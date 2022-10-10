@@ -1,0 +1,32 @@
+
+<h3>{{viewTitle}}</h3>
+<form action="{{action}}" method="POST" autocomplete="off">
+  <input type="hidden" name="_id" value="{{GraveQuarters._id}}">  
+ <input type="number"  name="IdGraveQuaters" value="{{GraveQuarters.IdGraveQuaters}}">
+ <div class="form-group">
+ <label>Typ grobu </label>
+ <input type="text" class="form-control" name="TypeOF" placeholder="{{GraveQuarters.TypeOF}}"
+ value="{{GraveQuarters.email}}">
+ </div>
+  <div class="form-group">
+ <label>Oplacenie</label>
+ <input type="text" class="form-control" name="Payment" placeholder="{{GraveQuarters.Payment}}"
+ value="{{GraveQuarters.Payment}}">
+ </div>
+   <div class="form-group">
+    <label>Dysponent grobu</label>
+    <input type="text" class="form-control" name="ovnerripid" placeholder="{{GraveQuarters.Payment}}" 
+    value="{{GraveQuarters.ovnerripid}}"> 
+    
+ </div>
+ <div class="form-group">
+ <button type="submit" class="btn btn-info">Zapisz</button>
+ <a class="btn btn-secondary" href="/gravequarters/list">Pokaz listę</a>
+ </div>
+</form>
+<!-- <select class="form-control" name="ovnerripid" placeholder=""
+        value="{{GraveQuarters.ovnerripid}}">
+          {{#each listu}}
+              <option value="{{this.email}}">{{this.email}}</option>
+          {{/each}}
+      </select>-->

@@ -1,0 +1,28 @@
+<h3 style="text-align:center w-100">Lista kwater</h3>
+<a class="btn btn-secondary" href="/gravequarters/addOrEdit">Dodaj kwatere</a>
+<table class="table table-striped">
+ <thead>
+ <tr>
+ <th>Id kwatery </th>
+ <th>Typ kwatery</th>
+ <th>Czy jest oplacona</th>
+ <th>emial dysponeta </th>
+ 
+ </tr>
+ </thead>
+ <tbody>
+ {{#each list}}
+ <tr>
+ <td>{{this.IdGraveQuaters}}</td>
+ <td>{{this.TypeOF}}</td>
+ <td>{{this.Payment}}</td>
+ <td>{{this.ovnerripid}}</td>
+ <td>
+ <a class="btn btn-primary btn-sm" href="/gravequarters/{{this._id}}">Edytuj</a>
+ <a class="btn btn-danger btn-sm" href="/gravequarters/delete/{{this._id}}"
+ onclick="return confirm('Czy jesteś pewien, że chcesz usunąć ten rekord?');">Usuń</a>
+ </td>
+ </tr>
+ {{/each}}
+ </tbody>
+</table>

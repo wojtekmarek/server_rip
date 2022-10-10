@@ -1,0 +1,36 @@
+<h3 style="text-align:center w-100">Lista Dysponetów kwater</h3>
+<a class="btn btn-secondary" href="/ovnerrip/addOrEdit">Dodaj dysponeta kwatery</a>
+<table class="table table-striped">
+ <thead>
+ <tr>
+ <th>Imię </th>
+ <th>Nazwisko</th>
+ <th>Email</th>
+ <th>Ulica</th>
+ <th>Numer domu</th>
+ <th>Numer mieszkania</th>
+ <th>Miasto</th>
+ <th>Pesel</th>
+ <th></th>
+ </tr>
+ </thead>
+ <tbody>
+ {{#each list}}
+ <tr>
+ <td>{{this.Name}}</td>
+ <td>{{this.LastName}}</td>
+ <td>{{this.email}}</td>
+ <td>{{this.Street}}</td>
+ <td>{{this.HomeNumber}}</td>
+ <td>{{this.HometwoNumber}}</td>
+ <td>{{this.city}}</td>
+ <td>{{this.Pesel}}</td>
+ <td>
+ <a class="btn btn-primary btn-sm" href="/ovnerrip/{{this._id}}">Edytuj</a>
+ <a class="btn btn-danger btn-sm" href="/ovnerrip/delete/{{this._id}}"
+ onclick="return confirm('Czy jesteś pewien, że chcesz usunąć ten rekord?');">Usuń</a>
+ </td>
+ </tr>
+ {{/each}}
+ </tbody>
+</table>

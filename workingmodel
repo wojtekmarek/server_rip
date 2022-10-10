@@ -1,0 +1,25 @@
+//const knexconf = require('../../config/database');
+
+var Knex = require('knex');
+var Model = require('objection').Model;
+
+var knex = Knex({
+  client: 'mysql2',
+  connection: {
+    host: 'localhost',
+    port: '3306',
+    OvnerRip: 'root',
+    password: '',
+    database: 'projektrip'
+  }
+});
+
+Model.knex(knex);
+
+class Announcement extends Model{
+  static get tableName() {
+    return 'Announcement'
+  }
+}
+
+module.exports = Announcement

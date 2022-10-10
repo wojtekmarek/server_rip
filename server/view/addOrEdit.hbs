@@ -1,0 +1,60 @@
+
+<h3>{{viewTitle}}</h3>
+<form action="{{action}}" method="POST" autocomplete="off">
+ <input type="hidden" name="_id" value="{{OvnerRip._id}}">
+ <div class="form-group">
+ <label>Imię</label>
+ <input type="text" class="form-control" name="Name" placeholder="Imię"
+ value="{{OvnerRip.Name}}">
+ </div>
+ <div class="form-group">
+ <label>Nazwisko</label>
+ <input type="text" class="form-control" name="LastName" placeholder="Nazwisko"
+ value="{{OvnerRip.LastName}}">
+ </div>
+ <div class="form-group">
+ <label>Email</label>
+ <input type="text" class="form-control" name="email" placeholder="Email"
+ value="{{OvnerRip.email}}">
+ </div>
+  <div class="form-group">
+ <label>Ulica</label>
+ <input type="text" class="form-control" name="Street" placeholder="Ulica"
+ value="{{OvnerRip.Street}}">
+ </div>
+   <div class="form-group">
+ <label>Numer domu </label>
+ <input type="string" class="form-control" name="HomeNumber" placeholder="nrDomu.mieszkania"
+ value="{{OvnerRip.HomeNumber}}">
+ </div>
+ <div class="form-group">
+ <label>Numer mieszkania </label>
+ <input type="string" class="form-control" name="HometwoNumber" placeholder="nrDomu.mieszkania"
+ value="{{OvnerRip.HometwoNumber}}">
+ </div>
+ <div class="form-group col-md-6">
+ <label>City</label>
+ <input type="text" class="form-control" name="city" placeholder="City"
+ value="{{OvnerRip.city}}">
+ </div>
+  <div class="form-group col-md-6">
+    <label>Pesel</label>
+    <input type="number" class="form-control" name="Pesel" placeholder="Pesel"
+      value="{{OvnerRip.Pesel}}">
+  </div>
+    <div class="form-group col-md-6">
+      <label>Dysponent grobu</label>
+      <select class="form-control" name="ovner" placeholder=""
+        value="{{OvnerRip.ovner}}">
+          <option value="nieznany">nieznany</option>
+          {{#each listu}}
+              <option value="{{this.email}}">{{this.email}}</option>
+          {{/each}}
+      </select>
+   </div>
+
+ <div class="form-group">
+ <button type="submit" class="btn btn-info">Zapisz</button>
+ <a class="btn btn-secondary" href="/ovnerrip/list">Pokaz listę</a>
+ </div>
+</form>

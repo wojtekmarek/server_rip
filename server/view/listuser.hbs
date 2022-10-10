@@ -1,0 +1,28 @@
+
+<h3 style="text-align:center">Lista Urzytkowników</h3>
+<a class="btn btn-secondary" href="/userdb/addOrEditu">Dodaj user</a>
+<table class="table table-striped">
+ <thead>
+ <tr>
+ <th>Email</th>
+ <th>Hasło</th>
+ <th>Zweryfikowany</th>
+ <th></th>
+ </tr>
+ </thead>
+ <tbody>
+ {{#each list}}
+ <tr>
+ <td>{{this.email}}</td>
+ <td>{{this.password}}</td>
+ <td>{{this.status}}</td>
+ 
+ <td>
+ <a class="btn btn-primary btn-sm" href="/userdb/{{this._id}}">Edytuj</a>
+ <a class="btn btn-danger btn-sm" href="/userdb/deleteuser/{{this._id}}"
+ onclick="return confirm('Czy jesteś pewien, że chcesz usunąć ten rekord?');">Usuń</a>
+ </td>
+ </tr>
+ {{/each}}
+ </tbody>
+</table>

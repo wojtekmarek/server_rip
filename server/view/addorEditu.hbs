@@ -1,0 +1,24 @@
+
+<h3>{{viewTitle}}</h3>
+<form action="{{action}}" method="POST" autocomplete="off">
+ <input type="hidden" name="_id" value="{{User._id}}">
+ <div class="form-group">
+ <label>Email</label>
+ <input type="email" class="form-control" name="email" placeholder="{{User.email}}"
+ value="{{User.email}}">
+ </div>
+  <div class="form-group">
+ <label>Haslo</label>
+ <input type="text" class="form-control" name="password" placeholder="{{User.password}}"
+ value="{{User.password}}">
+ </div>
+   <div class="form-group">
+ <label>Zweryfikowany</label>
+ <input type="string" class="form-control" name="status" placeholder="{{User.status}}"
+ value="{{User.status}}">
+ </div>
+ <div class="form-group">
+ <button type="submit" class="btn btn-info">Zapisz</button>
+ <a class="btn btn-secondary" href="/userdb/listuser">Pokaz listę</a>
+ </div>
+</form>
