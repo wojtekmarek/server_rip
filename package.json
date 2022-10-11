@@ -27,7 +27,8 @@
     "nodejs-model": "^0.1.6",
     "nodemon": "^2.0.16",
     "objection": "^3.0.1",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "sqlite3": "^5.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.18.2",
