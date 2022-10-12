@@ -1,0 +1,27 @@
+<h3>{{viewTitle}}</h3>
+<form action="{{action}}" method="POST" autocomplete="off">
+ <input type="hidden" name="_id" value="{{Anonse._id}}">
+ <div class="form-group">
+ <label>title</label>
+ <input type="text" class="form-control" name="title" placeholder="{{Anonse.title}}"
+ value="{{Anonse.title}}">
+ </div>
+  <div class="form-group">
+ <label>Treść</label>
+ <input type="text" class="form-control" name="" placeholder="{{Anonse.annonse}}"
+ value="{{Anonse.annonse}}">
+ </div>
+   <div class="form-group">
+ <label>Status</label>
+ <input type="string" class="form-control" name="status" placeholder="{{Anonse.status}}"
+ value="{{Anonse.status}}">
+ </div>
+ <label>data wydarzenia</label>
+ <input type="date" class="form-control" name="status" placeholder="{{Anonse.date}}"
+ value="{{Anonse.date}}">
+ </div>
+ <div class="form-group">
+ <button type="submit" class="btn btn-info">Zapisz</button>
+ <a class="btn btn-secondary" href="/anonse/list">Pokaz listę</a>
+ </div>
+</form>

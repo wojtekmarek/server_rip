@@ -28,15 +28,29 @@ router.get('/listanonse',async(req,res)=>{
    
 })
 
+router.get("/id", async (req, res) => {
+    const anons =await Announcement.query().findById(1);
+console.log(anons);
+        res.render("addorEditannonse", {
+        viewTitle: "Zmień Ogłoszenie",
+        Anonse: anons,
+    action:"/userdb/addtomongobaseu"
 
+    });
+
+})
 router.get('/add', async(req, res)=>{
     //knex('Announcement').insert({title:"lok",annonse:"It is a long established fact that a reader will ",status:"visible"});
-    //const anonselist= await  Announcement.query()
-    const anonselist= await  knex.select().from('Announcement').timeout(1000,{ cancel: true     });
+    const nextanonse=  await Announcement.query().insert({title:"lok",annonse:"It is a long established fact that a reader will ",status:"visible"});
+    
+        const anonselist=  await Announcement.query();
+    
     res.render("listanonse", {
         list: anonselist,
         
         })
+    
+    
      
     });
 
