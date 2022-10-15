@@ -125,7 +125,7 @@ async function showadd(req,res)
         if (!err) {
            
            //console.log(listidenable);
-            res.render("addOREditgrave", {
+            res.render("addOrEditgrave", {
                 viewTitle: "Dodaj kwatere",
                 action:"/gravequarters/addtomongobase",
                 listu: listu,
