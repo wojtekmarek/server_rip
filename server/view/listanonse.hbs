@@ -1,7 +1,7 @@
 
 
 <h3 style="text-align:center">Lista ogłoszeń</h3>
-<a class="btn btn-secondary" href="/anonse/addOrEditu">Dodaj Ogłoszenie</a>
+<a class="btn btn-secondary" href="/anonse/addview">Dodaj Ogłoszenie</a>
 <table class="table table-striped">
  <thead>
  <tr>
@@ -22,8 +22,8 @@
  <td>{{this.created_at}}</td>
  
  <td>
- <a class="btn btn-primary btn-sm" href="/anonse/{{this._id}}">Edytuj</a>
- <a class="btn btn-danger btn-sm" href="/anonse/delete/{{this._id}}"
+ <a class="btn btn-primary btn-sm" href="/anonse/editview/{{this.id}}">Edytuj</a>
+ <a class="btn btn-danger btn-sm" href="/anonse/delete/{{this.id}}"
  onclick="return confirm('Czy jesteś pewien, że chcesz usunąć ten rekord?');">Usuń</a>
  </td>
  </tr>

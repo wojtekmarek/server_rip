@@ -1,6 +1,7 @@
 const router = require("express").Router()
-const Announcement  = require('../models/Announcement ');
+const {Announcement,insert,update,deleteanons,getanonse}  = require('../models/Announcement ');
 const knex = require('knex');
+const { query } = require("express");
 
 router.get('/try', async(req, res)=>{
     const anonse= await Announcement.query()
@@ -10,6 +11,22 @@ router.get('/try', async(req, res)=>{
     
 router.get('/list', async(req, res)=>{
         const anonselist= await Announcement.query()
+      anonselist.forEach(dateevent => { 
+        let time=dateevent.time_event;
+        
+        let date=dateevent.created_at;
+        if(time != null){
+            dateevent.time_event = time.toISOString().slice(0,10).split("-").reverse().join("-");
+           
+        }
+        if(date != null){
+            dateevent.created_at = date.toISOString().slice(0,10).split("-").reverse().join("-");
+           
+        }
+            
+            //console.log( dateevent.toString().slice(0,10).split("-").reverse().join("-"));
+        });
+        
         res.render("listanonse", {
             list: anonselist,
             
@@ -19,7 +36,7 @@ router.get('/list', async(req, res)=>{
 
 router.get('/listanonse',async(req,res)=>{
     const anonselist= await Announcement.query()
-    console.log(typeof anonselist);
+    
     if(anonselist==undefined){
         res.status(500).send({ message: "Blad serwera nie pobrano ogloszen" });
     }else{
@@ -27,32 +44,46 @@ router.get('/listanonse',async(req,res)=>{
     }
    
 })
-
-router.get("/id", async (req, res) => {
-    const anons =await Announcement.query().findById(1);
-console.log(anons);
-        res.render("addorEditannonse", {
-        viewTitle: "Zmień Ogłoszenie",
-        Anonse: anons,
-    action:"/userdb/addtomongobaseu"
-
-    });
-
+//zmienic sciezke
+router.post("/addanonse", async (req, res) => { 
+    console.log("infunction");
+    
+        insert(req.body, res);
+    
 })
-router.get('/add', async(req, res)=>{
-    //knex('Announcement').insert({title:"lok",annonse:"It is a long established fact that a reader will ",status:"visible"});
-    const nextanonse=  await Announcement.query().insert({title:"lok",annonse:"It is a long established fact that a reader will ",status:"visible"});
+router.post("/editanonse", async (req, res) => { 
+    console.log("ieditanonse");
+    console.log(req.body);
+        update(req.body, res);
     
-        const anonselist=  await Announcement.query();
-    
-    res.render("listanonse", {
-        list: anonselist,
+})
+router.get('/addview', (req, res)=>{
+    res.render("addorEditannonse", {
+        action:"/anonse/addanonse",
+        viewTitle:"Dodaj ogłoszenie"
         
         })
-    
-    
-     
     });
-
-
+    router.get('/editview/:id', async(req, res)=>{
+        var anons= await getanonse(req.params.id)
+       if(anons){
+        console.log(anons);
+            
+        res.render("addorEditannonse", {
+            action:"/anonse/editanonse",
+            viewTitle:"Edytuj ogłoszenie",
+            Anonse:anons
+            
+            })
+       }
+           
+          
+        
+        });
+        router.get('/delete/:id', async(req, res)=>{
+           // console.log('delete fun');
+           // console.log(req.params.id);
+            
+            deleteanons(req.params.id,res);
+            });
     module.exports = router

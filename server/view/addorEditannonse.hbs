@@ -1,24 +1,29 @@
 <h3>{{viewTitle}}</h3>
 <form action="{{action}}" method="POST" autocomplete="off">
- <input type="hidden" name="_id" value="{{Anonse._id}}">
+ <input type="hidden" name="_id" value="{{Anonse.id}}">
+ <input type="hidden" name="created_at" value="{{Anonse.created_at}}">
  <div class="form-group">
- <label>title</label>
+ <label>Tytuł</label>
  <input type="text" class="form-control" name="title" placeholder="{{Anonse.title}}"
- value="{{Anonse.title}}">
+ value="{{Anonse.title}}" required>
  </div>
   <div class="form-group">
  <label>Treść</label>
- <input type="text" class="form-control" name="" placeholder="{{Anonse.annonse}}"
- value="{{Anonse.annonse}}">
+ <input type="text" class="form-control" name="annonse" placeholder="{{Anonse.annonse}}"
+ value="{{Anonse.annonse}}" required>
  </div>
    <div class="form-group">
  <label>Status</label>
- <input type="string" class="form-control" name="status" placeholder="{{Anonse.status}}"
- value="{{Anonse.status}}">
+ <select  class="form-control" name="status" placeholder="{{Anonse.status}}"
+ value="{{Anonse.status}}" required>
+<option value="visible">widoczne</option>
+    <option value="unvisible">niewidoczne</option>
+
+ </select>
  </div>
- <label>data wydarzenia</label>
- <input type="date" class="form-control" name="status" placeholder="{{Anonse.date}}"
- value="{{Anonse.date}}">
+ <label>data wydarzenia(dzień-miesiąc-rok)</label>
+ <input type="text" class="form-control" name="date"  pattern="^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$" placeholder="{{Anonse.date}}"
+ value="{{Anonse.date}}" required>
  </div>
  <div class="form-group">
  <button type="submit" class="btn btn-info">Zapisz</button>

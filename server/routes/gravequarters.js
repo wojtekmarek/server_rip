@@ -1,64 +1,28 @@
 const router = require("express").Router()
-const{GraveQuarters,update,insert}=require("../models/schema/GraveQuarters")
-const {OvnerRip}=require("../models/schema/OvnerRip")
+const{update,insert,deletegrave,showadd,showedit,showlist}=require("../models/schema/GraveQuarters")
+
+
 
 
 router.get("/list", (req, res) => {
-    GraveQuarters.find((err, docs) => {
-    if (!err) {
-       
-         res.render("listgrave", {
-         list: docs,
-         
-         })
-        
-       
-    } else {
-    console.log("Błąd pobierania danych /gravequarters/list" + err)
-    }
-    })
+    showlist(req,res);
    })
-   router.get("/addOrEdit", (req, res) => {
-    OvnerRip.find((err,listu)=>{
-        if (!err) {
-            res.render("addOREditgrave", {
-                viewTitle: "Dodaj kwatere",
-                action:"/gravequarters/addtomongobase",
-                listu: listu
-                })
-           
-            }
-       else {
-            console.log("Błąd pobierania danych user" + err)
-            }
-    })
+   router.get("/addOrEdit", async (req, res) => {
+    showadd(req,res);
     
    })
    router.post("/addtomongobase", (req, res) => {
     if (req.body._id == "") {
-    insert(req, res)
+    insert(req, res);
     } else {
-    update(req, res)
+    update(req, res);
     }
    })
    router.get("/:id", (req, res) => {
-    GraveQuarters.findById(req.params.id, (err, doc) => {
-    if (!err) {
-    res.render("addOrEditgrave", {
-    viewTitle: "Zaktualizuj dane kwatery",
-    GraveQuarters: doc
-    });
-    }
-    })
+    showedit(req,res);
    })
    router.get("/delete/:id", (req, res) => {
-    GraveQuarters.findByIdAndRemove(req.params.id, (err, doc) => {
-    if (!err) {
-    res.redirect("/gravequarters/list")
-    } else {
-    console.log("Błąd podczas usuwania: " + err)
-    }
-    })
+    deletegrave(req,res);
    })
 
 module.exports = router

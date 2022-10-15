@@ -39,18 +39,26 @@ const userSchema = new mongoose.Schema({
         })
        }
 
-       function register(req, res) {
-        var user= new User()
-        user.email = req.body.email
-        user.password = req.body.password
-        user.status = false
-        user.save((err, doc) => {
-        if (!err) {
-            res.status(201).send({ message: "Utworzono użytkownika" })
-        } else {
-        console.log("Błąd podczas dodawaniauser: " + err)
+       async function  register(req, res) {
+        var chceckuser= await User.findOne({ email: req.body.email });
+        //console.log(chceckuser);
+        if(!chceckuser){
+            var user= new User()
+            user.email = req.body.email
+            user.password = req.body.password
+            user.status = false
+            user.save((err, doc) => {
+            if (!err) {
+                res.status(201).send({ message: "Utworzono użytkownika" })
+            } else {
+            console.log("Błąd podczas dodawaniauser: " + err)
+            }
+            })
+
+        }else{
+            res.status(409).send({ message: "Użytkownik o podanym loginie istnieje" });
         }
-        })
+        
        }
        function update(req, res) {
         User.findOneAndUpdate(

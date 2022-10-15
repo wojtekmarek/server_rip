@@ -14,8 +14,11 @@
  </div>
    <div class="form-group">
  <label>Zweryfikowany</label>
- <input type="string" class="form-control" name="status" placeholder="{{User.status}}"
+ <select class="form-control" name="status" placeholder="{{User.status}}"
  value="{{User.status}}">
+  <option value=true >Zweryfikowany</option>
+  <option value=false >Nie zweryfikowany</option>
+ </select>
  </div>
  <div class="form-group">
  <button type="submit" class="btn btn-info">Zapisz</button>
