@@ -1,0 +1,135 @@
+<h3>{{viewTitle}}</h3>
+{{#if addingviaquarters}}
+ <label for="IdGraveQuaters">Id Kwatery do pochówku</label>
+<select   id="IdGraveQuaters"  disabled name="IdGraveQuaters" >
+  
+         <option value='{"_id":"{{GraveQuarters._id}}","id":"{{GraveQuarters.IdGraveQuaters}}","graveenableurn":"{{GraveQuarters.NumberenableUrnBurials}}","graveenabletraditional": "{{GraveQuarters.NumberenableTraditionalBurials}}" ,"graveurn":"{{GraveQuarters.NumberUrnBurials}}","gravetraditional": "{{GraveQuarters.NumberTraditionalBurials}}"}'>{{GraveQuarters.IdGraveQuaters}}</option>
+ 
+  </select>
+  
+{{/if}}
+{{#if addingvianewburial}}
+ <label for="IdGraveQuaters">Wybierz Id Kwatery do pochówku</label>
+<select   id="IdGraveQuaters" name="IdGraveQuaters" >
+    <option value=''>Wybierz kwatera z listy</option>
+  {{#each GraveQuarters}}
+         <option value='{"_id":"{{this._id}}","id":"{{this.IdGraveQuaters}}","graveenableurn":"{{this.NumberenableUrnBurials}}","graveenabletraditional": "{{this.NumberenableTraditionalBurials}}" ,"graveurn":"{{this.NumberUrnBurials}}","gravetraditional": "{{this.NumberTraditionalBurials}}"}'>{{this.IdGraveQuaters}}</option>
+  {{/each}}
+  </select>
+  <script>
+    function changevisibileform(){
+        var burialyrn=JSON.parse(document.getElementById("IdGraveQuaters").value);
+        console.log(burialyrn);
+        console.log(burialyrn.graveenableurn);
+        var graveurn=Number(burialyrn.graveenableurn)-(Number(burialyrn.graveurn));
+         var gravetraditional=Number(burialyrn.graveenabletraditional)-(Number(burialyrn.gravetraditional))
+        console.log(graveurn);
+        console.log(gravetraditional);
+        if(graveurn==0 )
+        {   if(gravetraditional==0 )
+             {
+            document.getElementById("errordiv").innerHTML="Niestety ta kwatera nie posiada wolnych pochówków";
+            document.getElementById("errordiv").style.display="block";
+            document.getElementById("selecttypeofgrave").style.display="none";
+            document.getElementById("form").style.display="none";
+            }else{
+                document.getElementById("form").style.display="block";
+                document.getElementById("selecttypeofgrave").innerHTML=' <label>Rodzaj  pochówku </label>'
+                                                                +' <select class="form-control" disabled name="TypeOFburial" placeholder="Tradycyjny"'
+                                                                +' value="Tradycyjny">'
+                                                                +'<option value="Tradycyjny">Tradycyjny</option>'
+                                                                +' </select> </div>';
+            }
+        }else{if(gravetraditional==0 )
+                {document.getElementById("form").style.display="block";
+                document.getElementById("selecttypeofgrave").innerHTML=' <label>Rodzaj  pochówku </label>'
+                                                                +' <select class="form-control" disabled name="TypeOFburial" placeholder="Tradycyjny"'
+                                                                +' value="Tradycyjny">'
+                                                                 +'<option value="Urnowy">Urnowy</option>'
+                                                                +' </select> </div>';
+
+                }else{
+                    document.getElementById("form").style.display="block";
+                    document.getElementById("selecttypeofgrave").innerHTML=' <label>Rodzaj  pochówku </label>'
+                                                                +' <select class="form-control"  name="TypeOFburial" placeholder="Tradycyjny"'
+                                                                +' value="Tradycyjny">'
+                                                                +'<option value="Urnowy">Urnowy</option>'
+                                                                +'<option value="Tradycyjny">Tradycyjny</option>'
+                                                                +' </select> </div>';
+
+                }
+        }
+    }
+    document.getElementById("IdGraveQuaters").addEventListener(
+  'change',
+    changevisibileform ,
+  false
+);
+
+  </script>
+
+{{/if}}
+ <div id="errordiv" style="display:none;"></div>
+<div id="form" style="display: {{#if addingviaquarters}}
+block
+
+{{/if}}
+{{#if addingvianewburial}}
+none
+
+{{/if}};">
+formularz
+<div id="selecttypeofgrave"></div>
+
+</div>
+
+{{#if addingviaquarters}}
+<script>
+     var burialyrn=JSON.parse(document.getElementById("IdGraveQuaters").value);
+        console.log(burialyrn);
+        console.log(burialyrn.graveenableurn);
+        var graveurn=Number(burialyrn.graveenableurn)-(Number(burialyrn.graveurn));
+         var gravetraditional=Number(burialyrn.graveenabletraditional)-(Number(burialyrn.gravetraditional))
+        console.log(graveurn);
+        console.log(gravetraditional);
+        if(graveurn==0 )
+        {   if(gravetraditional==0 )
+             {
+                document.getElementById("errordiv").style.display="block";
+            document.getElementById("errordiv").innerHTML="Niestety ta kwatera nie posiada wolnych pochówków";
+            
+            document.getElementById("selecttypeofgrave").style.display="none";
+            document.getElementById("form").style.display="none";
+            }else{
+                document.getElementById("form").style.display="block";
+                document.getElementById("selecttypeofgrave").innerHTML=' <label>Rodzaj  pochówku </label>'
+                                                                +' <select class="form-control" disabled name="TypeOFburial" placeholder="Tradycyjny"'
+                                                                +' value="Tradycyjny">'
+                                                                +'<option value="Tradycyjny">Tradycyjny</option>'
+                                                                +' </select> </div>';
+            }
+        }else{if(gravetraditional==0 )
+                {document.getElementById("form").style.display="block";
+                document.getElementById("selecttypeofgrave").innerHTML=' <label>Rodzaj  pochówku </label>'
+                                                                +' <select class="form-control" disabled name="TypeOFburial" placeholder="Tradycyjny"'
+                                                                +' value="Tradycyjny">'
+                                                                 +'<option value="Urnowy">Urnowy</option>'
+                                                                +' </select> </div>';
+
+                }else{
+                    document.getElementById("form").style.display="block";
+                    document.getElementById("selecttypeofgrave").innerHTML=' <label>Rodzaj  pochówku </label>'
+                                                                +' <select class="form-control"  name="TypeOFburial" placeholder="Tradycyjny"'
+                                                                +' value="Tradycyjny">'
+                                                                +'<option value="Urnowy">Urnowy</option>'
+                                                                +'<option value="Tradycyjny">Tradycyjny</option>'
+                                                                +' </select> </div>';
+
+                }
+        }
+    
+</script>
+
+{{/if}}
+
+

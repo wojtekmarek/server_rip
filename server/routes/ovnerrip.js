@@ -34,7 +34,7 @@ const {update,insert,showadd,getovnerriptoclient,getlistovnernew,getlist,showedi
         showedit(req,res);
        })
 
-       router.get("/delete/:id", (req, res) => {
+       router.get("/delete/?:id&&:email", (req, res) => {
         deleteovnerrip(req,res);
        })
     

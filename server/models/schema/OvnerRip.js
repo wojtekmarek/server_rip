@@ -1,18 +1,20 @@
 const { User } = require("./User");
+
+
 const mongoose = require("mongoose");
 const OvnerRipSchema = new mongoose.Schema({
-    Name: String,
-    LastName:String,
+    Name: {type: String},
+    LastName:{type: String},
     email: {type: String, required:true,unique:true},
-    Street:String,
-    HomeNumber: Number,
-    HometwoNumber: Number,
-    city: String,
-    Pesel:Number,
+    Street:{type: String},
+    HomeNumber: {type: Number},
+    HometwoNumber:{type: Number},
+    city: {type: String},
+    Pesel:{type: Number},
     ovner:{type: String,default:"nieznany"}
    })
-   const OvnerRip = mongoose.model("OvnerRip", OvnerRipSchema)
- 
+   const OvnerRip = mongoose.model("OvnerRip", OvnerRipSchema);
+   
    function insert(req, res) {
     var ovnerRip = new OvnerRip()
     ovnerRip.Name = req.body.Name
@@ -68,12 +70,12 @@ const OvnerRipSchema = new mongoose.Schema({
    async function getovnerriptoclient(req,res){
      //dopisactokeny
      const {email} = req.query;
-     console.log(email) 
+    // console.log(email) 
      if(email!==undefined){
        const ovner=  await OvnerRip.find({email:email})
 
         if (ovner) {
-            console.log(ovner);
+           // console.log(ovner);
             res.json(ovner);
      
         } else {
@@ -93,13 +95,14 @@ const OvnerRipSchema = new mongoose.Schema({
                 as: 'quaters'
             }
     }]).exec(function (err, docs) {
-        console.log(docs);
+       // console.log(docs);
         for(let val of docs.entries()){
-            console.log(val[1].quaters);
+         //   console.log(val[1].quaters);
         }
 
 
         if (!err) {
+           // console.log(docs);
             res.render('listovnernew', {
                 list: docs
             });
@@ -113,7 +116,7 @@ const OvnerRipSchema = new mongoose.Schema({
     function getlist(res){
         OvnerRip.find((err, docs) => {
             if (!err) {
-               
+               //docs.forEach(x=>console.log(x.email));
                  res.render("list", {
                  list: docs,
                  
@@ -140,13 +143,25 @@ const OvnerRipSchema = new mongoose.Schema({
             })
     }
     function deleteovnerrip(req,res)
-    {
-        OvnerRip.findByIdAndRemove(req.params.id, (err, doc) => {
+    {  
+        console.log(req.params.email);
+        const{GraveQuarters}=require("./GraveQuarters");
+        GraveQuarters.find({ovnerripid:req.params.email},(err, doc) => {
+            if(!err&&doc[0]!=undefined){
+                console.log(typeof doc[0]);
+                console.log("nie można usunąć");
+                res.redirect("/ovnerrip/list/?error:nodelete");
+            }else {
+                //console.log(" można usunąć");
+                 OvnerRip.findByIdAndRemove(req.params.id, (err, doc) => {
             if (!err) {
-            res.redirect("/ovnerrip/list")
+            res.redirect("/ovnerrip/list/?error:nodelete");
             } else {
-            console.log("Błąd podczas usuwania: " + err)
+            console.log("Błąd podczas usuwania: " + err);
             }
-            })
+            }) 
+            }})
+       
     }
+ 
    module.exports={OvnerRip,update, insert,showadd,getovnerriptoclient,getlistovnernew,getlist,showedit,deleteovnerrip}

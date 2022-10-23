@@ -1,5 +1,7 @@
-const {OvnerRip}=require("./OvnerRip")
+
 const mongoose = require("mongoose");
+const {OvnerRip} = require("./OvnerRip");
+
 const GraveQuartersSchema = new mongoose.Schema({
     IdGraveQuaters:{type: Number, required:true},
     TypeOF:{type: String , enum:["murowany","ziemny"]},
@@ -12,8 +14,8 @@ const GraveQuartersSchema = new mongoose.Schema({
     DatePayment:{type:Date},
     MethodOfPayment:{type: String , enum:["gotówka","przelew","blik"]}
    })
-   const GraveQuarters= mongoose.model("GraveQuarters", GraveQuartersSchema)
- 
+   const GraveQuarters= mongoose.model("GraveQuarters", GraveQuartersSchema);
+   
    function insert(req, res) {
 
     //console.log("adquater"+req.body.IdGraveQuaters);
@@ -111,8 +113,8 @@ async function showadd(req,res)
                 {
                     if(listidenable[j]==listid[k])
                     {
-                        
-                        listidenable.splice(j,1);
+                        to_erase.push(j);
+                        //listidenable.splice(j,1);
                     }
 
                 }
@@ -156,6 +158,14 @@ async function deletegrave(reg,res)
         })
 }
 async function showlist(req,res){
+   
+    OvnerRip.find((err,listu)=>{
+        if (!err) {
+            //console.log("ok");
+        }});
+   
+    
+   
     GraveQuarters.find((err, docs) => {
         if (!err) {
            
@@ -170,4 +180,4 @@ async function showlist(req,res){
         }
         })
 }
-   module.exports={GraveQuarters,update, insert,showadd,showedit,deletegrave,showlist}
+   module.exports={GraveQuarters,GraveQuartersSchema,update, insert,showadd,showedit,deletegrave,showlist}

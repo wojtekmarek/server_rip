@@ -27,10 +27,15 @@
  <td>{{this.Pesel}}</td>
  <td>
  <a class="btn btn-primary btn-sm" href="/ovnerrip/{{this._id}}">Edytuj</a>
- <a class="btn btn-danger btn-sm" href="/ovnerrip/delete/{{this._id}}"
+ <a class="btn btn-danger btn-sm" href="/ovnerrip/delete/{{this._id}}&&{{this.email}}"
  onclick="return confirm('Czy jesteś pewien, że chcesz usunąć ten rekord?');">Usuń</a>
  </td>
  </tr>
  {{/each}}
  </tbody>
 </table>
+<script>
+    if(document.location.href.match("error")=="error"){
+        alert("Nie można usunąć dysponeta kwatery , gdyż przypisane są do niego kwatery. Na początku zmień właściciela kwater.");
+    }
+    </script>
