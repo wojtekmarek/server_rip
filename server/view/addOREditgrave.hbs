@@ -47,15 +47,15 @@
  </div>
   <div class="form-group">
  <label>Liczba wykorzystanych pochówków tradycyjnych</label>
- <input type='number' class="form-control"  id='NumberTraditionalBurials' name='NumberTraditionalBurials' placeholder="{{GraveQuarters.NumberTraditionalBurials}}" />
+ <input type='number' class="form-control"  id='NumberTraditionalBurials' name='NumberTraditionalBurials' placeholder="{{GraveQuarters.NumberTraditionalBurials}}" value="{{GraveQuarters.NumberTraditionalBurials}}" />
  </div>
    <div class="form-group">
  <label>Liczba wykorzystanych pochówków urnowych</label>
- <input type='number' class="form-control" id='NumberUrnBurials' name='NumberUrnBurials' placeholder="{{GraveQuarters.NumberUrnBurials}}" />
+ <input type='number' class="form-control" id='NumberUrnBurials' name='NumberUrnBurials' placeholder="{{GraveQuarters.NumberUrnBurials}}" value="{{GraveQuarters.NumberUrnBurials}}" />
   </div>
    <div class="form-group">
     <label>Data zapłaty(dzień-miesiąc-rok)</label>
-  <input type="text" class="form-control" name="DatePayment" 
+  <input type="text" class="form-control" name="DatePayment" id="DatePayment" 
    pattern="^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$" 
    placeholder="{{GraveQuartersdate}}"
  value="{{GraveQuartersdate}}" required>
@@ -74,8 +74,39 @@
  <button type="submit" class="btn btn-info">Zapisz</button>
  <a class="btn btn-secondary" href="/gravequarters/list">Pokaz listę</a>
  <a  type="button" class="btn btn-dark" href="/burial/addoredit/?id={{GraveQuarters._id}}" >Dodaj pochówek do kwatery</a>
+ <a  type="button" id="createexumation" style="display:none" class="btn btn-danger" href='/exhumation/add/?name=grave&&id={{GraveQuarters._id}}' >Dodaj Eksumacje do pochówku</a>
+ <a  type="button" id="sendnotyfication" onclick="return confirm('W opracowaniu kliknij anuluj');"style="display:none" class="btn btn-warning" href="/notyficatio/sendpayremaind/?id={{GraveQuarters._id}}" >Wyślij przypomnienie o płatności</a>
  </div>
 </form>
 
-
+<script>
+  function checkvisiblenotyfication(){
+    var now=new Date();
+    var weekago= new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7);
+    var payday=new Date(document.getElementById("DatePayment").value.split("-").reverse().join("-")+"T14:48:00.000+09:00");
+    //console.log(weekago);
+    //console.log(payday);
+    if(payday < weekago)
+    {
+      console.log("send notyfication is visible");
+       document.getElementById("sendnotyfication").style.display="block";
+    }
+  }
+  function checkvisibleexumation(){
+ 
+    if(Number(document.getElementById("NumberTraditionalBurials").value)>0 || Number(document.getElementById("NumberUrnBurials").value)>0 )
+    {
+      console.log("widze eksumacje");
+      document.getElementById("createexumation").style.display="block";
+      }
+    else{console.log("nie widze eksumacje");}
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+ 
+  checkvisibleexumation();
+  checkvisiblenotyfication();
+  document.getElementById("DatePayment").addEventListener('change', (event) => {checkvisiblenotyfication();});
+});
+  
+</script>
     

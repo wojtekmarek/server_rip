@@ -19,7 +19,11 @@ const BurialSchema = new mongoose.Schema({
 
     Burial.find((err, docs) => {
         if (!err) {
-           
+            docs.forEach(docs => {
+                docs.DateOfDeathstring=docs.DateOfDeath.toISOString().slice(0,10).split("-").reverse().join("-");
+            docs.DateBurialstring=docs.DateBurial.toISOString().slice(0,10).split("-").reverse().join("-");
+            });
+            
              res.render("listburial", {
              list: docs,
              
@@ -33,7 +37,7 @@ const BurialSchema = new mongoose.Schema({
    }
 
    async function showedit(req,res){
-   
+   console.log(req.params.id);
     Burial.findById(req.params.id, (err, doc) => {
        
             
@@ -41,29 +45,19 @@ const BurialSchema = new mongoose.Schema({
         if (!err) {
            
             
-             var dateofdeath=doc.DateOfDeath.toISOString().slice(0,10).split("-").reverse().join("-");
-             var dateburial=doc.DateBurial.toISOString().slice(0,10).split("-").reverse().join("-");
-             
-             GraveQuarters.findById(GraveQuaters,"IdGraveQuaters",(err,gravequarterid)=>{
-                if (!err) {
-                    
-                    res.render("addOrEditgrave", {
-                    viewTitle: "Zaktualizuj dane pochówku",
-                    action:"/gravequarters/addtomongobase",
-                    GraveQuarters: doc,
-                    listu: listg,
-                    defaultid:"block",
-                    pickid:"none",
-                    GraveQuartersdate:gravedate
-                   
-                    
-    
-                    });
-                }else {
-                    console.log("Błąd pobierania danych user" + err)
-                    }
-            })
-        }})
+            
+
+             doc.DateOfDeathstring=doc.DateOfDeath.toISOString().slice(0,10).split("-").reverse().join("-");
+             doc.DateBurialstring=doc.DateBurial.toISOString().slice(0,10).split("-").reverse().join("-");
+             res.render("editBurial", {
+                viewTitle: "Edytuj pochówek",
+                action:"/burial/addtomongobase",               
+                burial: doc});
+          
+          
+        }else {
+            console.log("Błąd pobierania danych burial" + err)
+            }})
 }
 async function showadd(req,res){
     //console.log(req);
@@ -72,7 +66,7 @@ async function showadd(req,res){
         GraveQuarters.find({},'IdGraveQuaters NumberenableUrnBurials NumberenableTraditionalBurials'
         +' NumberUrnBurials NumberTraditionalBurials',(err,doc)=>{
             if (!err) {
-                res.render("addOrEditBurial", {
+                res.render("addBurial", {
                     viewTitle: "Dodaj pochówek",
                     action:"/burial/addtomongobase",                
                     addingviaquarters:false,
@@ -90,7 +84,7 @@ async function showadd(req,res){
         GraveQuarters.findById(req,'IdGraveQuaters NumberenableUrnBurials'
         +' NumberenableTraditionalBurials NumberUrnBurials NumberTraditionalBurials',(err,doc)=>{
             if (!err) {
-                res.render("addOrEditBurial", {
+                res.render("addBurial", {
                     viewTitle: "Dodaj pochówek",
                     action:"/burial/addtomongobase",                
                     addingviaquarters:true,
@@ -109,11 +103,87 @@ async function showadd(req,res){
 async function showlistclient(req,res){
     res.send("W opracowaniu");
 }
+async function updatecountburial(req,res){
+   console.log(req.TypeOFburialone);
+   console.log(typeof req.TypeOFburialone);
+   var gravedata=JSON.parse(req.GraveQuartersnumber);
+    var addburiall={};
+    if(req.TypeOFburialone== "Tradycyjny")
+    { 
+       
+      
+        addburiall={NumberTraditionalBurials: Number(gravedata.gravetraditional)+1};
 
+    }else if (req.TypeOFburialone== "Urnowy")
+    {
+        addburiall={NumberUrnBurials: Number(gravedata.graveurn)+1};
+    }else{console.log("Error checking the type of burial " + err);}
+    console.log(addburiall);
+   GraveQuarters.findOneAndUpdate(
+        { _id: gravedata._id },
+        addburiall,
+        { new: true },
+        (err, doc) => {
+        if (!err) {
+        res.redirect("/burial/list");
+        } else {
+        console.log("Błąd podczas aktualizowania danych: " + err);
+        }
+        }
+        ) 
+    
+    
+}
+function update(req, res) {
+    //console.log(req.body);
+    var updatedata={Namedeceased: req.body.Namedeceased,
+    LastNamedeceased: req.body.LastNamedeceased,
+    DateBurial: new Date(req.body.DateBurial.split("-").reverse().join("-")+"T14:48:00.000+09:00")
+}
+//console.log(updatedata);
+    Burial.findOneAndUpdate(
+    { _id: req.body._idBurial},
+    updatedata,
+    { new: true },
+    (err, doc) => {
+    if (!err) {
+    res.redirect("/burial/list")
+    } else {
+    console.log("Błąd podczas aktualizowania danych: " + err)
+    }
+    }
+    )
+}
+async function insert(req,res){
+  //console.log(req);
+  //console.log(req.GraveQuartersnumber._id);
+  let conwert_DateOfDeath=req.DateOfDeath.split("-").reverse().join("-")+"T14:48:00.000+09:00";
+  let conwert_DateBurial=req.DateBurial.split("-").reverse().join("-")+"T14:48:00.000+09:00";
+  const DateOfDeath = new Date(conwert_DateOfDeath);
+  const DateBurial =new Date(conwert_DateBurial);
+  const gravedata=JSON.parse(req.GraveQuartersnumber);
+
+    var burial = new Burial()
+    burial.Burialtype=req.TypeOFburialone;
+    burial.Namedeceased=req.Namedeceased;
+    burial.LastNamedeceased=req.LastNamedeceased;
+    burial.DateOfDeath=DateOfDeath;
+    burial.DateBurial=DateBurial;
+    burial.GraveQuaters=gravedata._id;
+    burial.GraveQuartersnumber= gravedata.id;
+    
+    
+    burial.save((err, doc) => {
+    if (!err) {
+        updatecountburial(req,res);
+   
+    } else {
+    console.log("Błąd podczas dodawania Burials: " + err)
+    }
+    })
+}
 async function findburial(req,res){
     res.send("W opracowaniu");
 }
-function burialexhumation(req,res){
 
-}
-   module.exports={Burial,showlist,showedit,showadd,showlistclient,findburial,burialexhumation}
+   module.exports={Burial,BurialSchema,showlist,showedit,showadd,showlistclient,findburial,insert,update}

@@ -1,32 +1,28 @@
 const router = require("express").Router();
-const{update,insert,showadd,showedit,showlist,showlistclient,findburial,burialexhumation}=require("../models/schema/Burials")
+const{showlist}=require("../models/schema/Exhumation")
+const{showadd,add,showedit}=require("../models/schema/Exhumation");
+
 
 
     router.get("/list", (req, res) => {
     showlist(req,res);
    })
-   router.get("/addoredit", async (req, res) => {
-    //console.log("first burial");
-    //console.log(req.query.id);
-    //console.log(req.params.id);
-    showadd(req.query.id,res);
-    
-   })
-   router.post("/addtomongobase", (req, res) => {
-    /* pamietać o dodaniu do listy grobów
-    if (req.body._id == "") {
-    insert(req, res);
-    } else {
-    update(req, res);
-    }*/
-   })
    
-   router.get("/exhumation", (req, res) => {
-    burialexhumation(req,res);
+   router.get("/add", (req, res) => {
+    showadd(req,res);
    })
-   router.get("/listclient", (req, res) => {
-    showlistclient(req,res);
+   router.get("/edit/:id", (req, res) => {
+    console.log(req.query);
+   console.log(req.body);
+   
+    showedit(req.query,res);
    })
+
+   router.post("/addtomongobase", (req, res) => {
+    //console.log(req.body);   
+    add(req.body,res);
+   })
+
    
 
 module.exports = router

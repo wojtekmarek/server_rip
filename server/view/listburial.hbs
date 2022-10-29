@@ -1,5 +1,6 @@
 <h3 style="text-align:center w-100">Lista pochówków</h3>
 <a class="btn btn-secondary" href="/burial/addOrEdit">Dodaj pochówek</a>
+
 <table class="table table-striped">
  <thead>
  <tr>
@@ -14,18 +15,18 @@
  </thead>
  <tbody>
  {{#each list}}
- <tr>
- <td>{{this.IdBurial}}</td>
+ <tr> 
+ <td>{{this._id}}</td>
  <td>{{this.Namedeceased}}</td>
  <td>{{this.LastNamedeceased}}</td>
  <td>{{this.Burialtype}}</td>
- <td>{{this.DateOfDeath}}</td>
- <td>{{this.DateBurial}}</td>
+ <td>{{this.DateOfDeathstring}}</td>
+ <td>{{this.DateBurialstring}}</td>
  <td>{{this.GraveQuartersnumber}}</td>
  <td>
  <a class="btn btn-primary btn-sm" href="/burial/{{this._id}}">Edytuj</a>
- <a class="btn btn-danger btn-sm" href="/burial/delete/{{this._id}}"
- onclick="return confirm('Czy jesteś pewien, że chcesz usunąć ten rekord?');">Usuń</a>
+ <a class="btn btn-danger btn-sm" href='/exhumation/add/?name=listdelete&&id={{this._id}}'
+ onclick='return confirm("Czy jesteś pewien, że chcesz usunąć ten rekord?By usunąc rekord stworzona zostanie eksumacja.");'>Usuń</a>
  </td>
  </tr>
  {{/each}}

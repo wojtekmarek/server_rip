@@ -1,0 +1,60 @@
+<h3>{{viewTitle}}</h3>
+
+
+<form action="{{action}}" method="POST" autocomplete="off">
+  
+
+ <label for="IdGraveQuaters">Id Kwatery do pochówku</label>
+<select   id="IdGraveQuaters"  disabled name="GraveQuartersnumber" >
+  
+         <option value="{{burial.GraveQuartersnumber}}">{{burial.GraveQuartersnumber}}</option>
+ 
+  </select>
+ 
+   <div class="form-group">
+        <label>Id Kwatery</label><br>
+         <input type="text" id="_idBurialview" disabled name="_idBurialview" value="{{burial._id}}">
+         <input type="hidden" id="_idBurial"  name="_idBurial" value="{{burial._id}}">
+     </div>
+    <div class="form-group">
+        <label>Imię</label>
+        <input type="text" class="form-control" name="Namedeceased" placeholder="{{burial.Namedeceased}}"
+        value="'{{burial.Namedeceased}}" required pattern="[A-Z]{1}[a-z]{2,99}">
+     </div>
+    <div class="form-group">
+        <label>Nazwisko</label>
+        <input type="text" class="form-control" name="LastNamedeceased" placeholder="{{burial.LastNamedeceased}}"
+        value="{{burial.LastNamedeceased}}" required pattern="[A-Z]{1}[a-z]{2,99}">
+    </div>
+    <div class="form-group">
+         <label>Rodzaj  pochówku </label>
+                 <select class="form-control" disabled name="TypeOFburial" placeholder="{{burial.Burialtype}}"
+                 value="{{burial.Burialtype}}">
+                <option value="{{burial.Burialtype}}">{{burial.Burialtype}}</option>
+                 </select> 
+                
+    </div>
+   <div class="form-group">
+       <label>Data śmierci(dzień-miesiąc-rok)</label>
+       <input type="text" class="form-control" name="DateOfDeath"  disabled pattern="^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$" 
+       placeholder="{{burial.DateOfDeathstring}}"
+       value="{{burial.DateOfDeathstring}}" required>
+    </div>
+    <div class="form-group">
+        <label>Data pochówku(dzień-miesiąc-rok)</label>
+        <input type="text" class="form-control" name="DateBurial" pattern="^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$" 
+        placeholder="{{burial.DateBurialstring}}"  value="{{burial.DateBurialstring}}" required>'
+     </div>
+      <div class="form-group">
+     <button type="submit" class="btn btn-info">Zapisz zmiany</button>
+     <a class="btn btn-secondary" href="/burial/list">Pokaz listę</a>
+      <a  type="button" id="createexumation"  class="btn btn-danger" href='/exhumation/add/?name="burial"&&id={{burial._id}}' >Dodaj Eksumacje do pochówku</a>
+     
+     </div>
+  
+
+
+</form>
+
+
+

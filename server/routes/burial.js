@@ -13,17 +13,23 @@ const{update,insert,showadd,showedit,showlist,showlistclient,findburial,burialex
     
    })
    router.post("/addtomongobase", (req, res) => {
-    /* pamietać o dodaniu do listy grobów
-    if (req.body._id == "") {
-    insert(req, res);
-    } else {
+    console.log(req.body);
+    
+    //pamietać o dodaniu do listy grobów
+    if (req.body._idBurial == "undefined") {
+    insert(req.body, res);
+    } 
+    //dac elseif
+    else {
+        console.log("update burial");
     update(req, res);
-    }*/
+    }
+
    })
-   
-   router.get("/exhumation", (req, res) => {
-    burialexhumation(req,res);
+   router.get("/:id", (req, res) => {
+    showedit(req,res);
    })
+
    router.get("/listclient", (req, res) => {
     showlistclient(req,res);
    })

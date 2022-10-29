@@ -13,8 +13,9 @@ const ovnerriproute=require("./routes/ovnerrip");
 const anonseroute=require("./routes/anonse");
 const userdbroute=require("./routes/userdb");
 const userroute=require("./routes/users");
-const gravequarters=require("./routes/gravequarters")
-const burialroute=require("./routes/burial")
+const gravequarters=require("./routes/gravequarters");
+const burialroute=require("./routes/burial");
+const exhumation=require("./routes/exhumation");
 /*
 
 
@@ -59,6 +60,7 @@ app.use('/anonse',anonseroute);
 app.use('/userdb',userdbroute);
 app.use('/user',userroute);
 app.use('/burial',burialroute);
+app.use('/exhumation',exhumation);
 /*
 app.use("/api/users", userRoutes)
 app.use("/api/auth", authRoutes)

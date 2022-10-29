@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 var Schema= mongoose.Schema;
-const {Burial}=require("./Burial")
+const {Burial,BurialSchema}=require("./Burials")
 const ExhumationSchema = new mongoose.Schema({
     PurposeExhumation:{type: String , enum:["Przeniesienie","Badania sekcyjne","Pogłepienie grobu"], required:true},
     DateExhumation:{type:Date, require:true},
@@ -8,11 +8,15 @@ const ExhumationSchema = new mongoose.Schema({
     ChangeOfBurialPlace:{type:Boolean,require:true},
     Visible:{type:Boolean,require:true,default:true},
     Scribe:{type:String},
-    Burial:{type: Schema.Types.ObjectId, ref: ' BurialSchema', required:true},
+    Burial:{type: Schema.Types.ObjectId, ref: 'BurialSchema', required:true},
 
 })
 const Exhumation = mongoose.model("Exhumation", ExhumationSchema);
-async function showlist(req,resp){
+
+
+
+
+async function showlist(req,res){
     
     Exhumation .find((err, docs) => {
         if (!err) {
@@ -28,5 +32,143 @@ async function showlist(req,resp){
         }
         })
 }
+function viewithid(req,res){
+    Burial.find({ _id:req},'_id' ,(err,doc)=>{
+        if (!err) {
+            
 
-module.exports={showlist}
+            res.render("addExhumation", {
+                viewTitle: "Dodaj eksumacje",
+                action:"/exhumation/addtomongobase" ,
+                listburial:doc,
+                idburaildisable:"disabled",
+                idburailbool:true          
+               });
+
+}});
+}
+function viewwitidgrave(req,res){
+    Burial.find({ GraveQuaters:req},'_id' ,(err,doc)=>{
+        if (!err) {
+            
+
+            res.render("addExhumation", {
+                viewTitle: "Dodaj eksumacje",
+                action:"/exhumation/addtomongobase" ,
+                listburial:doc,
+                idburaildisable:"",
+                idburailbool:false          
+               });
+
+}});
+}
+function vieadd(res){
+
+    Burial.find({},'_id' ,(err,doc)=>{
+        if (!err) {
+            
+
+            res.render("addExhumation", {
+                viewTitle: "Dodaj eksumacje",
+                action:"/exhumation/addtomongobase" ,
+                listburial:doc,
+                idburaildisable:"",
+                idburailbool:false    
+               });
+           
+           
+           
+        }else{
+            console.log("Błąd pobierania danych burial" + err);}
+    });
+   
+
+}
+async function showadd(req,res){
+    //console.log(typeof req.query.name);
+    //console.log(req.query.name);
+ 
+    switch(req.query.name){
+        case "add":
+            //console.log(req.query.name);
+            vieadd(res);
+            break;
+        case 'grave':
+            console.log(req.query.id);
+            viewwitidgrave(req.query.id,res);
+                break;
+        case 'burial':
+            console.log(req.query.id);
+            viewithid(req.query.id,res);
+                break;
+        case 'listdelete':
+            console.log(req.query.id);
+            viewithid(req.query.id,res);
+                break;
+       // default:res.redirect("/exhumation/list");
+    }
+}
+async function add(req,res){
+    console.log(req);
+    //console.log(req.GraveQuartersnumber._id);
+    
+    
+    let conwert_DatereBurial=req.Datereburial.split("-").reverse().join("-")+"T14:48:00.000+09:00";
+    let conwert_DateExumation=req.DateExhumation.split("-").reverse().join("-")+"T14:48:00.000+09:00";
+    const Datereburial = new Date(conwert_DatereBurial);
+    const DateExhumation =new Date(conwert_DateExumation);
+    
+    //const burialdata=JSON.parse(req.BurialNumber);
+
+   
+
+
+      var exhumation = new Exhumation()
+
+      exhumation.PurposeExhumation=req.PurposeExhumation,
+      exhumation.DateExhumation=DateExhumation,
+      exhumation.Datereburial=Datereburial,
+      exhumation.ChangeOfBurialPlace=req.ChangeOfBurialPlace,
+      exhumation.Visible=true,
+      exhumation.Scribe=req.Scribe,
+      exhumation.Burial=req.BurialNumber,
+      
+    
+      exhumation.save((err, doc) => {
+      if (!err) {
+          res.redirect("/exhumation/list")
+     
+      } else {
+      console.log("Błąd podczas dodawania eksumacji: " + err)
+      }
+      })
+  }
+  function showedit(req,res){
+    console.log(req);
+    Exhumation.findById(req,(err,doc)=>{
+        if (!err) {
+            
+            console.log(doc);
+            console.log(doc.DateExhumation);
+            doc.DateExhumation=doc.DateExhumation.toISOString().slice(0,10).split("-").reverse().join("-");
+            doc.Datereburial=doc.Datereburial.toISOString().slice(0,10).split("-").reverse().join("-");
+             console.log(doc[0].DateExhumation);
+            res.render("addExhumation", {
+                viewTitle: "Edytuj eksumacje",
+                action:"/exhumation/update" ,
+                listburial:doc,
+                exhumation:doc,
+                idburaildisable:"disabled",
+                idburailbool:true    
+               });
+           
+           
+           
+        }else{
+            console.log("Błąd pobierania danych exumation" + err);}
+    });
+   
+
+}
+  
+module.exports={showlist,add,showadd,showedit}
