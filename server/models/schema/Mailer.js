@@ -1,4 +1,5 @@
 
+require('dotenv').config();
 const API_USER = process.env.API_USER ;
 const API_PASS = process.env.API_PASS ;
 const fromEmailAddress = process.env.FROMEMAILADRESS;
