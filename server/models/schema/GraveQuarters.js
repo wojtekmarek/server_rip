@@ -28,7 +28,7 @@ const GraveQuartersSchema = new mongoose.Schema({
     gravequarter.NumberenableUrnBurials=req.body.NumberenableUrnBurials
     gravequarter.NumberTraditionalBurials=req.body.NumberTraditionalBurials
     gravequarter.NumberUrnBurials=req.body.NumberUrnBurials
-    gravequarter.DatePayment=req.body.DatePayment
+    gravequarter.DatePayment=new Date(req.body.DatePayment.split("-").reverse().join("-")+"T14:48:00.000+09:00")
     gravequarter.MethodOfPayment=req.body.MethodOfPayment
     
     gravequarter.save((err, doc) => {
@@ -75,7 +75,8 @@ async function showedit(req,res){
                     listu: listu,
                     defaultid:"block",
                     pickid:"none",
-                    GraveQuartersdate:gravedate
+                    GraveQuartersdate:gravedate,
+                    showaddburial:""
                    
                     
     
@@ -91,29 +92,31 @@ async function showadd(req,res)
 {    
     GraveQuarters.find({}, {IdGraveQuaters:1, _id:0},(err, docs) => {
         if (!err) {
-            listgrave=docs;
-           let  listid= [];
+            
+            var listid=[];
+           var listallid= [];
            var listidenable=[];           
-            for(let i=0;i <10; i++){
-                listidenable.push(i+1);
+            for(let i=0;i <150; i++){
+                listallid.push(i+1);
             }
             docs.forEach(x =>{
                 listid.push(x.IdGraveQuaters);
                 
             });      
-           /* console.log(docs);   
+            listid.sort();           
             console.log(listid);   
             console.log(listid.length); 
-            */ 
-            var to_erase=[];
-
-            for(j=0;j<listidenable.length;j++)
-            {
+            
+            
+/*
+            for(j=1;j<listallid.length;j++)
+            {   
                 for(k=0;k<listid.length;k++)
-                {
-                    if(listidenable[j]==listid[k])
+                {    console.log(listallid[j]);   
+                    console.log(listid[k]); 
+                    if(listallid[j]!=listid[k])
                     {
-                        to_erase.push(j);
+                        listidenable.push(j);
                         //listidenable.splice(j,1);
                     }
 
@@ -121,12 +124,30 @@ async function showadd(req,res)
             }
       
         }
-       
+  */     var k=0;
+        for(j=0;j<listallid.length;)
+        {   
+               console.log(listallid[j]);   
+                console.log(listid[k]); 
+                if(listallid[j]==listid[k])
+                {
+                   
+                    j++;
+                    k++;
+                    //listidenable.splice(j,1);
+                }else{
+                    listidenable.push(j+1);
+                    j++;
+                    
+                }
+
+            }
+    
     
     OvnerRip.find((err,listu)=>{
         if (!err) {
            
-           //console.log(listidenable);
+           console.log(listidenable);
             res.render("addOrEditgrave", {
                 viewTitle: "Dodaj kwatere",
                 action:"/gravequarters/addtomongobase",
@@ -134,6 +155,7 @@ async function showadd(req,res)
                 listid:listidenable,
                 defaultid:"none",
                 pickid:"block",
+                showaddburial:"disabled"
                 
 
                 
@@ -145,7 +167,7 @@ async function showadd(req,res)
             }
     })
             
-})
+}})
 }
 async function deletegrave(reg,res)
 {
@@ -180,4 +202,32 @@ async function showlist(req,res){
         }
         })
 }
-   module.exports={GraveQuarters,GraveQuartersSchema,update, insert,showadd,showedit,deletegrave,showlist}
+function checkburial(req,res){
+    console.log("in check gravelist");
+    GraveQuarters.find((err, docs) => {
+        if (!err) {
+             var  listtosend=[];
+             var i=0;
+            docs.forEach(element => {
+                //console.log(Number(element.NumberUrnBurials));
+               // console.log( Number(element.NumberTraditionalBurials));
+                if(Number(element.NumberUrnBurials)>0 || Number(element.NumberTraditionalBurials)>0){
+                    listtosend[i]=true;
+                    i++;
+
+                }else{
+                    listtosend[i]=false;
+                    i++;
+                }
+                
+            });
+            console.log(typeof docs);
+             res.send(listtosend);
+            
+           
+        } else {
+            res.status(500).send({ message: "Blad serwera nie pobrano listy grobow" });
+        }
+        })
+}
+   module.exports={GraveQuarters,GraveQuartersSchema,update, insert,showadd,showedit,deletegrave,showlist,checkburial}

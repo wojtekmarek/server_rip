@@ -1,5 +1,5 @@
 const router = require("express").Router()
-const{update,insert,deletegrave,showadd,showedit,showlist}=require("../models/schema/GraveQuarters")
+const{update,insert,deletegrave,showadd,showedit,showlist,checkburial}=require("../models/schema/GraveQuarters")
 
 
 
@@ -18,11 +18,17 @@ router.get("/list", (req, res) => {
     update(req, res);
     }
    })
+   router.get("/check", (req, res) => {
+    console.log("ok path");
+   checkburial(req,res);
+   })
    router.get("/:id", (req, res) => {
     showedit(req,res);
    })
    router.get("/delete/:id", (req, res) => {
     deletegrave(req,res);
    })
+ 
+ 
 
 module.exports = router
