@@ -26,6 +26,7 @@
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "nodejs-model": "^0.1.3",
+    "nodemailer": "^6.8.0",
     "nodemon": "^2.0.16",
     "objection": "^3.0.1",
     "path": "^0.12.7",

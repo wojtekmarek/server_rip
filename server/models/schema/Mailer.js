@@ -1,12 +1,25 @@
 
+const API_USER = process.env.API_USER ;
+const API_PASS = process.env.API_PASS ;
+const fromEmailAddress = process.env.FROMEMAILADRESS;
+const nodemailer = require('nodemailer');
+const templatemailreminders=require("../../templates/tempMail.json")
 
+const sendone = ({req,res}) => {
+    var email="wojtekmarek@gmail.com";
+    var daypayment="12-10-2022";
+  var numergrave="2";
+  // ewentualnie link
 
-const sendEmailNotification = ({email, originalFilename, userFilename, pdf, filename, transactionId, sendByEmailJSA}) => {
- 
     console.log('check data smtp');
+    console.log(API_USER);
+    console.log(API_PASS);
+    console.log(templatemailreminders.Template.SubjectPart);
+    console.log(templatemailreminders.Template.HtmlPart);
+    res.status(500).send({ message: "Blad serwera wysyłki email" });
     const transporter = nodemailer.createTransport({
-     // SES: new AWS.SES(SESConfig)
-     host: "smtp.dpoczta.pl",//"smtp.gmail.com.",
+     
+     host: "smtp.gmail.com.",
       port: 587,
       secure: false, // true for 465, false for other ports
       auth: {
@@ -18,19 +31,11 @@ const sendEmailNotification = ({email, originalFilename, userFilename, pdf, file
     
     transporter.sendMail({
       from: fromEmailAddress,
-      // to: `${sendReportTo}${sendByEmailJSA ? `, ${email}` : ''}`,
-      //...sendByEmailJSA && {to: email},
       to:email,
-      //bcc:emailrepost,
-      subject: `Wynik porównania JSA-demo (ID transakcji: ${transactionId})`,
-      // html: `<p>Witaj,</p><p>W załączniku znajdziesz twój raport z porównania plików:</p><p>${originalFilename}<br/>${userFilename}</p><p>ID transakcji: ${transactionId}</p><p><strong>Wesprzyj rozwój programu! Dla przyszłych roczników.</strong></p><p><a href="https://poprawaprac.pl/program-antyplagiatowy-wrona/?tid=${transactionId}&donate=true">Wpłać dowolną kwotę, a my przeznaczymy ją na dalszy rozwój systemu.</a></p>`,//. Możesz go pobrać <a href='${reportURL}'>tutaj</a>.</p>`,
-      html: `<p>Witaj,</p><p>W załączniku znajdziesz twój raport z porównania plików:</p><p>${originalFilename}<br/>${userFilename}</p><p>ID transakcji: ${transactionId}</p>`,//. Możesz go pobrać <a href='${reportURL}'>tutaj</a>.</p>`,
-      text: `Witaj,\r\n\r\nW załączniku znajdziesz twój raport z porównania plików:\r\n\r\n${originalFilename}\r\n${userFilename}\r\n\r\nID transakcji: ${transactionId}`,//\r\n\r\njest gotowy. Możesz go pobrać tutaj: ${reportURL}`,
-      attachments: [{
-        filename,
-        content: pdf
-      }],
-   // }, (err, info*/) => {
-   //  err && console.log(err);
+      subject: templatemailreminders.Template.SubjectPart,
+      html:templatemailreminders.Template.HtmlPart
+      
     });
   }
+
+  module.exports={sendone};
