@@ -17,6 +17,9 @@ const gravequarters=require("./routes/gravequarters");
 const burialroute=require("./routes/burial");
 const exhumation=require("./routes/exhumation");
 const sendMail=require("./routes/mailsend");
+const func=require("./routes/function");
+const intencion=require("./routes/intencion");
+const mass=require("./routes/mass");
 /*
 
 
@@ -63,6 +66,9 @@ app.use('/user',userroute);
 app.use('/burial',burialroute);
 app.use('/exhumation',exhumation);
 app.use('/mail',sendMail);
+app.use('/func',func);
+app.use('/inten',intencion);
+app.use('/mass',mass);
 /*
 app.use("/api/users", userRoutes)
 app.use("/api/auth", authRoutes)

@@ -1,0 +1,65 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"></script>
+<style>
+.contentbuttondiv{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    justify-content: left;
+  
+}
+.buttonfunction{
+    width: 300px;
+}
+.result{
+    width: 100%;
+    margin-top: 30px;
+}
+</style>
+<div class="contentbuttondiv">
+    <button type="button" id="showlistnotpay"class="btn btn-dark buttonfunction">Pokaż liste nieopłaconych grobów</button>
+
+</div>
+<div class="result" id="result"></div>
+<script>
+    function insertnofind(str)
+    {
+        document.getElementById("result").innerHTML=str;
+    }
+    async function insertfinnotpay(list){
+        console.log(list);
+        var html=""
+         await list.forEach(element => 
+        {html=html+" numer kwatery:"+element.IdGraveQuaters+" email:"+element.ovnerripid+"  data płatności:"+element.DatePayment.slice(0,10).split('-').reverse().join('-')+"<br>";
+        
+        }
+        );
+        console.log(html);
+        document.getElementById("result").innerHTML=html;
+    }
+    function showlistnotpay(){
+        //alert("in");
+         axios.get('/func/findpaynot', )
+        .then(response => {
+           console.log(response); 
+            insertfinnotpay(response.data);
+        })
+        .catch((err) => {
+            if(err.response.status==303){
+                //console.log("kkkkkk");
+                insertnofind("Nie znaleziono nieopłaconych grobów");
+            }else{
+                alert("Niestety zapytanie do bazy danych się nie udało spróbuj ponownie za chwile... ");
+                 console.log(err);
+                 }
+            }
+            
+           );;
+
+    }
+ document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("showlistnotpay").addEventListener("click",  (event) => {showlistnotpay();});
+ })
+
+</script>

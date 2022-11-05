@@ -42,10 +42,12 @@ const GraveQuartersSchema = new mongoose.Schema({
 
    function update(req, res) {
     console.log("updatequater");
+    console.log(req.body);
+    req.body.DatePayment=new Date(req.body.DatePayment.split("-").reverse().join("-")+"T14:48:00.000+09:00");
+    console.log(req.body);
     GraveQuarters.findOneAndUpdate(
     { _id: req.body._id },
     req.body,
-    { new: true },
     (err, doc) => {
     if (!err) {
     res.redirect("/gravequarters/list")
@@ -104,31 +106,14 @@ async function showadd(req,res)
                 
             });      
             listid.sort();           
-            console.log(listid);   
-            console.log(listid.length); 
+            //console.log(listid);   
+          //  console.log(listid.length); 
             
-            
-/*
-            for(j=1;j<listallid.length;j++)
-            {   
-                for(k=0;k<listid.length;k++)
-                {    console.log(listallid[j]);   
-                    console.log(listid[k]); 
-                    if(listallid[j]!=listid[k])
-                    {
-                        listidenable.push(j);
-                        //listidenable.splice(j,1);
-                    }
-
-                }
-            }
-      
-        }
-  */     var k=0;
+     var k=0;
         for(j=0;j<listallid.length;)
         {   
-               console.log(listallid[j]);   
-                console.log(listid[k]); 
+             //  console.log(listallid[j]);   
+//console.log(listid[k]); 
                 if(listallid[j]==listid[k])
                 {
                    
@@ -147,7 +132,7 @@ async function showadd(req,res)
     OvnerRip.find((err,listu)=>{
         if (!err) {
            
-           console.log(listidenable);
+     //      console.log(listidenable);
             res.render("addOrEditgrave", {
                 viewTitle: "Dodaj kwatere",
                 action:"/gravequarters/addtomongobase",
@@ -230,4 +215,51 @@ function checkburial(req,res){
         }
         })
 }
-   module.exports={GraveQuarters,GraveQuartersSchema,update, insert,showadd,showedit,deletegrave,showlist,checkburial}
+const findnotpay= async ()=>
+{
+    return new Promise((resolve, reject) => {
+    let now= new Date();
+    //console.log(now);
+    var weekago= new Date(now.getFullYear(), now.getMonth(), now.getDate() + 6);
+    GraveQuarters.find({ 
+        DatePayment: {
+            
+            $lt: weekago
+        }
+    } ,{_id:0, IdGraveQuaters:1, ovnerripid:1, DatePayment:1}
+    ,(err, docs) => {
+        if (!err) {
+            console.log(docs);
+            
+            resolve(docs);
+        
+       
+      
+   } else {
+   console.log("Błąd pobierania danych /gravequarters/list" + err)
+   resolve(err);
+   }
+   })})
+}
+async function setnotpay(){
+    let now= new Date();
+    
+    GraveQuarters.find({ //query today up to tonight
+        DatePayment: {
+            
+            $lt: wnow
+        }
+    } ,{_id:0,Payment:1}
+    ,(err, docs) => {
+        if (!err) {
+            //console.log(docs);
+           return docs;
+        
+       
+      
+   } else {
+   console.log("Błąd pobierania danych /gravequarters/list" + err)
+   }
+   })
+}
+   module.exports={GraveQuarters,GraveQuartersSchema,update, insert,showadd,showedit,deletegrave,showlist,checkburial,findnotpay}

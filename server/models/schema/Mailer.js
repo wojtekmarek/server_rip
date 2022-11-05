@@ -6,18 +6,21 @@ const fromEmailAddress = process.env.FROMEMAILADRESS;
 const nodemailer = require('nodemailer');
 const templatemailreminders=require("../../templates/tempMail.json")
 
-const sendone = ({req,res}) => {
-    var email="wojtekmarek@gmail.com";
-    var daypayment="12-10-2022";
-  var numergrave="2";
+function sendone (req,res){
+  console.log(req);
+    var email=req.email;
+    var daypayment=req.datapayment;
+    var numergrave=req.idquater;
   // ewentualnie link
-
+  console.log(email);
+  console.log(daypayment);
+  console.log(numergrave);
     console.log('check data smtp');
     console.log(API_USER);
     console.log(API_PASS);
     console.log(templatemailreminders.Template.SubjectPart);
     console.log(templatemailreminders.Template.HtmlPart);
-    res.status(500).send({ message: "Blad serwera wysyłki email" });
+    /*//res.status(500).send({ message: "Blad serwera wysyłki email" });
     const transporter = nodemailer.createTransport({
      
      host: "smtp.gmail.com.",
@@ -37,6 +40,7 @@ const sendone = ({req,res}) => {
       html:templatemailreminders.Template.HtmlPart
       
     });
+    */
   }
 
   module.exports={sendone};

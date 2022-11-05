@@ -1,0 +1,32 @@
+
+
+<h3 style="text-align:center">Lista intencji</h3>
+<a class="btn btn-secondary" href="/intention/addview">Dodaj Intencjie</a>
+<table class="table table-striped">
+ <thead>
+ <tr>
+ <th>Id Intencji</th>
+ <th>Treść</th>
+ <th>Data</th>
+ <th>Godzina mszy</th>
+ <th>Zatwierdzona</th>
+ </tr>
+ </thead>
+ <tbody>
+ {{#each list}}
+ <tr>
+ <td>{{this.id}}</td>
+ <td>{{this.Textintens}}</td>
+ <td>{{this.Date}}</td>
+ <td>{{this.Mass}}</td>
+ <td>{{this.Accepted}}</td>
+ 
+ <td>
+ <a class="btn btn-primary btn-sm" href="/intention/editview/{{this.id}}">Edytuj</a>
+ <a class="btn btn-danger btn-sm" href="/intention/delete/{{this.id}}"
+ onclick="return confirm('Czy jesteś pewien, że chcesz usunąć ten rekord?');">Usuń</a>
+ </td>
+ </tr>
+ {{/each}}
+ </tbody>
+</table>
