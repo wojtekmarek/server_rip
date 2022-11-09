@@ -1,8 +1,10 @@
 const router = require("express").Router()
-const{update,insert,deletegrave,showadd,showedit,showlist,checkburial}=require("../models/schema/GraveQuarters")
+const{update,insert,deletegrave,showadd,showedit,showlist,checkburial,sendquaterdetails}=require("../models/schema/GraveQuarters")
 
 
-
+router.get("/sendquaterdetail", async (req, res) => {
+    sendquaterdetails(req,res);
+   })
 
 router.get("/list", (req, res) => {
     showlist(req,res);

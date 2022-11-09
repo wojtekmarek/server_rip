@@ -2,10 +2,12 @@ const { User } = require("./User");
 
 
 const mongoose = require("mongoose");
+const { send } = require("express/lib/response");
+const { response } = require("../../server");
 const OvnerRipSchema = new mongoose.Schema({
     Name: {type: String},
     LastName:{type: String},
-    email: {type: String, required:true,unique:true},
+    email: {type: String, required:true},
     Street:{type: String},
     HomeNumber: {type: Number},
     HometwoNumber:{type: Number},
@@ -163,5 +165,120 @@ const OvnerRipSchema = new mongoose.Schema({
             }})
        
     }
+    async function findburialtoclientindb(doc,i){
+        var {Burial}=require("./Burials");
+        return new Promise((resolve, reject) => {
+        Burial.find({GraveQuartersnumber:doc.IdGraveQuaters}, (err, docs) => {
+            if (!err) {
+                console.log(i);
+                console.log("wysz");
+               // console.log(doc[i]);
+             
+                    resolve(docs);
+        }
+        else{
+            console.log("Błąd wyszukiwania pochowku  dla klienta " + err);
+            }
+        })
+    })
+}
+    async function findburialtoclient(doc){
+        
+        return new Promise(async (resolve, reject) => {
+        var list={};
+                   //console.log(typeof doc[0]);
+                  
+                          
+                  //console.log(list.burial);
+                  //console.log(list);
+               
+                 
+                  console.log(Object.keys(doc).length);
+                   for(var i=0;(i+1)<Object.keys(doc).length;i++){
+                    console.log(i);
+                    
+                        if(doc[i].NumberUrnBurials >0 ||doc[i].NumberTraditionalBurials>0)
+                         {   console.log(i +"pobieranie");
+                        
+                            //console.log("szukam pochowkow dla klienta");
+                        const check = await findburialtoclientindb(doc[i],i)
+                        .then(response=>{
+                            //console.log(response);
+                            list[i]= Object.assign(
+                                {"_id":doc[i]._id,
+                                 "IdGraveQuaters": doc[i].IdGraveQuaters,
+                                 "TypeOF": doc[i].TypeOF,
+                                 "Payment": doc[i].Payment,
+                                 "ovnerripid": doc[i].ovnerripid,
+                                 "DatePayment": doc[i].DatePayment,
+                                 "NumberTraditionalBurials": doc[i].NumberTraditionalBurials,
+                                 "NumberUrnBurials":doc[0].NumberUrnBurials,
+                                 "NumberenableTraditionalBurials":doc[i].NumberenableTraditionalBurials,
+                                 "NumberenableUrnBurials":doc[i].NumberenableUrnBurial,
+                                 "MethodOfPayment":doc[i].MethodOfPayment},
+                                {"Burial":response}
+                                );   
+                                
+                        
+                        })
+                        
+                 
+                                
+                                   // return list[i];
+                                
+                            
+                                
+                               // return list[i]={"text":"Błąd wyszukiwania pochowku  dla klienta " , err};
+                               
+                            }else{
+                        console.log(i +"nie trzeba pobieranie");
+                      list[i]=Object.assign(
+                        {"_id":doc[i]._id,
+                        "IdGraveQuaters": doc[i].IdGraveQuaters,
+                        "TypeOF": doc[i].TypeOF,
+                        "Payment": doc[i].Payment,
+                        "ovnerripid": doc[i].ovnerripid,
+                        "DatePayment": doc[i].DatePayment,
+                        "NumberTraditionalBurials": doc[i].NumberTraditionalBurials,
+                        "NumberUrnBurials":doc[0].NumberUrnBurials,
+                        "NumberenableTraditionalBurials":doc[i].NumberenableTraditionalBurials,
+                        "NumberenableUrnBurials":doc[i].NumberenableUrnBurial,
+                        "MethodOfPayment":doc[i].MethodOfPayment},
+                        {"Burial":[]}
+                        );   
+                       
+                    }
+                    
+                   }
+                   
+                   resolve(list);
+
+
+                })   
+    }
+    async function  getburialforclient(req,res) {
+        console.log(req.body.ovnerripid);
+        const{GraveQuarters}=require("./GraveQuarters");
+        
+        GraveQuarters.find({email:req.body.ovnerripid}, async (err, doc) => {
+            if (!err) {
+            //console.log(doc);
+          
+                if(doc[0]!=undefined){
+                  const listtosend=await findburialtoclient(doc)
+                  .then(response=>{res.send(response);})
+                    
+                }else{
+                    res.status(404);
+                    res.send("uzytkownik nie ma kwater");
+                }
+            } else {
+            console.log("Błąd wyszukiwania kwater dla klienta " + err);
+            res.status(300);
+           
+            }
+            })
+
+    }
  
-   module.exports={OvnerRip,update, insert,showadd,getovnerriptoclient,getlistovnernew,getlist,showedit,deleteovnerrip}
+   module.exports={OvnerRip,update, insert,showadd,getovnerriptoclient,getlistovnernew,getlist,showedit,deleteovnerrip,getburialforclient}

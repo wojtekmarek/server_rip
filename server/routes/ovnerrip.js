@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const {update,insert,showadd,getovnerriptoclient,getlistovnernew,getlist,showedit,deleteovnerrip} = require('../models/schema/OvnerRip');
+const {update,insert,showadd,getovnerriptoclient,getlistovnernew,getlist,showedit,deleteovnerrip, getburialforclient} = require('../models/schema/OvnerRip');
      
        
          router.get("/listovnernew", (req, res) => {
@@ -13,6 +13,11 @@ const {update,insert,showadd,getovnerriptoclient,getlistovnernew,getlist,showedi
         
             
                })
+           router.get("/getdataovnerripburial",async (req,res) =>{
+                    getburialforclient(req,res);
+                    
+                        
+                           })
        
        router.get("/list", (req, res) => {
             getlist(res);

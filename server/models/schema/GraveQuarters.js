@@ -1,12 +1,14 @@
 
+const res = require("express/lib/response");
 const mongoose = require("mongoose");
 const {OvnerRip} = require("./OvnerRip");
+
 
 const GraveQuartersSchema = new mongoose.Schema({
     IdGraveQuaters:{type: Number, required:true},
     TypeOF:{type: String , enum:["murowany","ziemny"]},
     Payment:{type: Boolean},
-    ovnerripid:{type: String, required:true},
+    ovnerripid:{type: String, required:true},//change type fiel to ovneripname
     NumberenableTraditionalBurials:{type: Number, required:true},
     NumberenableUrnBurials:{type: Number, required:true},
     NumberTraditionalBurials:{type: Number, required:true},
@@ -15,7 +17,7 @@ const GraveQuartersSchema = new mongoose.Schema({
     MethodOfPayment:{type: String , enum:["gotówka","przelew","blik"]}
    })
    const GraveQuarters= mongoose.model("GraveQuarters", GraveQuartersSchema);
-   
+   const{Burial}= require("./Burials");
    function insert(req, res) {
 
     //console.log("adquater"+req.body.IdGraveQuaters);
@@ -247,7 +249,7 @@ async function setnotpay(){
     GraveQuarters.find({ //query today up to tonight
         DatePayment: {
             
-            $lt: wnow
+            $lt: now
         }
     } ,{_id:0,Payment:1}
     ,(err, docs) => {
@@ -262,4 +264,32 @@ async function setnotpay(){
    }
    })
 }
-   module.exports={GraveQuarters,GraveQuartersSchema,update, insert,showadd,showedit,deletegrave,showlist,checkburial,findnotpay}
+function sendquaterdetails(req,res){
+    GraveQuarters.find({IdGraveQuaters:req.body.id}, (err, doc) => {
+        if (!err) {
+            //console.log(doc);
+            //console.log(doc[0].NumberTraditionalBurials);
+            //console.log(doc[0].NumberUrnBurials);
+            if(doc[0].NumberTraditionalBurials > 0 || doc[0].NumberUrnBurials> 0)
+            {   Burial.find({GraveQuaters:doc[0]._id},(err,doc)=>{
+                if(!err){
+                    res.send(doc);
+                }else{
+                    res.status(404);
+                    res.send("blad przy wyszukiwaniu pochowkow");
+                }
+            })
+            }else{
+                res.status(404);
+                res.send("kwatera nie ma pochowkow");
+            }
+          
+        
+       
+      
+   } else {
+   console.log("Błąd pobierania danych /gravequartersdetail" + err);
+   }
+    })
+}
+   module.exports={GraveQuarters,GraveQuartersSchema,update,sendquaterdetails,insert,showadd,showedit,deletegrave,showlist,checkburial,findnotpay,setnotpay}
