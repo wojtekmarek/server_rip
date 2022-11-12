@@ -1,0 +1,114 @@
+<h3>{{viewTitle}}</h3>
+<style>
+  .alertdatemarin{
+    margin-top: -63px;
+
+    padding: 12px 8px;
+   
+  }
+  @keyframes hideanddestroy { 
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+</style>
+<form style="width: 300px;" action="{{action}}" method="POST" autocomplete="off">
+ <input type="hidden" name="Id" value="{{Mass.Id}}">
+ <div class="form-group" id="Dategroup">
+ <label>Data mszy</label>
+<input type="text" class="form-control" id="Date_Of_even" name="Date_Of_even" 
+ placeholder="{{Mass.Date}}"  value="{{Mass.Date}}" required/>
+  
+ <label>Godzina Mszy </label>
+ <input type="text" class="form-control" id="Time_Of_even"  name="Time_Of_even" 
+ value="{{Mass.Time}}"  min="{{today}}"required/>
+ </div>
+   <div class="form-group">
+  <label>Ilośc dostępnych intencji</label>
+  <input type="number" class="form-control" 
+  name="Number_enable_intensions" value="{{Mass.Number_enable_intensions}}" placeholder="{{Mass.Number_enable_intensions}}" required>
+ </div>
+<div class="form-group">
+  <!-- dopisac disable-->
+  <label>Ilośc intencji zarezerwowanych </label>
+  <input type="number" class="form-control" name="Number_intension" value="{{Mass.Number_intension}}" placeholder="{{Mass.Number_intension}}">
+ </div>
+<div class="form-group">
+<button type="submit" id="submit" class="btn btn-info">Zapisz</button>
+<a class="btn btn-secondary" href="/mass/list">Pokaz listę</a>
+</div>
+</form>
+<script>
+  var now=new Date();
+  var submitbutton=document.getElementById("submit");
+ var date=document.getElementById("Date_Of_even");
+ var time=document.getElementById("Time_Of_even");
+ var defaulttime=date.value.split("-").reverse().join("-");
+ var wrongdate=false;
+ 
+ date.addEventListener("focus",(event)=>{
+  submitbutton.disabled=true;
+  //console.log(date.value);
+  //console.log(date.value.split("-").reverse().join("-"));
+  if(wrongdate){
+    console.log("defaulttime if "+defaulttime);  
+     date.value=defaulttime.split("-").reverse().join("-");
+    wrongdate=false;
+  }else{
+     defaulttime=date.value;
+      date.value=date.value.split("-").reverse().join("-");
+  }
+ 
+   console.log("date.value"+date.value);
+  console.log("defaulttime"+defaulttime);       
+ 
+ 
+  date.type="date";
+  
+  });
+   date.addEventListener("blur",(event)=>{
+   //console.log(now);
+    submitbutton.disabled=false;
+    var today=new Date(now.getFullYear(),(now.getMonth()),now.getDate());
+    // console.log(typeof today);
+   // console.log(today.toISOString());
+    var setdate=new Date(date.value);
+    console.log(setdate>today);
+    if(setdate<today){     
+      wrongdate=true;
+     var alertdate = document.createElement('div');
+      alertdate.id='alertdate';
+      alertdate.className="alert alert-danger alertdatemarin";
+      alertdate.innerHTML="Nie można ustawić wstecznej daty mszy ";
+      document.getElementById("Dategroup").appendChild(alertdate);
+      alertdate.style="animation: hideanddestroy 2s infinite;animation-delay: 2s;";
+      setTimeout(() => {
+          document.getElementById("alertdate").remove(); 
+      }, 4000)    
+
+          date.focus();
+          
+  
+      
+    }else{
+      date.type="text";
+  console.log(date.value);
+  console.log(date.value.split("-").reverse().join("-"));
+  date.value=date.value.split("-").reverse().join("-");
+    }
+  
+  
+  });
+   time.addEventListener("focus",(event)=>{
+  time.type="time";
+  });
+   time.addEventListener("blur",(event)=>{
+  time.type="text";
+  
+  });
+  
+</script>

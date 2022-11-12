@@ -257,10 +257,10 @@ const OvnerRipSchema = new mongoose.Schema({
                 })   
     }
     async function  getburialforclient(req,res) {
-        console.log(req.body.ovnerripid);
+        console.log(req);
         const{GraveQuarters}=require("./GraveQuarters");
         
-        GraveQuarters.find({email:req.body.ovnerripid}, async (err, doc) => {
+        GraveQuarters.find({email:req}, async (err, doc) => {
             if (!err) {
             //console.log(doc);
           

@@ -20,6 +20,8 @@ const sendMail=require("./routes/mailsend");
 const func=require("./routes/function");
 const intencion=require("./routes/intencion");
 const mass=require("./routes/mass");
+const payment=require("./routes/payment");
+
 /*
 
 
@@ -38,6 +40,7 @@ app.use(express.urlencoded({
     extended: true
    }))
    app.set("views", path.join(__dirname, "/view/"))
+   
    app.engine(
     "hbs",
     exphbs.engine({
@@ -45,7 +48,8 @@ app.use(express.urlencoded({
     extname: "hbs",
     defaultLayout: "layout",
     layoutsDir: __dirname+'/view',
-    partialsDir: __dirname + '/view/partials/'
+    partialsDir: __dirname + '/view/partials/',
+    helpers:{json: function (context) {return JSON.stringify(context); }} 	
     })
    )
    app.set("view engine", "hbs")
@@ -69,6 +73,7 @@ app.use('/mail',sendMail);
 app.use('/func',func);
 app.use('/inten',intencion);
 app.use('/mass',mass);
+app.use('/payment',payment);
 /*
 app.use("/api/users", userRoutes)
 app.use("/api/auth", authRoutes)

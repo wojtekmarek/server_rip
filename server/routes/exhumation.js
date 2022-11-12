@@ -7,6 +7,9 @@ const{showadd,add,showedit}=require("../models/schema/Exhumation");
     router.get("/list", (req, res) => {
     showlist(req,res);
    })
+   router.get("/listforclient", (req, res) => {
+    console.log(req.body);
+   })
    
    router.get("/add", (req, res) => {
     showadd(req,res);

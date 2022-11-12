@@ -1,0 +1,138 @@
+<h3 style="text-align:center">Lista Płatności</h3>
+<style>
+    .tdid{
+        max-width: 140px;
+    }
+    .divdisplayrow{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        
+    }
+    #tablepayment{
+        width: 100%;
+    }
+</style>
+
+<div id="tablepaymentoption" class="divdisplayrow">
+<select id="filter">
+    <option value="all">Pokaż wszystkie</option>
+    <option value="current">Pokaż tylko aktualne </option>
+</select>
+</div>
+<table class="table table-striped">
+ <thead>
+ <tr>
+ <th>Id</th>
+ <th>Płatność za</th>
+ <th>Data płatności</th>
+ <th>Status</th>
+
+ </tr>
+ </thead>
+ <tbody id="tablepayment">
+    {{#each list}}
+    <tr>
+    <td class="tdid">{{this._id}}</td>
+    <td>{{this.Title}}</td>
+    <td>{{this.Date}}</td>
+    <td>{{this.Status}}</td>    
+
+    
+    <td>
+    <a class="btn btn-primary btn-sm" href="/mass/editview/{{this.id}}">Edytuj</a>
+    </td>
+    </tr>
+    {{/each}}
+ </tbody>
+</table>
+
+<script >
+    
+    var listpayment={{{json list}}};
+    console.log(listpayment);
+    var now=new Date();
+    
+    function showcurrent(){
+        var listcurrent=[];
+        var today=new Date(now.getFullYear(),(now.getMonth()),now.getDate());
+        console.log(typeof listpayment);
+        
+                for (const [key, mass] of Object.entries(listpayment)) {
+
+                    var massdate=new Date(mass.Date_Of_even);
+                    /*console.log("typ zmienej : "+typeof massdate);
+                    console.log("data string "+ massdate);
+                    console.log("typ zmienej : "+typeof massdate);
+                    console.log("dzis: "+today);
+                    console.log("data numer "+ massdate.getTime());
+                    console.log("dzis numer: "+today.getTime());                    
+                     console.log("warunek: "+ massdate.getTime()>today.getTime());
+                     console.log(massdate>today);*/
+           if(massdate>today){
+                console.log("add to list");
+                listcurrent.push(mass);
+               // console.log(typeof mass.Date);
+               // console.log(mass.Date.slice(0,10).split("-").reverse().join("-"));
+            }else{}
+        };
+        console.log(listcurrent);
+       document.getElementById("tablepayment").innerHTML=""; 
+     
+        for(i=0;i<listcurrent.length;i++)
+            {let tablerow = document.createElement('tr');
+            tablerow.id='tr'+i;   
+            tablerow.innerHTML="<tr>"
+                +'<td class="tdid">'+listcurrent[i]._id+"</td>"
+                +"<td>"+listcurrent[i].Title+"</td>"
+                +"<td>"+listcurrent[i].Date_payment.slice(0,10).split("-").reverse().join("-")+"</td>"
+                +"<td>"+listcurrent[i].Staus+"</td>"                
+                +"<td>"
+                +'<a class="btn btn-primary btn-sm" href="/mass/editview/'+listcurrent[i]._id+'">Edytuj</a>'
+                +"</td>"
+                +"</tr>";
+             document.getElementById("tablepayment").appendChild(tablerow);
+             console.log(tablerow);
+        } 
+                
+    }
+     function showall(){
+       
+       document.getElementById("tablepayment").innerHTML=""; 
+     
+        for(i=0;i<listpayment.length;i++)
+            {let tablerow = document.createElement('tr');
+            tablerow.id='tr'+i;   
+            tablerow.innerHTML="<tr>"
+                +'<td class="tdid">'+listpayment[i]._id+"</td>"
+                +"<td>"+listpayment[i].Date_Of_even.slice(0,10).split("-").reverse().join("-")+"</td>"
+                +"<td>"+listpayment[i].Date_Of_even.slice(11,16)+"</td>"
+                +"<td>"+listpayment[i].Number_enable_intensions+"</td>"
+                +"<td>"+listpayment[i].Number_intension+"</td>"
+                +"<td>"
+                +'<a class="btn btn-primary btn-sm" href="/mass/editview/'+listpayment[i]._id+'">Edytuj</a>'
+                +'<a class="btn btn-danger btn-sm" href="/mass/delete/'+listpayment[i]._id+'"'
+                +'onclick="return confirm("Czy jesteś pewien, że chcesz usunąć ten rekord?");">Usuń</a>'
+                +"</td>"
+                +"</tr>";
+             document.getElementById("tablepayment").appendChild(tablerow);
+             console.log(tablerow);
+        } 
+                
+    }
+
+    document.getElementById("filter").addEventListener("change",(event)=>{
+        //console.log(event.target.value);
+        switch(event.target.value){
+            case "all":
+                showall();
+            break;
+            case "current":
+                showcurrent();
+            break;
+            default:console.log("somthing wron by filter chceck this");
+        }
+  });
+  
+</script>

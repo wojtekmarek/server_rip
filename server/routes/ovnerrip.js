@@ -14,7 +14,7 @@ const {update,insert,showadd,getovnerriptoclient,getlistovnernew,getlist,showedi
             
                })
            router.get("/getdataovnerripburial",async (req,res) =>{
-                    getburialforclient(req,res);
+                    getburialforclient(req.query.ovnerripid,res);
                     
                         
                            })

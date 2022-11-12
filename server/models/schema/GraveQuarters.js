@@ -265,13 +265,17 @@ async function setnotpay(){
    })
 }
 function sendquaterdetails(req,res){
-    GraveQuarters.find({IdGraveQuaters:req.body.id}, (err, doc) => {
+  
+    GraveQuarters.find({IdGraveQuaters:req}, (err, doc) => {
         if (!err) {
-            //console.log(doc);
+            console.log("finddetailforclient");
+            console.log(doc);
             //console.log(doc[0].NumberTraditionalBurials);
             //console.log(doc[0].NumberUrnBurials);
-            if(doc[0].NumberTraditionalBurials > 0 || doc[0].NumberUrnBurials> 0)
-            {   Burial.find({GraveQuaters:doc[0]._id},(err,doc)=>{
+           
+            if( doc[0]!=undefined&&(doc[0].NumberTraditionalBurials > 0 || doc[0].NumberUrnBurials> 0))
+            {   console.log("finddetailforclient condicion");
+                Burial.find({GraveQuaters:doc[0]._id},(err,doc)=>{
                 if(!err){
                     res.send(doc);
                 }else{
@@ -283,7 +287,7 @@ function sendquaterdetails(req,res){
                 res.status(404);
                 res.send("kwatera nie ma pochowkow");
             }
-          
+        
         
        
       

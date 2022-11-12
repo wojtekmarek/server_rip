@@ -3,14 +3,16 @@ const{update,insert,deletegrave,showadd,showedit,showlist,checkburial,sendquater
 
 
 router.get("/sendquaterdetail", async (req, res) => {
-    sendquaterdetails(req,res);
+    //console.log(req.params.id);
+    //console.log(req.query.id);
+    sendquaterdetails(req.query.id,res);
    })
 
 router.get("/list", (req, res) => {
     showlist(req,res);
    })
    router.get("/addOrEdit", async (req, res) => {
-    showadd(req,res);
+   showadd(req,res);
     
    })
    router.post("/addtomongobase", (req, res) => {

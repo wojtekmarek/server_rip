@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 var Schema= mongoose.Schema;
-const {Payment,PaymentSchema}=require("./Payment");
+/*const {Payment,PaymentSchema}=require("./Payment");
 const {Mass,MassSchema}=require("./Mass");
+const{UserSchema}=require("./User");*/
 const IntentionShema = new mongoose.Schema({
     
     
@@ -9,7 +10,7 @@ const IntentionShema = new mongoose.Schema({
     Paid_Off:{type: Boolean, required:true},
     Textintens:{type: String, required:true},    
     Mass:{type: Schema.Types.ObjectId, ref: 'MassSchema', required:true},
-    Payment:{type: Schema.Types.ObjectId, ref: 'PaymentSchema', required:true},
+    Ovner:{type: Schema.Types.ObjectId, ref: 'PaymentSchema', required:true}
     
   
 
@@ -17,7 +18,8 @@ const IntentionShema = new mongoose.Schema({
 
    const Intention = mongoose.model("Intention", IntentionShema);
 
-   function showlist(req,res){
+   const IntentionController={
+    showlist:function(req,res){
     Intention.find((err, docs) => {
         if (!err) {
            
@@ -33,4 +35,5 @@ const IntentionShema = new mongoose.Schema({
         }
         })
    }
-   module.exports={IntentionShema,Intention,showlist};
+}
+   module.exports={IntentionShema,Intention,IntentionController};
