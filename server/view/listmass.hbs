@@ -15,9 +15,10 @@
     }
 </style>
 <script>
+
     function deletemass(id){
       if (confirm('Czy jesteś pewien, że chcesz usunąć Mszę'+id+"?") == true) {
-        fetch("http://localhost:8000/mass/checkcandelete/"+id)
+        fetch("/mass/checkcandelete/"+id)
         .then(function(response) {
             console.log("res");
             console.log(response);
@@ -29,7 +30,16 @@
             {
                 alert("Msza nie może być usunieta bo posiada przypisane intencje");
             }else{
-               console.log("delete");
+               fetch("/mass/delete/"+id)
+                .then(function(response) {
+                    if(response.json().status=true)
+                    {
+                        window.location.reload();
+                    }else{
+                       
+                        alert("coś poszło  nie tak odświerz strone i sprubuj ponownie")
+                    }
+        })
             }
         })
        .catch(err =>{
@@ -85,6 +95,7 @@
     
     var listmass={{{json list}}};
     console.log(listmass);
+
     var now=new Date();
     
     function showcurrent(){

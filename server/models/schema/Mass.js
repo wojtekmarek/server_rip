@@ -39,7 +39,7 @@ const MassSchema = new mongoose.Schema({
         });
       }
         else{
-
+            console.log("something wrong with showedit mass")
         } });
       },
       
@@ -55,7 +55,8 @@ const MassSchema = new mongoose.Schema({
       var mass= new Mass()
        mass.Date_Of_even=date;
      mass.Number_enable_intensions=Number(req.Number_enable_intensions);
-   
+   if(mass.Number_enable_intensions>0)
+   {mass.Enable_intensions=true;}
        
        mass.save((err, doc) => {
        if (!err) {
@@ -80,8 +81,10 @@ const MassSchema = new mongoose.Schema({
           });
 
            console.log(docs);
+           
              res.render("listmass", {
              list: docs,
+             
              
              });
             
@@ -108,25 +111,89 @@ const MassSchema = new mongoose.Schema({
         console.log("Błąd pobierania danych przy usuwaniu mass" + err)
       }});
    },
-   addintenciontomass:function(mass,Number_enable_intensions,Number_intension){
-    console.log(mass+" "+Number_enable_intensions+" "+Number_intension);
+   changeintensnumerinmass:function(req,date){
+   //console.log(typeof Number_intension);
+   return new Promise((resolve, reject) => {
+   var mass={ Number_intension:Number(date.Number_intension)+1,
+            Date_Of_even:date.Date_Of_even,
+          Number_enable_intensions:Number(date.Number_enable_intensions),}
+   if(mass.Number_enable_intensions==mass.Number_intension)
+   {mass.Enable_intensions=true;}
+   else{mass.Enable_intensions=false;}
+
+   //console.log(mass);
+   //console.log(typeof mass);
+   
+   Mass.findOneAndUpdate(
+    { _id: req.Mass },
+    mass, 
+    (err, doc) => {
+      
+    if (!err) {
+      resolve([true]);
+    } else {
+    console.log("Błąd podczas edycji Mszy: " + err)
+    resolve([false,err]);
+    }
+    })
+  });
+   },
+   addintenciontomass:function(req,data,res){
+    //console.log(Mass+" "+Number_enable_intensions+" "+Number_intension);
     // res.send({"intencion_ available":true});
     const { IntentionController } = require("./Intention");
-    IntentionController.find({Mass_id:req}, (err, doc) => {})
+    var intencion_id;
+    IntentionController.add(req)
+    .then(respond=>{
+      console.log("then1");
+      console.log(respond[0]);
+      //console.log(respond[1]);
+      
+      if(respond[0]){
+        intencion_id=respond[1];
+        this.changeintensnumerinmass(req,data)
+           .then(respond=>{
+            console.log("then2");
+           console.log(respond[0]);
+           const{PaymentController}=require("./Payment");
+           PaymentController.createnew(req={
+             Title:"Intencja",
+             Status:"Utworzona",
+             Amount:req.Amount,
+             Intention:intencion_id
+           }) 
+              .then(respond=>{
+                console.log("then3");
+                console.log(respond[0]);
+                if(respond[0]){
+                 res.json({Intention:intencion_id,Payment_id:respond[1]});
+                }else{
+                  return false;
+                }
+              });
+        })
+       
+      }else{
+        res.json({err:respond[1]})
+      }
+     
+    })
+    
+    //add catch
 
 
    },
        checkavailableaddinstans:function(req,res){
       //console.log(req);
-      Mass.findById(req.idmass,(err,doc)=>{
+      Mass.findById(req.Mass,(err,doc)=>{
         if(!err){
           if(doc.Number_enable_intensions>doc.Number_intension)
             { //console.log(doc);
-              this.addintenciontomass(req.idmass,doc.Number_enable_intensions,doc.Number_intension);
+              this.addintenciontomass(req,doc,res);
           }else{
-            console.log({"intencion_ available":false});
+            //console.log({"intencion_ available":false});
            
-            //res.send({"intencion_ available":false});
+            res.send({"intencion_ available":false});
           }
         }else{
           console.log("Błąd pobierania danych przy sprawdzeniu dostepnosciintenci mass" + err)
@@ -158,6 +225,31 @@ const MassSchema = new mongoose.Schema({
        res.status(404);
        }
        })
+    },
+    delete:function(req,res){
+      Mass.findByIdAndRemove(req.params.id, (err, doc) => {
+        if (!err) {
+        res.json({status:true});
+        } else {
+        console.log("Błąd podczas usuwania mszy: " + err);
+        }
+        }) 
+    },
+    subtractionintens:function(req,res){
+      return new Promise((resolve, reject) => {
+        Mass.findOneAndUpdate(
+          { _id: req },
+          {"$inc": {"Number_intension":-1}}, 
+          (err, doc) => {
+            
+          if (!err) {
+            resolve([true]);
+          } else {
+          console.log("Błąd podczas edycji Mszy: " + err)
+          resolve([false,err]);
+          }
+          })
+      })
     }
 
   }

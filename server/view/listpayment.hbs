@@ -28,6 +28,7 @@
  <th>Płatność za</th>
  <th>Data płatności</th>
  <th>Status</th>
+ <th>Za </th>
 
  </tr>
  </thead>
@@ -37,11 +38,12 @@
     <td class="tdid">{{this._id}}</td>
     <td>{{this.Title}}</td>
     <td>{{this.Date}}</td>
-    <td>{{this.Status}}</td>    
+    <td>{{this.Status}}</td>  
+    <td>{{this.For}}</td>   
 
     
     <td>
-    <a class="btn btn-primary btn-sm" href="/mass/editview/{{this.id}}">Edytuj</a>
+    <a class="btn btn-primary btn-sm" href="/payment/detail/{{this.id}}">Edytuj</a>
     </td>
     </tr>
     {{/each}}
@@ -59,18 +61,18 @@
         var today=new Date(now.getFullYear(),(now.getMonth()),now.getDate());
         console.log(typeof listpayment);
         
-                for (const [key, mass] of Object.entries(listpayment)) {
+                for (const [key, payment] of Object.entries(listpayment)) {
 
-                    var massdate=new Date(mass.Date_Of_even);
-                    /*console.log("typ zmienej : "+typeof massdate);
-                    console.log("data string "+ massdate);
-                    console.log("typ zmienej : "+typeof massdate);
+                    var paymentdate=new Date(payment.Date);
+                    /*console.log("typ zmienej : "+typeof paymentdate);
+                    console.log("data string "+ paymentdate);
+                    console.log("typ zmienej : "+typeof paymentdate);
                     console.log("dzis: "+today);
-                    console.log("data numer "+ massdate.getTime());
+                    console.log("data numer "+ paymentdate.getTime());
                     console.log("dzis numer: "+today.getTime());                    
-                     console.log("warunek: "+ massdate.getTime()>today.getTime());
-                     console.log(massdate>today);*/
-           if(massdate>today){
+                     console.log("warunek: "+ paymentdate.getTime()>today.getTime());
+                     console.log(paymentdate>today);*/
+           if(paymentdate>today){
                 console.log("add to list");
                 listcurrent.push(mass);
                // console.log(typeof mass.Date);

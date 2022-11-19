@@ -26,6 +26,9 @@ router.get("/checkcandelete/:id", async (req, res) => {
    MassController.checkcandelete(req.params.id,res);
          
         })  
+router.get("/delete/:id",(req,res)=>{
+    MassController.delete(req,res);
+})
 router.post("/addtodb", async (req, res) => {
     console.log(req.body);
     MassController.addnewtodb(req.body,res);

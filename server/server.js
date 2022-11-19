@@ -1,7 +1,6 @@
 
-require('dotenv').config()
-const connection = require('./db')
-console.log(process.env.DB)
+require('dotenv').config();
+const connection = require('./db');
 const express = require('express');
 var cors = require('cors');
 const bodyParser = require('body-parser');
@@ -20,7 +19,12 @@ const sendMail=require("./routes/mailsend");
 const func=require("./routes/function");
 const intencion=require("./routes/intencion");
 const mass=require("./routes/mass");
-const payment=require("./routes/payment");
+const payment=require("./routes/payment"); 
+
+/*console.log(returnUrlSuccessbackend);
+console.log(shopId);
+console.log(notifyURL);
+console.log(pblPrivateKey);*/
 
 /*
 

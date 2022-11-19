@@ -26,7 +26,7 @@ router.get('/list', async(req, res)=>{
             
             //console.log( dateevent.toString().slice(0,10).split("-").reverse().join("-"));
         });
-        
+        console.log(anonselist[0]);
         res.render("listanonse", {
             list: anonselist,
             
