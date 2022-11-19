@@ -22,7 +22,7 @@ const {update,insert,showadd,getovnerriptoclient,getlistovnernew,getlist,showedi
        router.get("/list", (req, res) => {
             getlist(res);
        })
-       router.get("/addOrEdit", (req, res) => {
+       router.get("/Number_enable_intensionsdit", (req, res) => {
         showadd(req,res);
         
         

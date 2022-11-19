@@ -53,7 +53,7 @@ const OvnerRipSchema = new mongoose.Schema({
     function showadd(req,res){
         User.find({status:true},(err,listu)=>{
             if (!err) {
-                res.render("addOrEdit", {
+                res.render("addoredit", {
                     viewTitle: "Dodaj Dysponeta kwatery",
                     action:"/ovnerrip/addtomongobase",
                     listu: listu,
@@ -133,7 +133,7 @@ const OvnerRipSchema = new mongoose.Schema({
     function showedit(req,res){
         OvnerRip.findById(req.params.id, (err, doc) => {
             if (!err) {
-            res.render("addOrEdit", {
+            res.render("addoredit", {
             viewTitle: "Zaktualizuj dane Dysponeta kwatery",
             OvnerRip: doc,
             action:"/ovnerrip/addtomongobase",

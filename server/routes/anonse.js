@@ -58,7 +58,7 @@ router.post("/editanonse", async (req, res) => {
     
 })
 router.get('/addview', (req, res)=>{
-    res.render("addorEditannonse", {
+    res.render("addoreditannonse", {
         action:"/anonse/addanonse",
         viewTitle:"Dodaj ogłoszenie"
         
@@ -69,7 +69,7 @@ router.get('/addview', (req, res)=>{
        if(anons){
         console.log(anons);
             
-        res.render("addorEditannonse", {
+        res.render("addoreditannonse", {
             action:"/anonse/editanonse",
             viewTitle:"Edytuj ogłoszenie",
             Anonse:anons

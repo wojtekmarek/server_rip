@@ -11,7 +11,7 @@ router.get("/sendquaterdetail", async (req, res) => {
 router.get("/list", (req, res) => {
     showlist(req,res);
    })
-   router.get("/addOrEdit", async (req, res) => {
+   router.get("/addoredit", async (req, res) => {
    showadd(req,res);
     
    })

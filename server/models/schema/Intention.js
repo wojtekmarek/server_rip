@@ -132,7 +132,7 @@ showedit:function(req,res){
       console.log(docs);
       console.log(docs[0].massdate[0]);
     
-     res.render("addOrEditIntention",{
+     res.render("addoreditIntention",{
       viewTitle:"Edycja Intencji",
        action:"/inten/update",
        Intention:docs[0],

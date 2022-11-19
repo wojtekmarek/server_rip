@@ -72,7 +72,7 @@ async function showedit(req,res){
             OvnerRip.find((err,listu)=>{
                 if (!err) {
                     
-                    res.render("addOrEditgrave", {
+                    res.render("addoreditgrave", {
                     viewTitle: "Zaktualizuj dane kwatery",
                     action:"/gravequarters/addtomongobase",
                     GraveQuarters: doc,
@@ -135,7 +135,7 @@ async function showadd(req,res)
         if (!err) {
            
      //      console.log(listidenable);
-            res.render("addOrEditgrave", {
+            res.render("addoreditgrave", {
                 viewTitle: "Dodaj kwatere",
                 action:"/gravequarters/addtomongobase",
                 listu: listu,
