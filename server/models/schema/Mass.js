@@ -32,7 +32,7 @@ const MassSchema = new mongoose.Schema({
           console.log(doc.Date);
           console.log(doc.Time);
           console.log(today)
-         res.render("Number_enable_intensionsditmass",{
+         res.render("addoreditmass",{
            action:"/mass/addtodb",
            Mass:doc,
            today:today
@@ -67,7 +67,7 @@ const MassSchema = new mongoose.Schema({
        })
   },
   showadd:function (req,res){
-    res.render("Number_enable_intensionsditmass",{
+    res.render("addoreditmass",{
          action:"/mass/addtodb",
          
     });

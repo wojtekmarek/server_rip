@@ -2,7 +2,11 @@
 const res = require("express/lib/response");
 const mongoose = require("mongoose");
 const {OvnerRip} = require("./OvnerRip");
-
+//lista wszystkich kwater
+var listallid= [];          
+            for(let i=0;i <185; i++){
+                listallid.push(i+1);
+            }
 
 const GraveQuartersSchema = new mongoose.Schema({
     IdGraveQuaters:{type: Number, required:true},
@@ -18,7 +22,47 @@ const GraveQuartersSchema = new mongoose.Schema({
    })
    const GraveQuarters= mongoose.model("GraveQuarters", GraveQuartersSchema);
    const{Burial}= require("./Burials");
-   function insert(req, res) {
+const quarter = require("mout/date/quarter");
+   const GraveController={
+    addburialls:function(req,res){
+
+    if(req==undefined)
+{
+    GraveQuarters.find({},'IdGraveQuaters NumberenableUrnBurials NumberenableTraditionalBurials'
+    +' NumberUrnBurials NumberTraditionalBurials',(err,doc)=>{
+        if (!err) {
+            res.render("addburial", {
+                viewTitle: "Dodaj pochówek",
+                action:"/burial/addtomongobase",                
+                addingviaquarters:false,
+                addingvianewburial:true,
+                GraveQuarters: doc});
+           
+           
+           
+        }else{
+            console.log("Błąd pobierania danych user" + err);}
+    });
+
+
+}else{
+    GraveQuarters.findById(req,'IdGraveQuaters NumberenableUrnBurials'
+    +' NumberenableTraditionalBurials NumberUrnBurials NumberTraditionalBurials',(err,doc)=>{
+        if (!err) {
+            res.render("addBurial", {
+                viewTitle: "Dodaj pochówek",
+                action:"/burial/addtomongobase",                
+                addingviaquarters:true,
+                addingvianewburial:false,
+                GraveQuarters: doc});
+           
+           
+           
+        }else{
+            console.log("Błąd pobierania danych user" + err);}
+    });
+}},
+insert:function (req, res) {
 
     //console.log("adquater"+req.body.IdGraveQuaters);
     var gravequarter = new GraveQuarters()
@@ -40,9 +84,8 @@ const GraveQuartersSchema = new mongoose.Schema({
     console.log("Błąd podczas dodawania GraveQuarters: " + err)
     }
     })
-   }
-
-   function update(req, res) {
+   },
+   update:function (req, res) {
     console.log("updatequater");
     console.log(req.body);
     req.body.DatePayment=new Date(req.body.DatePayment.split("-").reverse().join("-")+"T14:48:00.000+09:00");
@@ -58,8 +101,8 @@ const GraveQuartersSchema = new mongoose.Schema({
     }
     }
     )
-}
-async function showedit(req,res){
+},
+showedit:async function (req,res){
    
     GraveQuarters.findById(req.params.id, (err, doc) => {
        
@@ -90,25 +133,23 @@ async function showedit(req,res){
                     }
             })
         }})
-}
-async function showadd(req,res)
+},
+showadd:async function (req,res)
 
 {    
     GraveQuarters.find({}, {IdGraveQuaters:1, _id:0},(err, docs) => {
         if (!err) {
             
             var listid=[];
-           var listallid= [];
-           var listidenable=[];           
-            for(let i=0;i <150; i++){
-                listallid.push(i+1);
-            }
+           var listidenable=[]; 
+           
             docs.forEach(x =>{
                 listid.push(x.IdGraveQuaters);
                 
             });      
-            listid.sort();           
-            //console.log(listid);   
+            listid.sort(function(a, b){return a-b});           
+            //console.log(listid);  
+            //console.log(typeof listid[0]);  
           //  console.log(listid.length); 
             
      var k=0;
@@ -134,7 +175,7 @@ async function showadd(req,res)
     OvnerRip.find((err,listu)=>{
         if (!err) {
            
-     //      console.log(listidenable);
+         console.log(listidenable);
             res.render("addoreditgrave", {
                 viewTitle: "Dodaj kwatere",
                 action:"/gravequarters/addtomongobase",
@@ -155,8 +196,8 @@ async function showadd(req,res)
     })
             
 }})
-}
-async function deletegrave(reg,res)
+},
+deletegrave:async function (reg,res)
 {
     GraveQuarters.findByIdAndRemove(req.params.id, (err, doc) => {
         if (!err) {
@@ -165,19 +206,20 @@ async function deletegrave(reg,res)
         console.log("Błąd podczas usuwania: " + err)
         }
         })
-}
-async function showlist(req,res){
-   
-    OvnerRip.find((err,listu)=>{
-        if (!err) {
-            //console.log("ok");
-        }});
-   
+},
+showlist:async function (req,res){ 
     
    
     GraveQuarters.find((err, docs) => {
         if (!err) {
-           
+           docs.forEach(element=>{
+                if(element.Payment==true)
+                    {
+                        element.PaymentString="Tak";
+                    }else{
+                        element.PaymentString="Nie";
+                    }
+                    })
              res.render("listgrave", {
              list: docs,
              
@@ -188,36 +230,53 @@ async function showlist(req,res){
         console.log("Błąd pobierania danych /gravequarters/list" + err)
         }
         })
-}
-function checkburial(req,res){
+},
+checkburial:function (req,res){
     console.log("in check gravelist");
     GraveQuarters.find((err, docs) => {
         if (!err) {
-             var  listtosend=[];
-             var i=0;
+             var  listquaterwithburial=[];
+             var listtosend=[];
+             var index=0;
+             
+            
+             //uzyskanie kwater ktore maja pochowki
             docs.forEach(element => {
                 //console.log(Number(element.NumberUrnBurials));
                // console.log( Number(element.NumberTraditionalBurials));
                 if(Number(element.NumberUrnBurials)>0 || Number(element.NumberTraditionalBurials)>0){
-                    listtosend[i]=true;
-                    i++;
+                    listquaterwithburial.push(element.IdGraveQuaters);
+                    
 
-                }else{
-                    listtosend[i]=false;
-                    i++;
                 }
                 
+                
             });
-            console.log(typeof docs);
-             res.send(listtosend);
+            //console.log(listquaterwithburial);
+            listquaterwithburial.sort(function(a, b){return a-b});
+            console.log(listquaterwithburial);
+           // console.log(typeof docs);
+           //ustawienie flag dla kwater
+          for(i=1;i<=listallid.length;i++)
+          {
+            if(i==listquaterwithburial[index])
+            {   listtosend[i-1]=true;
+               
+                index++
+            }else{
+                listtosend[i-1]=false;
+            }
+          }
+          console.log(listtosend);
+           res.send(listtosend);
             
            
         } else {
             res.status(500).send({ message: "Blad serwera nie pobrano listy grobow" });
         }
         })
-}
-const findnotpay= async ()=>
+},
+findnotpay:function async ()
 {
     return new Promise((resolve, reject) => {
     let now= new Date();
@@ -242,8 +301,8 @@ const findnotpay= async ()=>
    resolve(err);
    }
    })})
-}
-async function setnotpay(){
+},
+setnotpay:async function (){
     let now= new Date();
     
     GraveQuarters.find({ //query today up to tonight
@@ -263,8 +322,8 @@ async function setnotpay(){
    console.log("Błąd pobierania danych /gravequarters/list" + err)
    }
    })
-}
-function sendquaterdetails(req,res){
+},
+ sendquaterdetails:function(req,res){
   
     GraveQuarters.find({IdGraveQuaters:req}, (err, doc) => {
         if (!err) {
@@ -295,5 +354,20 @@ function sendquaterdetails(req,res){
    console.log("Błąd pobierania danych /gravequartersdetail" + err);
    }
     })
+   
 }
-   module.exports={GraveQuarters,GraveQuartersSchema,update,sendquaterdetails,insert,showadd,showedit,deletegrave,showlist,checkburial,findnotpay,setnotpay}
+
+}
+   
+
+   
+
+
+
+
+
+
+
+
+
+   module.exports={GraveQuarters,GraveQuartersSchema,GraveController}

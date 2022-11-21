@@ -6,6 +6,8 @@ const pblPrivateKey = process.env.PBL_PRIVATE_KEY;
 const notifyURL = process.env.NOTIFYURL;
 const crypto = require('crypto');
 const axios = require('axios');
+const { response } = require("../../server");
+const res = require("express/lib/response");
 
 const PaymentSchema= new mongoose.Schema({
     
@@ -17,7 +19,8 @@ const PaymentSchema= new mongoose.Schema({
     GraveQuarters :{type: Schema.Types.ObjectId, ref: 'GraveQuartersSchema'},
     Order:{type: Schema.Types.ObjectId, ref: 'OrderSchema'},
     User:{type: Schema.Types.ObjectId, ref: 'UserSchema'},   
-    Transacion:{type: String}, 
+    Transacionid:{type: String,default:""}, 
+    Signature:{type: String,default:""},
     created_at: { type: Date, required: true, default: Date.now }
 
 
@@ -122,11 +125,28 @@ const PaymentSchema= new mongoose.Schema({
                       })
                       })
             },
+        addtrasactionid:function(idpayment,idtransacion,userid,signature,url,res){
+          Payment.findOneAndUpdate(
+            { _id: idpayment },
+            { 
+              Status:"Oczekująca na płatność",       
+              User:userid,   
+              Transacionid:idtransacion,
+              Signature:signature },
+            (err, doc) => {
+            if (!err) {
+              res.redirect(url);
+            } else {
+            console.log("Błąd podczas aktualizowania danych: " + err)
+            }
+            }
+            )
+        },
         transacionsend: async function(req,res){
          /* console.log(returnUrlSuccessbackend);
           console.log(shopId);
           console.log(notifyURL);*/
-          console.log(pblPrivateKey);
+         // console.log(pblPrivateKey);
             
             
             
@@ -140,7 +160,7 @@ const PaymentSchema= new mongoose.Schema({
             };
             //haszowanie 
             const string = `${pblPrivateKey}|${Object.values(transactionData).join('|')}`;
-           console.log(string);
+           //console.log(string);
             const  signature= crypto.createHash('sha256')
             .update(string, 'utf-8').digest('hex');
 
@@ -153,9 +173,9 @@ const PaymentSchema= new mongoose.Schema({
               returnUrlSuccessTidPass: true,
               signature:signature
             };
-          console.log(transactionData);
-          console.log(transactionData1);
-          console.log(signature);
+        //  console.log(transactionData);
+        //  console.log(transactionData1);
+       //   console.log(signature);
           
             axios.post('https://secure.paybylink.pl/api/v1/transfer/generate',transactionData1, {
               headers: {
@@ -164,9 +184,12 @@ const PaymentSchema= new mongoose.Schema({
               
               
           
-          }).then(data => {
+          }).then(response => {
              
-              console.log(data.data);
+              console.log(response.data.transactionId);
+              
+              this.addtrasactionid(req.Payment_id,response.data.transactionId,req.User_id,signature,response.data.url,res);
+             
                 ///usunac nawias
                 //zapis do bazy danych transacion id i przekierowanie na strone platnosci
           })
@@ -188,6 +211,15 @@ const PaymentSchema= new mongoose.Schema({
             })
           */
         
-        }
+        },
+      notificationpayment:function(req,res)
+      {
+        console.log(req.data);
+        res.status(200);
+        res.set('Content-Type', 'text/plain');
+        res.send("OK");
+     
+      }
+
    };
    module.exports={Payment,PaymentSchema,PaymentController}

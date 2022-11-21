@@ -69,6 +69,7 @@
          var gravetraditional=Number(burialyrn.graveenabletraditional)-(Number(burialyrn.gravetraditional))
         //console.log(graveurn);
        // console.log(gravetraditional);
+       //sprawdzenie dostepnych pochowkow 
         if(graveurn==0 )
         {   if(gravetraditional==0 )
              {
@@ -125,6 +126,11 @@
                     +'value="'+burial.LastNamedeceased+'" required pattern="[A-Z]{1}[a-z]{2,99}">'
                     +'</div>'
                     +selecttypeofgrave
+                       +' <div class="form-group">'
+                    +'<label>Data Urodzenia(dzień-miesiąc-rok)</label>'
+                    +'<input type="text" class="form-control" name="DateOfBirth"  pattern="'+rexdate+'"'+'placeholder="'+burial.DateOfBirthString+'"'
+                    +'value="'+burial.DateOfBirthString+'" required>'
+                    +'</div>'
                     +' <div class="form-group">'
                     +'<label>Data śmierci(dzień-miesiąc-rok)</label>'
                     +'<input type="text" class="form-control" name="DateOfDeath"  pattern="'+rexdate+'"'+'placeholder="'+burial.DateOfDeath+'"'

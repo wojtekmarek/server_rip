@@ -20,7 +20,12 @@ async function showlist(req,res){
     
     Exhumation .find((err, docs) => {
         if (!err) {
-           
+           console.log(docs[0]);
+           docs.forEach(element => {
+            element.DateExhumationString=element.DateExhumation.toISOString().slice(0,10).split("-").reverse().join("-");
+            element.DatereburialString=element.Datereburial.toISOString().slice(0,10).split("-").reverse().join("-");
+            
+           });
              res.render("listexumation", {
              list: docs,
              

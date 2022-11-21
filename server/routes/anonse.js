@@ -26,7 +26,7 @@ router.get('/list', async(req, res)=>{
             
             //console.log( dateevent.toString().slice(0,10).split("-").reverse().join("-"));
         });
-        console.log(anonselist[0]);
+       // console.log(anonselist[0]);
         res.render("listanonse", {
             list: anonselist,
             
@@ -52,8 +52,8 @@ router.post("/addanonse", async (req, res) => {
     
 })
 router.post("/editanonse", async (req, res) => { 
-    console.log("ieditanonse");
-    console.log(req.body);
+   // console.log("ieditanonse");
+  //  console.log(req.body);
         update(req.body, res);
     
 })
@@ -67,7 +67,7 @@ router.get('/addview', (req, res)=>{
     router.get('/editview/:id', async(req, res)=>{
         var anons= await getanonse(req.params.id)
        if(anons){
-        console.log(anons);
+        //console.log(anons);
             
         res.render("addoreditannonse", {
             action:"/anonse/editanonse",

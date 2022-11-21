@@ -56,13 +56,13 @@ async function insert(req, res) {
  }
  async function update(req, res) {
   var id=req._id;
-  console.log(id);
+ // console.log(id);
    //     console.log(req.date);
         let time_to_conwert=req.date.split("-").reverse().join("-")+"T14:48:00.000+09:00";
         const date = new Date(time_to_conwert);
         const datecreate=new Date(req.created_at);
         var anonse={title:req.title,annonse:req.annonse,status:req.status,time_event:date,created_at:datecreate};
-         console.log(anonse);
+         //console.log(anonse);
 
   try {
    

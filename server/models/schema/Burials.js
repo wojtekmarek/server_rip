@@ -1,11 +1,14 @@
 const mongoose = require("mongoose");
 var Schema= mongoose.Schema;
 const {GraveQuarters}=require("./GraveQuarters")
+
+
 const BurialSchema = new mongoose.Schema({
     
     Burialtype:{type: String , enum:["Tradycyjny","Urnowy"], required:true},
     Namedeceased:{type: String, required:true},
-    LastNamedeceased:{type: String, required:true},    
+    LastNamedeceased:{type: String, required:true},  
+    DateOfBirth:{type:Date, required:true},  
     DateOfDeath:{type:Date, required:true},
     DateBurial:{type:Date, required:true},
     GraveQuaters:{type: Schema.Types.ObjectId, ref: 'GraveQuartersSchema', required:true},
@@ -22,6 +25,8 @@ const BurialSchema = new mongoose.Schema({
             docs.forEach(docs => {
                 docs.DateOfDeathstring=docs.DateOfDeath.toISOString().slice(0,10).split("-").reverse().join("-");
             docs.DateBurialstring=docs.DateBurial.toISOString().slice(0,10).split("-").reverse().join("-");
+            docs.DateOfBirthString=docs.DateOfBirth.toISOString().slice(0,10).split("-").reverse().join("-");
+            //console.log(docs._id+"  "+docs.DateOfBirth);
             });
             
              res.render("listburial", {
@@ -49,6 +54,8 @@ const BurialSchema = new mongoose.Schema({
 
              doc.DateOfDeathstring=doc.DateOfDeath.toISOString().slice(0,10).split("-").reverse().join("-");
              doc.DateBurialstring=doc.DateBurial.toISOString().slice(0,10).split("-").reverse().join("-");
+             doc.DateOfBirthString=doc.DateOfBirth.toISOString().slice(0,10).split("-").reverse().join("-");
+             console.log(doc.DateOfBirthString);
              res.render("editBurial", {
                 viewTitle: "Edytuj pochówek",
                 action:"/burial/addtomongobase",               
@@ -61,44 +68,9 @@ const BurialSchema = new mongoose.Schema({
 }
 async function showadd(req,res){
     //console.log(req);
-    if(req==undefined)
-    {
-        GraveQuarters.find({},'IdGraveQuaters NumberenableUrnBurials NumberenableTraditionalBurials'
-        +' NumberUrnBurials NumberTraditionalBurials',(err,doc)=>{
-            if (!err) {
-                res.render("addBurial", {
-                    viewTitle: "Dodaj pochówek",
-                    action:"/burial/addtomongobase",                
-                    addingviaquarters:false,
-                    addingvianewburial:true,
-                    GraveQuarters: doc});
-               
-               
-               
-            }else{
-                console.log("Błąd pobierania danych user" + err);}
-        });
-
-
-    }else{
-        GraveQuarters.findById(req,'IdGraveQuaters NumberenableUrnBurials'
-        +' NumberenableTraditionalBurials NumberUrnBurials NumberTraditionalBurials',(err,doc)=>{
-            if (!err) {
-                res.render("addBurial", {
-                    viewTitle: "Dodaj pochówek",
-                    action:"/burial/addtomongobase",                
-                    addingviaquarters:true,
-                    addingvianewburial:false,
-                    GraveQuarters: doc});
-               
-               
-               
-            }else{
-                console.log("Błąd pobierania danych user" + err);}
-        });
-    }
+    const{GraveController}=require("./GraveQuarters")
+    GraveController.addburialls(req,res);
     
-   
 }
 async function showlistclient(req,res){
     res.send("W opracowaniu");
@@ -118,7 +90,8 @@ async function updatecountburial(req,res){
     {
         addburiall={NumberUrnBurials: Number(gravedata.graveurn)+1};
     }else{console.log("Error checking the type of burial " + err);}
-    console.log(addburiall);
+    console.log(addburiall); 
+    const {GraveQuarters}=require("./GraveQuarters")
    GraveQuarters.findOneAndUpdate(
         { _id: gravedata._id },
         addburiall,
@@ -138,7 +111,8 @@ function update(req, res) {
     //console.log(req.body);
     var updatedata={Namedeceased: req.body.Namedeceased,
     LastNamedeceased: req.body.LastNamedeceased,
-    DateBurial: new Date(req.body.DateBurial.split("-").reverse().join("-")+"T14:48:00.000+09:00")
+    DateBurial: new Date(req.body.DateBurial.split("-").reverse().join("-")+"T14:48:00.000+09:00"),
+    DateOfBirth: new Date(req.body.DateOfBirth.split("-").reverse().join("-")+"T14:48:00.000+09:00")
 }
 //console.log(updatedata);
     Burial.findOneAndUpdate(
@@ -159,8 +133,10 @@ async function insert(req,res){
   //console.log(req.GraveQuartersnumber._id);
   let conwert_DateOfDeath=req.DateOfDeath.split("-").reverse().join("-")+"T14:48:00.000+09:00";
   let conwert_DateBurial=req.DateBurial.split("-").reverse().join("-")+"T14:48:00.000+09:00";
+  let conwert_DateOfBirth=req.DateOfBirth.split("-").reverse().join("-")+"T14:48:00.000+09:00";
   const DateOfDeath = new Date(conwert_DateOfDeath);
   const DateBurial =new Date(conwert_DateBurial);
+  const DateOfBirth =new Date(conwert_DateOfBirth);
   const gravedata=JSON.parse(req.GraveQuartersnumber);
 
     var burial = new Burial()
@@ -169,6 +145,7 @@ async function insert(req,res){
     burial.LastNamedeceased=req.LastNamedeceased;
     burial.DateOfDeath=DateOfDeath;
     burial.DateBurial=DateBurial;
+    burial.DateOfBirth=DateOfBirth;
     burial.GraveQuaters=gravedata._id;
     burial.GraveQuartersnumber= gravedata.id;
     

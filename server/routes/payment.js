@@ -17,5 +17,9 @@ router.get("/detail/:id",(req,res)=>{
     console.log(req.body);
    PaymentController.transacionsend(req.body,res);
    })
+   router.post("/paypaymantnotyfication", (req, res) => {
+    console.log(req.body);
+   PaymentController.notificationpayment(req.body,res);
+   })
 
 module.exports = router
