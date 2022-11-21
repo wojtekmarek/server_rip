@@ -154,8 +154,10 @@ const PaymentSchema= new mongoose.Schema({
               shopId,
               price: parseFloat( req.Amount).toFixed(2),
               control: `Payment_id:"${req.Payment_id}"`,
+              notifyURL:notifyURL,
               returnUrlSuccess:returnUrlSuccessbackend, 
               returnUrlSuccessTidPass: true
+              
               
             };
             //haszowanie 
@@ -169,6 +171,7 @@ const PaymentSchema= new mongoose.Schema({
               shopId,
               price: parseFloat( req.Amount).toFixed(2),
               control: `Payment_id:"${req.Payment_id}"`,
+              notifyURL:notifyURL,
               returnUrlSuccess:returnUrlSuccessbackend, 
               returnUrlSuccessTidPass: true,
               signature:signature
