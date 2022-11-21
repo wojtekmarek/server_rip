@@ -18,7 +18,7 @@ router.get("/detail/:id",(req,res)=>{
    PaymentController.transacionsend(req.body,res);
    })
    router.post("/paypaymantnotyfication", (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
    PaymentController.notificationpayment(req.body,res);
    })
 

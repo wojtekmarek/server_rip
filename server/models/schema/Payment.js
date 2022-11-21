@@ -165,7 +165,7 @@ const PaymentSchema= new mongoose.Schema({
            //console.log(string);
             const  signature= crypto.createHash('sha256')
             .update(string, 'utf-8').digest('hex');
-
+            console.log(signature);
             
             const transactionData1 = {
               shopId,
@@ -189,34 +189,34 @@ const PaymentSchema= new mongoose.Schema({
           
           }).then(response => {
              
-              console.log(response.data.transactionId);
+              //console.log(response.data.transactionId);
               
               this.addtrasactionid(req.Payment_id,response.data.transactionId,req.User_id,signature,response.data.url,res);
              
-                ///usunac nawias
-                //zapis do bazy danych transacion id i przekierowanie na strone platnosci
+ 
           })
-          /*
-              if (transactionId) {
-                fs.writeFileSync(`${uploadsPath}/${transactionId}`, 'registered');
-                res.status(200).json({
-                  transactionId,
-                  url
-                });
-              } else {
-                res.status(404).send('transaction went through but there was some other issue');
-              }
-            }, ({response}) => {
-              console.log(`transaction for clientId: ${clientId} - ${response.status} ${response.statusText} `);
-              res.status(response.status).send(response.statusText);
-             
-              
-            })
-          */
+       
         
         },
       notificationpayment:function(req,res)
-      {
+      { 
+       /* var transactionData={
+          transactionId:req.transactionId ,
+          control: req.control,
+          email:req.email ,
+          amountPaid: req.amountPaid,
+          notificationAttempt:req.notificationAttempt,
+          paymentType: req.paymentType,
+          apiVersion: req.apiVersion, 
+          signature:req.signature
+              
+        }
+        var string = `${pblPrivateKey}|${Object.values(transactionData).join('|')}`;
+      console.log(string);
+       var  signature= crypto.createHash('sha256')
+       .update(string, 'utf-8').digest('hex');
+       console.log(signature);*/
+       console.log(req.signature);
         console.log(req.data);
         res.status(200);
         res.set('Content-Type', 'text/plain');
