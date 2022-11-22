@@ -8,27 +8,28 @@ const templatemailreminders=require("../../templates/tempMail.json")
 
 function sendone (req,res){
   console.log(req);
+ 
     var email=req.email;
-    var daypayment=req.datapayment;
-    var numergrave=req.idquater;
+    var daypayment=req.datepayment;
+    var numergrave=req.id;
   // ewentualnie link
-  console.log(email);
+ /* console.log(email);
   console.log(daypayment);
   console.log(numergrave);
-    console.log('check data smtp');
+   console.log('check data smtp');
     console.log(API_USER);
     console.log(API_PASS);
     console.log(templatemailreminders.Template.SubjectPart);
-    console.log(templatemailreminders.Template.HtmlPart);
-    /*//res.status(500).send({ message: "Blad serwera wysyłki email" });
+    console.log(templatemailreminders.Template.HtmlPart);*/
+    
     const transporter = nodemailer.createTransport({
      
      host: "smtp.gmail.com.",
       port: 587,
-      secure: false, // true for 465, false for other ports
+      secure: false, 
       auth: {
-        user: API_USER,// API_USER, // generated ethereal user
-        pass: API_PASS//API_PASS // generated ethereal password
+        user: API_USER,
+        pass: API_PASS
         
       }
     });
@@ -39,8 +40,21 @@ function sendone (req,res){
       subject: templatemailreminders.Template.SubjectPart,
       html:templatemailreminders.Template.HtmlPart
       
-    });
-    */
+    },{numergrave:id,
+        daypayment:daypayment},function(error, info){
+      if(error){
+        res.status(502);
+        res.set('Content-Type', 'text/plain');
+        res.send("Not send");
+      }else{
+        res.status(200);
+        res.set('Content-Type', 'text/plain');
+        res.send("OK");
+        console.log('Message sent: ' + info.response);
+      }
+     
+  });
+ 
   }
 
   module.exports={sendone};

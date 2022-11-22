@@ -6,6 +6,7 @@ const pblPrivateKey = process.env.PBL_PRIVATE_KEY;
 const notifyURL = process.env.NOTIFYURL;
 const crypto = require('crypto');
 const axios = require('axios');
+const bcrypt=require("bcrypt")
 const { response } = require("../../server");
 const res = require("express/lib/response");
 
@@ -153,7 +154,7 @@ const PaymentSchema= new mongoose.Schema({
             const transactionData = {
               shopId,
               price: parseFloat( req.Amount).toFixed(2),
-              control: `Payment_id:"${req.Payment_id}"`,
+             // control: `Payment_id:"${req.Payment_id}"`,
               notifyURL:notifyURL,
               returnUrlSuccess:returnUrlSuccessbackend, 
               returnUrlSuccessTidPass: true
@@ -170,7 +171,7 @@ const PaymentSchema= new mongoose.Schema({
             const transactionData1 = {
               shopId,
               price: parseFloat( req.Amount).toFixed(2),
-              control: `Payment_id:"${req.Payment_id}"`,
+             // control: `Payment_id:"${req.Payment_id}"`,
               notifyURL:notifyURL,
               returnUrlSuccess:returnUrlSuccessbackend, 
               returnUrlSuccessTidPass: true,
@@ -198,29 +199,69 @@ const PaymentSchema= new mongoose.Schema({
        
         
         },
+        setpaystatus:function(doc){
+          switch(doc.Title){
+            case"Intencja":
+            const {IntentionController}=require("./Intention");
+            IntentionController.setpaystatus(doc.Intention,true);
+            
+            break;
+            case"Usługa":
+            break;
+            case "Kwatera":
+            break;
+            default:console.log("something wrong setstatus cant read title");
+          }
+        },
       notificationpayment:function(req,res)
       { 
-       /* var transactionData={
+
+       /* //sprawdzenie sygnatury
+        var transactionData={
           transactionId:req.transactionId ,
           control: req.control,
-          email:req.email ,
+          email:req.email,
           amountPaid: req.amountPaid,
           notificationAttempt:req.notificationAttempt,
           paymentType: req.paymentType,
           apiVersion: req.apiVersion, 
-          signature:req.signature
               
         }
+        bcrypt.compareSync("string",req.signature)
         var string = `${pblPrivateKey}|${Object.values(transactionData).join('|')}`;
       console.log(string);
-       var  signature= crypto.createHash('sha256')
-       .update(string, 'utf-8').digest('hex');
-       console.log(signature);*/
+       var  signature= crypto.createHash('sha256').update(string).digest('hex');
+      
+       console.log(signature);
        console.log(req.signature);
-        console.log(req.data);
+        console.log(bcrypt.compareSync(string,req.signature));
+        if(signature==req.signature){
+          //wkleić kod poniżej komentarza
+        }else{
+          
+       console.log(signature==req.signature);
         res.status(200);
         res.set('Content-Type', 'text/plain');
         res.send("OK");
+        }
+*/
+     
+      
+        res.status(200);
+        res.set('Content-Type', 'text/plain');
+        res.send("OK");
+        Payment.findOneAndUpdate(
+          {Transacionid:req.transactionId},
+          {Status:"Opłacona"},
+          (err, doc) => {
+          if (!err) {
+            console.log(doc);
+            this.setpaystatus(doc);
+          } else {
+          console.log("Błąd podczas aktualizowania danych: " + err);
+          }
+          });
+    
      
       }
 

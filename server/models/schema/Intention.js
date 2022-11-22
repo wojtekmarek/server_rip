@@ -169,6 +169,20 @@ update:function(req,res){
   }
   })
 
+},
+setpaystatus:function(id,status){
+  var idO=ObjectId(id);
+  Intention.findByIdAndUpdate(
+    {_id:idO},
+    {Paid_Off:status},
+    (err, doc) => {
+    if (!err) {
+      console.log(doc);
+     
+    } else {
+    console.log("Błąd podczas aktualizowania danych: " + err);
+    }
+    });
 }
 }
    module.exports={IntentionShema,Intention,IntentionController};

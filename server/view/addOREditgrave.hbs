@@ -76,7 +76,7 @@
  <a class="btn btn-secondary" href="/gravequarters/list">Pokaz listę</a>
  <a  type="button" id="addburial" class="btn btn-dark" style="display:none" href="/burial/addoredit/?id={{GraveQuarters._id}}" >Dodaj pochówek do kwatery</a>
  <a  type="button" id="createexumation" style="display:none" class="btn btn-danger" href='/exhumation/add/?name=grave&&id={{GraveQuarters._id}}' >Dodaj Eksumacje do pochówku</a>
- <a  type="button" id="sendnotyfication" onclick="return confirm('Czy napewno chcesz wysłać email z przymomnieniem?');"style="display:none" class="btn btn-warning" href="/mail/sendsingleviaquater/?id={{GraveQuarters.IdGraveQuaters}}&&email={{GraveQuarters.ovnerripid}}&&datepayment={{GraveQuartersdate}}" >Wyślij przypomnienie o płatności</a>
+ <button  type="button" id="sendnotyfication"  style="display:none" class="btn btn-warning" >Wyślij przypomnienie o płatności</button>
  </div>
 </form>
 
@@ -90,6 +90,34 @@
       document.getElementById("addburial").style.display="none";
     }
   }
+  function sendnotyfication(){
+var id={{GraveQuarters.IdGraveQuaters}};
+var email="{{GraveQuarters.ovnerripid}}";
+var datepayment="{{GraveQuartersdate}}";
+    axios.get('/mail/sendsingleviaquater',{
+
+   params: {
+    
+    id:id,
+   email:email,
+   datepayment:datepayment
+  
+   } })
+        .then(response => {
+           console.log(response); 
+           alert("wiadomość wysłana");
+        })
+        .catch((err) => {
+            if(err.response.status==502){
+                //console.log("kkkkkk");
+                alert("Niestety nie udało się wysłać maila  spróbuj ponownie za chwile... ");
+            }else{
+                alert("Niestety nie udało się wysłać maila  spróbuj ponownie za chwile... ");
+                 console.log(err);
+                 }
+            })
+
+  }
   function checkvisiblenotyfication(){
     var now=new Date();
     var weekago= new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7);
@@ -99,7 +127,9 @@
     if(payday < weekago)
     {
       console.log("send notyfication is visible");
+      
        document.getElementById("sendnotyfication").style.display="block";
+       document.getElementById("sendnotyfication").addEventListener("click",sendnotyfication);
     }
   }
   function checkvisibleexumation(){
@@ -120,4 +150,5 @@
 });
   
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"></script>
     
