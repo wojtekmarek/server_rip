@@ -40,7 +40,7 @@ function sendone (req,res){
       subject: templatemailreminders.Template.SubjectPart,
       html:templatemailreminders.Template.HtmlPart
       
-    },{numergrave:id,
+    },{numergrave:numergrave,
         daypayment:daypayment},function(error, info){
       if(error){
         res.status(502);
