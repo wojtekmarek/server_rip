@@ -14,13 +14,31 @@ const ExhumationSchema = new mongoose.Schema({
 const Exhumation = mongoose.model("Exhumation", ExhumationSchema);
 
 
+const ExumationController={
+    getdataforclient:function(req,res){
+        Exhumation.find({Burial:req},(err, doc) => {
+            if (!err) {
+                if(doc[0]!=undefined){
+                    res.status(200);
+                    res.send(doc);
+                }else{
+                    res.status(404);
+                    res.send("Pochówki klienta nie mają exhumacji");
+                }
+            }else{
+                res.status(500);
+                res.send("Bład pobierania exumaci dal klient"+err);
+            }
+        })
 
+    }
+}
 
 async function showlist(req,res){
     
     Exhumation .find((err, docs) => {
         if (!err) {
-           console.log(docs[0]);
+           //console.log(docs[0]);
            docs.forEach(element => {
             element.DateExhumationString=element.DateExhumation.toISOString().slice(0,10).split("-").reverse().join("-");
             element.DatereburialString=element.Datereburial.toISOString().slice(0,10).split("-").reverse().join("-");
@@ -176,4 +194,4 @@ async function add(req,res){
 
 }
   
-module.exports={showlist,add,showadd,showedit}
+module.exports={showlist,add,showadd,showedit,ExumationController}

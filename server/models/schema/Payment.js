@@ -7,13 +7,12 @@ const notifyURL = process.env.NOTIFYURL;
 const crypto = require('crypto');
 const axios = require('axios');
 const bcrypt=require("bcrypt")
-const { response } = require("../../server");
-const res = require("express/lib/response");
+
 
 const PaymentSchema= new mongoose.Schema({
     
     Title:{type: String , enum:["Intencja","Kwatera","Usługa"], required:true},
-    Status:{type: String , enum:["Utworzona","Oczekująca na płatność","Opłacona"], required:true},
+    Status:{type: String , enum:["Utworzona","Oczekująca na płatność","Opłacona","Anulowana"], required:true},
     Date_payment:{ type: Date, required: true},
     Amount:{type:Number,require:true},
     Intention:{type: Schema.Types.ObjectId, ref: 'IntentionShema'},
@@ -136,7 +135,7 @@ const PaymentSchema= new mongoose.Schema({
               Signature:signature },
             (err, doc) => {
             if (!err) {
-              res.redirect(url);
+              res.send(url);
             } else {
             console.log("Błąd podczas aktualizowania danych: " + err)
             }
@@ -263,6 +262,89 @@ const PaymentSchema= new mongoose.Schema({
           });
     
      
+      },
+      getdata:function(req){
+        return new Promise((resolve, reject) => {
+          //var id=ObjectId(req);
+          console.log("firstcondisiongetpayment");
+          Payment.findOne({Intention:req},(err, respond) => {
+            if(!err){
+              console.log("firstcondisiongetpayment"+respond);
+              resolve(respond);
+              
+
+            }else{
+              resolve(null);
+            }
+          })
+        })
+      },
+      cancelintencion:function(req){
+        return new Promise((resolve, reject) => {
+          
+          console.log("firstcondisiongetpayment");
+          Payment.findOneAndUpdate({_id:req},{
+            Status:"Anulowana",
+            Intention:null
+          },(err, respond) => {
+            if(!err){
+              
+              resolve(true);
+              
+
+            }else{
+              resolve(false);
+              console.log(err)
+            }
+          })
+        })
+      },
+      updateAmount:function(intencion,amount){
+        return new Promise((resolve, reject) => {
+          
+          console.log("firstcondisionupdateamount");
+          Payment.findOneAndUpdate({Intention:intencion},{
+            Amount:amount
+          },(err, respond) => {
+            if(!err){
+              
+              resolve(true);
+              
+
+            }else{
+              resolve(false);
+              console.log(err)
+            }
+          })
+        })
+      },
+      checkpaymentid:function(req,res){
+        console.log(req);
+        Payment.findOne({Intention:req}, (err, doc) => {
+       //console.log(doc);
+          if (!err) {
+            switch  (doc.Status){
+              case "Opłacona"://ustawic payment of na true
+                res.status(205);
+                res.send("Intencja jest oplacona");
+              break;
+              case "Anulowana"://ustawic payment of na true
+                res.status(204);
+                res.send("Nie możesz opłacić anulowanej intencji");
+                break;
+                default:{res.status(200);
+                res.send(doc);}
+            }
+      
+            
+           
+         
+        }
+          else{
+            res.status(501);
+            res.send("Błąd pobierania danych /payment/checkpaymentid" + err);
+            console.log("Błąd pobierania danych /payment/detail" + err);
+          } });
       }
 
    };

@@ -186,24 +186,24 @@ const OvnerRipSchema = new mongoose.Schema({
         
         return new Promise(async (resolve, reject) => {
         var list={};
-                   //console.log(typeof doc[0]);
+                   //console.log(typeof doc);
                   
                           
                   //console.log(list.burial);
                   //console.log(list);
                
                  
-                  console.log(Object.keys(doc).length);
+                 // console.log(Object.keys(doc).length);
                    for(var i=0;(i+1)<Object.keys(doc).length;i++){
-                    console.log(i);
+                    //console.log(i);
                     
                         if(doc[i].NumberUrnBurials >0 ||doc[i].NumberTraditionalBurials>0)
-                         {   console.log(i +"pobieranie");
+                         {  // console.log(i +"pobieranie");
                         
                             //console.log("szukam pochowkow dla klienta");
                         const check = await findburialtoclientindb(doc[i],i)
                         .then(response=>{
-                            //console.log(response);
+                           // console.log(response);
                             list[i]= Object.assign(
                                 {"_id":doc[i]._id,
                                  "IdGraveQuaters": doc[i].IdGraveQuaters,
@@ -214,7 +214,7 @@ const OvnerRipSchema = new mongoose.Schema({
                                  "NumberTraditionalBurials": doc[i].NumberTraditionalBurials,
                                  "NumberUrnBurials":doc[0].NumberUrnBurials,
                                  "NumberenableTraditionalBurials":doc[i].NumberenableTraditionalBurials,
-                                 "NumberenableUrnBurials":doc[i].NumberenableUrnBurial,
+                                 "NumberenableUrnBurials":doc[i].NumberenableUrnBurials,
                                  "MethodOfPayment":doc[i].MethodOfPayment},
                                 {"Burial":response}
                                 );   
@@ -231,7 +231,7 @@ const OvnerRipSchema = new mongoose.Schema({
                                // return list[i]={"text":"Błąd wyszukiwania pochowku  dla klienta " , err};
                                
                             }else{
-                        console.log(i +"nie trzeba pobieranie");
+                        //console.log(i +"nie trzeba pobieranie");
                       list[i]=Object.assign(
                         {"_id":doc[i]._id,
                         "IdGraveQuaters": doc[i].IdGraveQuaters,
@@ -242,7 +242,7 @@ const OvnerRipSchema = new mongoose.Schema({
                         "NumberTraditionalBurials": doc[i].NumberTraditionalBurials,
                         "NumberUrnBurials":doc[0].NumberUrnBurials,
                         "NumberenableTraditionalBurials":doc[i].NumberenableTraditionalBurials,
-                        "NumberenableUrnBurials":doc[i].NumberenableUrnBurial,
+                        "NumberenableUrnBurials":doc[i].NumberenableUrnBurials,
                         "MethodOfPayment":doc[i].MethodOfPayment},
                         {"Burial":[]}
                         );   
@@ -260,13 +260,15 @@ const OvnerRipSchema = new mongoose.Schema({
         console.log(req);
         const{GraveQuarters}=require("./GraveQuarters");
         
-        GraveQuarters.find({email:req}, async (err, doc) => {
+        GraveQuarters.find({ovnerripid:req}, async (err, doc) => {
             if (!err) {
-            //console.log(doc);
+            console.log(doc);
           
                 if(doc[0]!=undefined){
                   const listtosend=await findburialtoclient(doc)
-                  .then(response=>{res.send(response);})
+                  .then(response=>{
+                    
+                    res.send(response);})
                     
                 }else{
                     res.status(404);

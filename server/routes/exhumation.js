@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const{showlist}=require("../models/schema/Exhumation")
-const{showadd,add,showedit}=require("../models/schema/Exhumation");
+const{showadd,add,showedit,ExumationController}=require("../models/schema/Exhumation");
 
 
 
@@ -20,11 +20,20 @@ const{showadd,add,showedit}=require("../models/schema/Exhumation");
    
     showedit(req.query,res);
    })
+   
+   router.get("/getdataexhumationforclient", (req, res) => {
+    console.log(req.query);
+    ExumationController.getdataforclient(req.query.listidburial,res);
+  // console.log(req.body.data);
+   
+  
+   })
 
    router.post("/addtomongobase", (req, res) => {
     //console.log(req.body);   
     add(req.body,res);
    })
+
 
    
 

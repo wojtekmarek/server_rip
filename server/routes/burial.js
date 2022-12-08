@@ -1,7 +1,10 @@
 const router = require("express").Router();
-const{update,insert,showadd,showedit,showlist,showlistclient,findburial,burialexhumation}=require("../models/schema/Burials")
+const{BurialControler,update,insert,showadd,showedit,showlist,showlistclient,burialexhumation}=require("../models/schema/Burials")
 
-
+router.get("/serchforclient", (req, res) => {
+    //console.log(req);
+    BurialControler.serchforclient(req.query,res);
+   })
     router.get("/list", (req, res) => {
     showlist(req,res);
    })
@@ -12,6 +15,15 @@ const{update,insert,showadd,showedit,showlist,showlistclient,findburial,burialex
     showadd(req.query.id,res);
     
    })
+ 
+   router.get("/:id", (req, res) => {
+    showedit(req,res);
+   })
+
+   router.get("/listclient", (req, res) => {
+    showlistclient(req,res);
+   })
+   
    router.post("/addtomongobase", (req, res) => {
     console.log(req.body);
     
@@ -25,16 +37,6 @@ const{update,insert,showadd,showedit,showlist,showlistclient,findburial,burialex
     update(req, res);
     }
 
-   })
-   router.get("/:id", (req, res) => {
-    showedit(req,res);
-   })
-
-   router.get("/listclient", (req, res) => {
-    showlistclient(req,res);
-   })
-   router.get("/findburial", (req, res) => {
-    findburial(req,res);
    })
 
 module.exports = router

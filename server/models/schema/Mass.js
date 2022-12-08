@@ -33,7 +33,7 @@ const MassSchema = new mongoose.Schema({
           console.log(doc.Time);
           console.log(today)
          res.render("addoreditmass",{
-           action:"/mass/addtodb",
+           action:"/mass/editmassdb",
            Mass:doc,
            today:today
         });
@@ -97,13 +97,14 @@ const MassSchema = new mongoose.Schema({
    checkcandelete:function(req,res){
     console.log(req);    
     const { Intention } = require("./Intention");
-    Intention.find({Mass_id:req}, (err, doc) => {
+    Intention.find({Mass:req}, (err, doc) => {
       if (!err) {
-        if(doc!=[]){
-
-          res.send({"intencion":false});
-        }else{
+        //console.log(doc[0]);
+        if(doc[0]!==undefined){
+          console.log(doc)
           res.send({"intencion":true});
+        }else{
+          res.send({"intencion":false});
         }
       }
       
@@ -184,8 +185,9 @@ const MassSchema = new mongoose.Schema({
 
    },
        checkavailableaddinstans:function(req,res){
-      //console.log(req);
-      Mass.findById(req.Mass,(err,doc)=>{
+      console.log(req);
+     
+      Mass.findById( req.Mass,(err,doc)=>{
         if(!err){
           if(doc.Number_enable_intensions>doc.Number_intension)
             { //console.log(doc);
@@ -229,7 +231,8 @@ const MassSchema = new mongoose.Schema({
     delete:function(req,res){
       Mass.findByIdAndRemove(req.params.id, (err, doc) => {
         if (!err) {
-        res.json({status:true});
+        //res.json({status:true});
+        res.redirect("/mass/list")
         } else {
         console.log("Błąd podczas usuwania mszy: " + err);
         }
@@ -250,6 +253,55 @@ const MassSchema = new mongoose.Schema({
           }
           })
       })
+    },
+    getdata:function(req){
+      return new Promise((resolve, reject) => {
+        //var id=ObjectId(req);
+        Mass.findById(req,(err, doc) => {
+          if(!err){
+            resolve(doc);
+          }else{
+            resolve(null);
+          }
+        })
+      })
+    },
+    cancelintecion:function(req){
+      return new Promise((resolve, reject) => {
+        //var id=ObjectId(req);
+        console.log("massintens");
+        Mass.findOneAndUpdate({ _id: req.Mass },
+          {"$inc": {"Number_intension":+1}}, 
+          (err, respond) => {
+          if(!err){
+            
+            resolve(true);
+            
+
+          }else{
+            resolve(false);
+            console.log("Błąd podczas zmiany ilosci intencji mszy: " + err)
+          }
+        })
+      })
+    },
+    editmassdb:function(req,res){
+      console.log(req);
+      date=new Date(req.Date_Of_even.slice(6,10),(Number(req.Date_Of_even.slice(3,5))-1).toString(),
+      req.Date_Of_even.slice(0,2),(Number(req.Time_Of_even.slice(0,2))+1).toString(),req.Time_Of_even.slice(3,5));
+         req.Date_Of_even=date;      
+       req.Number_enable_intensions=Number(req.Number_enable_intensions);
+       console.log(req);
+      Mass.findByIdAndUpdate(req.Id,{
+        Date_Of_even: req.Date_Of_even,
+    Number_enable_intensions:req.Number_enable_intensions
+      },(err, doc) => {
+        if (!err) {
+        res.redirect("/mass/list")
+        } else {
+        console.log("Błąd podczas edycji Mszy: " + err)
+        }
+        })
     }
 
   }

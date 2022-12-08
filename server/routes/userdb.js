@@ -29,8 +29,8 @@ const {User,update,insert, register} = require('../models/schema/User')
         }
         })
        })
-       router.get("/Number_enable_intensionsditu", (req, res) => {
-        res.render("Number_enable_intensionsditu", {
+       router.get("/addoreditu", (req, res) => {
+        res.render("addoreditu", {
         viewTitle: "Dodaj uzytkownika",
         action:"/userdb/addtomongobaseu"
         
@@ -52,7 +52,7 @@ const {User,update,insert, register} = require('../models/schema/User')
         User.findById(req.params.id, (err, doc) => {
         if (!err) {
             //  console.log(doc);
-        res.render("Number_enable_intensionsditu", {
+        res.render("addoreditu", {
         viewTitle: "Zaktualizuj dane uzytkownika",
        User: doc,
        action:"/userdb/addtomongobaseu"

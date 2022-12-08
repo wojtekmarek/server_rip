@@ -30,7 +30,7 @@
             {
                 alert("Msza nie może być usunieta bo posiada przypisane intencje");
             }else{
-               fetch("/mass/delete/"+id)
+              /* fetch("/mass/delete/"+id)
                 .then(function(response) {
                     if(response.json().status=true)
                     {
@@ -39,7 +39,7 @@
                        
                         alert("coś poszło  nie tak odświerz strone i sprubuj ponownie")
                     }
-        })
+        })*/
             }
         })
        .catch(err =>{
@@ -135,8 +135,10 @@
                 +"<td>"+listcurrent[i].Number_intension+"</td>"
                 +"<td>"
                 +'<a class="btn btn-primary btn-sm" href="/mass/editview/'+listcurrent[i]._id+'">Edytuj</a>'
-                +'<a class="btn btn-danger btn-sm" href="/mass/delete/'+listcurrent[i]._id+'"'
-                +'onclick="return confirm("Czy jesteś pewien, że chcesz usunąć ten rekord?");">Usuń</a>'
+                +'<button  class="btn btn-danger btn-sm" '
+                +' onclick="deletemass('
+                +"'"+listcurrent[i]._id+"'"
+                +')" >Usuń</button>'
                 +"</td>"
                 +"</tr>";
              document.getElementById("tablemass").appendChild(tablerow);

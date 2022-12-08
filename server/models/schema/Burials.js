@@ -159,8 +159,26 @@ async function insert(req,res){
     }
     })
 }
-async function findburial(req,res){
-    res.send("W opracowaniu");
+const BurialControler={
+    serchforclient:async function (req,res){
+        console.log(req);
+// DateOfDeath:req.DateDeath.split("-").reverse().join("-")+"T14:48:00.000+09:00"
+        Burial.find({Namedeceased:req.Name,
+            LastNamedeceased:req.LastName,               
+           }, (err, doc) => {
+                if (!err) {
+                    console.log(doc);
+                    res.status(200);
+                    res.send(doc);
+               
+                } else {
+                console.log("Błąd podczas aktualizowania danych: " + err)
+                }
+                })
+        //res.send("W opracowaniu");
+    }
+
 }
 
-   module.exports={Burial,BurialSchema,showlist,showedit,showadd,showlistclient,findburial,insert,update}
+
+   module.exports={Burial,BurialSchema,showlist,showedit,showadd,showlistclient,BurialControler,insert,update}

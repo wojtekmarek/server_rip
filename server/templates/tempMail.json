@@ -2,7 +2,7 @@
     "Template": {
       "TemplateName": "Report_email_template",
       "SubjectPart": "Przypomnienie o płatności",
-      "HtmlPart": "<p>Dzień dobry,</p><p>Przypominamy, że ${daypayment} mija termin płatności za posiadanie grobu o numerze ${numergrave}.</br>Kwota do zapłaty: 1500 PLN. <a href='link'><i>Opłać teraz</i></a></br>Uprzejmie prosimy o terminową płatność</p><p>Pozdrawiamy,</br>Parafia /*Nazwa naszej parafi*/.</p>"
+      "HtmlPart": "<p>Dzień dobry,</p><p>Przypominamy, że {{daypayment}} mija termin płatności za posiadanie grobu o numerze {{numergrave}}.</br>Kwota do zapłaty: 1500 PLN. <a href='link'><i>Opłać teraz</i></a></br>Uprzejmie prosimy o terminową płatność</p><p>Pozdrawiamy,</br>Parafia /*Nazwa naszej parafi*/.</p>"
 
     }
 }
