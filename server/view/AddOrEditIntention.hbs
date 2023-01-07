@@ -1,9 +1,33 @@
-<h3>{{viewTitle}}</h3>
-<form action="{{action}}" method="POST" autocomplete="off">
+<style>
+.formintens{
+display: flex;
+    flex-direction: column;
+    align-self: center;
+    width: 400px;
+    height: 100%;
+    justify-content: center;
+}
+.errorafterTextintens::after {
+    content: "Niepoprawna wartość";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 164px;
+    left: -35px;
+}
+
+  .errorafter {
+    display: block;
+    border-color: red;
+  }
+</style>
+<form class="formintens" action="{{action}}" method="POST" autocomplete="off">
+   <h3>{{viewTitle}}</h3>
  <input type="hidden" name="_id" value="{{Intention._id}}">
- <div class="form-group">
- <label>Treść</label><br>
- <textarea class="form-control" name="Textintens" = cols="40" rows="5">{{Intention.Textintens}}</textarea>
+ <div class="form-group mb-3">
+ <label id="divTextintens">Treść</label><br>
+ <textarea class="form-control" id="Textintens" name="Textintens" pattern="[^<>]+" cols="40" rows="5">{{Intention.Textintens}}</textarea>
 
  </div>
   <div class="form-group" id="Dategroup">
@@ -24,14 +48,59 @@
   
   <label class="form-check-label">Zatwierdź</label>
   </div>
-<div class="form-group">
-<button type="submit" class="btn btn-info">Zapisz</button>
+<div class="form-group mt-4">
+<button type="submit" onclick="return validbeforesend()" class="btn btn-info">Zapisz</button>
 <a class="btn btn-secondary" href="/intent/list">Pokaz listę</a>
 </div>
 </form>
 
 <script >
     
-    var listintens={{{json massdate}}};
-    console.log(listintens);
+   /* var listintens={{{json massdate}}};
+    console.log(listintens);*/
+    function validbeforesend(){
+      if(validtexareafuncion(document.getElementById("Textintens")))
+      {
+         return true;}
+      else{
+         return false;
+      }
+    }
+    function showerror(target) {
+    document.getElementById("div" + target.id).classList.add("errorafter" + target.id);
+    target.classList.add("errorafter");
+    console.log("show"+target.id)
+  }
+  function hideerror(target) {
+    document.getElementById("div" + target.id).classList.remove("errorafter" + target.id);
+    target.classList.remove("errorafter");
+  }
+  document.addEventListener('invalid', (function () {
+    return function (e) {
+      console.log(e.target.id);
+      e.preventDefault();
+      
+   
+        validtexareafuncion(e.target);
+      
+      //document.getElementById("fname").focus();
+    };
+  })(), true);
+  
+
+  
+  function validtexareafuncion(target) {
+    if (target.value.includes("<") || target.value.includes(">")||target.value==="") {
+
+      showerror(target);
+      return false;
+    }
+    else {
+      hideerror(target);
+      return true;
+    }
+  }
+  document.getElementById("Textintens").addEventListener("change",(event)=>{
+   validtexareafuncion(event.target);
+  })
     </script>

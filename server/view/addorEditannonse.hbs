@@ -1,32 +1,140 @@
-<h3>{{viewTitle}}</h3>
-<form action="{{action}}" method="POST" autocomplete="off">
- <input type="hidden" name="_id" value="{{Anonse.id}}">
- <input type="hidden" name="created_at" value="{{Anonse.created_at}}">
- <div class="form-group">
- <label>Tytuł</label>
- <input type="text" class="form-control" name="title" placeholder="{{Anonse.title}}"
- value="{{Anonse.title}}" required>
- </div>
-  <div class="form-group">
- <label>Treść</label>
- <textarea cols="40" rows="5" class="form-control" name="annonse" placeholder="{{Anonse.annonse}}"
- value="{{Anonse.annonse}}" required >{{Anonse.annonse}}</textarea>
- </div>
-   <div class="form-group">
- <label>Status</label>
- <select  class="form-control" name="status" placeholder="{{Anonse.status}}"
- value="{{Anonse.status}}" required>
-<option value="visible">widoczne</option>
-    <option value="unvisible">niewidoczne</option>
+<style>
+  .formanonse {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    width: 400px;
+    height: 100%;
+    justify-content: center;
+  }
 
- </select>
- </div>
- <label>data wydarzenia(dzień-miesiąc-rok)</label>
- <input type="text" class="form-control" name="date"  pattern="^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$" placeholder="{{Anonse.date}}"
- value="{{Anonse.date}}" required>
- </div>
- <div class="form-group">
- <button type="submit" class="btn btn-info">Zapisz</button>
- <a class="btn btn-secondary" href="/anonse/list">Pokaz listę</a>
- </div>
+.errorafterannonse::after {
+    content: "Dla pola niedozwole są znaki '<' i '>'";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 165px;
+    left: -36px;
+}
+   .erroraftertitle::after {
+    content: "Dla pola niedozwole są znaki '<' i '>'";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    left: -35px;
+  }
+.errorafterdate::after {
+    content: "Niepoprawna wartość";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    margin-left: -100px;
+    position: relative;
+    top: 68px;
+    left: -150px;
+}
+
+  .errorafter {
+    display: block;
+    border-color: red;
+  }
+</style>
+<form class="formanonse" action="{{action}}" method="POST" autocomplete="off">
+  <h3>{{viewTitle}}</h3>
+  <input type="hidden" name="_id" value="{{Anonse.id}}">
+  <input type="hidden" name="created_at" value="{{Anonse.created_at}}">
+  <div class="form-group">
+    <label id="divtitle">Tytuł</label>
+    <input type="text" class="form-control" name="title" id="title" pattern="[^<>]+" placeholder="{{Anonse.title}}"
+      value="{{Anonse.title}}" required>
+  </div>
+  <div class="form-group">
+    <label id="divannonse">Treść</label>
+    <textarea cols="40" rows="5" class="form-control" id="annonse" name="annonse" placeholder="{{Anonse.annonse}}"
+      value="{{Anonse.annonse}}" required>{{Anonse.annonse}}</textarea>
+  </div>
+  <div class="form-group">
+    <label>Status</label>
+    <select class="form-control" name="status" placeholder="{{Anonse.status}}" value="{{Anonse.status}}" required>
+      <option value="{{Anonse.status}}">{{#if edit}}  aktualny stan: {{displaystatusanonse}} {{else}}Wybierz z listy {{/if}}</option>
+      <option value="visible">widoczne</option>
+      <option value="unvisible">niewidoczne</option>
+
+    </select>
+  </div>
+  <div class="form-group">
+    <label id="divdate">data wydarzenia(dzień-miesiąc-rok)</label>
+    <input type="text" class="form-control" name="date" id="date" 
+    pattern="(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])
+    -(?:30))|(?:(?:0[13578]|1[02])-31))-(?:19|20)[0-9]{2}-
+    (?:(?:0[1-9]|1[0-2])" placeholder="{{Anonse.date}}" value="{{Anonse.date}}" required>
+  </div>
+  <div class="form-group  mt-4">
+    <button type="submit" class="btn btn-info">Zapisz</button>
+    <a class="btn btn-secondary" href="/anonse/list">Pokaz listę</a>
+  </div>
 </form>
+
+<script>
+  function showerror(target) {
+    document.getElementById("div" + target.id).classList.add("errorafter" + target.id);
+    target.classList.add("errorafter");
+    console.log("show"+target.id)
+  }
+  function hideerror(target) {
+    document.getElementById("div" + target.id).classList.remove("errorafter" + target.id);
+    target.classList.remove("errorafter");
+  }
+  document.addEventListener('invalid', (function () {
+    return function (e) {
+      console.log(e.target.id);
+      e.preventDefault();
+      if (e.target.id === "date") {
+        validdate(e.target);
+      } else {
+        validtexareafuncion(e.target);
+      }
+      //document.getElementById("fname").focus();
+    };
+  })(), true);
+  function validdate(target) {
+
+    let rexdate = new RegExp('^[0-9]{1,2}-[0-9]{1,2}-[0-9]{4}$');
+    if (rexdate.test(target.value)) {
+      hideerror(target);
+      return true
+    } else {
+      showerror(target);
+      return false
+    }
+
+  }
+  function validtexareafuncion(target) {
+    if (target.value.includes("<") || target.value.includes(">")||target.value==="") {
+
+      showerror(target);
+
+    }
+    else {
+      hideerror(target);
+
+    }
+  }
+  
+
+  document.getElementById("annonse").addEventListener('change', async (event) => {
+
+    validtexareafuncion(event.target);
+  });
+  document.getElementById("title").addEventListener('change', async (event) => {
+
+    validtexareafuncion(event.target);
+  });
+  document.getElementById("date").addEventListener('change', async (event) => {
+
+    validdate(event.target);
+  });
+</script>

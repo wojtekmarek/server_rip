@@ -1,114 +1,324 @@
-<h3>{{viewTitle}}</h3>
 <style>
-  .alertdatemarin{
+  .alertdatemarin {
     margin-top: -63px;
 
     padding: 12px 8px;
-   
-  }
-  @keyframes hideanddestroy { 
-  0% {
-    opacity: 1;
+
   }
 
-  100% {
-    opacity: 0;
+  .alerteditmarin {
+    margin-top: 20px;
+    padding: 12px 8px;
   }
+
+  @keyframes hideanddestroy {
+    0% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .formmass {
+    width: 300px;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    height: 100%;
+    justify-content: center;
+  }
+
+  .errorafter {
+    display: block;
+    border-color: red;
+  }
+
+  .errorafterDate_Of_even::after {
+    content: "Uzupełnij pole";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    left: -73px;
+  }
+
+  .errorafterTime_Of_even::after {
+    content: "Uzupełnij pole dostępne godziny 5:00 24:00";
+    color: red;
+    width: 20px;
+    margin-left: -123px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    left: 18px;
+  }
+
+  .errorafterNumber_enable_intensions::after {
+    content: "Uzupełnij pole liczbą od 1 do 10";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    margin-left: -124px;
+    left: -50px;
+  }
+.errorafterNumber_enable_intensionsnumber::after {
+    content: "Pole musi mieć wartość wiekszą od ilości intencji";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    margin-left: -222px;
+    left: 47px;
 }
 </style>
-<form style="width: 300px;" action="{{action}}" method="POST" autocomplete="off">
- <input type="hidden" name="Id" value="{{Mass._id}}">
- <div class="form-group" id="Dategroup">
- <label>Data mszy</label>
-<input type="text" class="form-control" id="Date_Of_even" name="Date_Of_even" 
- placeholder="{{Mass.Date}}"  value="{{Mass.Date}}" required/>
-  
- <label>Godzina Mszy </label>
- <input type="text" class="form-control" id="Time_Of_even"  name="Time_Of_even" 
- value="{{Mass.Time}}"  min="{{today}}"required/>
- </div>
-   <div class="form-group">
-  <label>Ilośc dostępnych intencji</label>
-  <input type="number" class="form-control" 
-  name="Number_enable_intensions" value="{{Mass.Number_enable_intensions}}" placeholder="{{Mass.Number_enable_intensions}}" required>
- </div>
-<div class="form-group">
-  <!-- dopisac disable-->
-  <label>Ilośc intencji zarezerwowanych </label>
-  <input type="number" class="form-control" disabled name="Number_intension" value="{{Mass.Number_intension}}" placeholder="{{Mass.Number_intension}}">
- </div>
-<div class="form-group">
-<button type="submit" id="submit" class="btn btn-info">Zapisz</button>
-<a class="btn btn-secondary" href="/mass/list">Pokaz listę</a>
-</div>
+
+<form class="formmass" action="{{action}}" method="POST" autocomplete="off">
+  <h3 id="formtitle">{{viewTitle}}</h3>
+  <input type="hidden" name="Id" value="{{Mass._id}}">
+  <div id="Dategroup" class="form-group">
+    <label id="divDate_Of_even">Data mszy</label>
+    <input type="text" class="form-control" id="Date_Of_even" name="Date_Of_even" placeholder="{{Mass.Date}}"
+      value="{{Mass.Date}}" required />
+  </div>
+  <div class="form-group">
+    <label id="divTime_Of_even">Godzina Mszy </label>
+    <input type="text" class="form-control" id="Time_Of_even" name="Time_Of_even" value="{{Mass.Time}}" min="{{today}}"
+      required />
+  </div>
+  <div class="form-group">
+    <label id="divNumber_enable_intensions">Ilość dostępnych intencji</label>
+    <input type="number" class="form-control" id="Number_enable_intensions" name="Number_enable_intensions"
+      value="{{Mass.Number_enable_intensions}}" placeholder="{{Mass.Number_enable_intensions}}" min="0" max="10"
+      step="1" required>
+  </div>
+  <div class="form-group">
+
+    <label>Ilość intencji zarezerwowanych </label>
+    <input type="number" class="form-control" disabled id="Number_intension" name="Number_intension"
+      value="{{Mass.Number_intension}}" placeholder="0">
+  </div>
+  <div id="buttongroup" class="form-group">
+    <button type="submit" onClick="return validbeforesend()" id="submit"
+      class="btn btn-info btn-width100">Zapisz</button>
+    <a class="btn btn-secondary btn-width100" href="/mass/list">Pokaz listę</a>
+  </div>
 </form>
 <script>
-  var now=new Date();
-  var submitbutton=document.getElementById("submit");
- var date=document.getElementById("Date_Of_even");
- var time=document.getElementById("Time_Of_even");
- var defaulttime=date.value.split("-").reverse().join("-");
- var wrongdate=false;
- 
- date.addEventListener("focus",(event)=>{
-  submitbutton.disabled=true;
-  //console.log(date.value);
-  //console.log(date.value.split("-").reverse().join("-"));
-  if(wrongdate){
-    console.log("defaulttime if "+defaulttime);  
-     date.value=defaulttime.split("-").reverse().join("-");
-    wrongdate=false;
-  }else{
-     defaulttime=date.value;
-      date.value=date.value.split("-").reverse().join("-");
-  }
- 
-   console.log("date.value"+date.value);
-  console.log("defaulttime"+defaulttime);       
- 
- 
-  date.type="date";
-  
-  });
-   date.addEventListener("blur",(event)=>{
-   //console.log(now);
-    submitbutton.disabled=false;
-    var today=new Date(now.getFullYear(),(now.getMonth()),now.getDate());
-    // console.log(typeof today);
-   // console.log(today.toISOString());
-    var setdate=new Date(date.value);
-    console.log(setdate>today);
-    if(setdate<today){     
-      wrongdate=true;
-     var alertdate = document.createElement('div');
-      alertdate.id='alertdate';
-      alertdate.className="alert alert-danger alertdatemarin";
-      alertdate.innerHTML="Nie można ustawić wstecznej daty mszy ";
-      document.getElementById("Dategroup").appendChild(alertdate);
-      alertdate.style="animation: hideanddestroy 2s infinite;animation-delay: 2s;";
-      setTimeout(() => {
-          document.getElementById("alertdate").remove(); 
-      }, 4000)    
+  var now = new Date();
+  var datemass = new Date({{{ year }}},{{{month}}},{{{day}}});
+  var today = new Date(now.getFullYear(),(now.getMonth()),now.getDate());
+  var submitbutton = document.getElementById("submit");
+  var date = document.getElementById("Date_Of_even");
+  var time = document.getElementById("Time_Of_even");
+  var defaulttime = ""
+  if (date.value !== undefined) { defaulttime = date.value.split("-").reverse().join("-"); }
+  var wrongdate = false;
 
-          date.focus();
-          
-  
-      
-    }else{
-      date.type="text";
-  console.log(date.value);
-  console.log(date.value.split("-").reverse().join("-"));
-  date.value=date.value.split("-").reverse().join("-");
+
+  date.addEventListener("focus", (event) => {
+    submitbutton.disabled = true;
+    if (wrongdate) {
+
+      date.value = defaulttime.split("-").reverse().join("-");
+      wrongdate = false;
+    } else {
+      defaulttime = date.value;
+      date.value = date.value.split("-").reverse().join("-");
     }
-  
-  
+    date.type = "date";
+
   });
-   time.addEventListener("focus",(event)=>{
-  time.type="time";
+  document.getElementById("Number_enable_intensions").addEventListener("change", (event) => {
+    console.log("walidacja");
+    validnumer(event.target);
   });
-   time.addEventListener("blur",(event)=>{
-  time.type="text";
-  
+  time.addEventListener("change", (event) => {
+    validtime(event.target)
   });
-  
+  date.addEventListener("blur", (event) => {
+    submitbutton.disabled = false;
+
+
+    var setdate = new Date(date.value);
+
+    if (setdate < today) {
+      wrongdate = true;
+      var alertdate = document.createElement('div');
+      alertdate.id = 'alertdate';
+      alertdate.className = "alert alert-danger alertdatemarin";
+      alertdate.innerHTML = "Nie można ustawić wstecznej daty mszy ";
+      document.getElementById("Dategroup").appendChild(alertdate);
+      alertdate.style = "animation: hideanddestroy 2s infinite;animation-delay: 2s;";
+      showerror(date);
+      setTimeout(() => {
+        document.getElementById("alertdate").remove();
+      }, 4000)
+
+      date.focus();
+
+    } else {
+      date.type = "text";
+
+      date.value = date.value.split("-").reverse().join("-");
+      validdate(date);
+    }
+
+  });
+  time.addEventListener("focus", (event) => {
+
+    time.type = "time";
+    time.min = "5:00";
+    time.max = "24:00";
+  });
+  time.addEventListener("blur", (event) => {
+    time.type = "text";
+
+  });
+  function showerror(target) {
+    document.getElementById("div" + target.id).classList.add("errorafter" + target.id);
+    target.classList.add("errorafter");
+    console.log("show" + target.id)
+  }
+  function hideerror(target) {
+    document.getElementById("div" + target.id).classList.remove("errorafter" + target.id);
+    target.classList.remove("errorafter");
+  }
+  function showerrornuberintecion(target) {
+    document.getElementById("div" + target.id).classList.add("errorafter" + target.id + "number");
+    target.classList.add("errorafter");
+    console.log("show" + target.id)
+  }
+  function hideerrornuberintecion(target) {
+    document.getElementById("div" + target.id).classList.remove("errorafter" + target.id + "number");
+    target.classList.remove("errorafter");
+  }
+  function validbeforesend() {
+    if (validnumer(document.getElementById("Number_enable_intensions"))) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  function validnumer(target) {
+    // console.log(Number(target.value) >= 0 && Number(target.value) <= 10 && (Number(target.value) % 1) === 0 && target.value !== ""
+    //&& Number(target.value)>=Number(document.getElementById("Number_intension").value));
+    //console.log(Number(target.value) < Number(document.getElementById("Number_intension").value))
+    if (Number(target.value) < Number(document.getElementById("Number_intension").value)) {
+      showerrornuberintecion(target);
+      return false;
+    } else {
+      hideerrornuberintecion(target);
+      if (Number(target.value) >= 0 && Number(target.value) <= 10 && (Number(target.value) % 1) === 0 && target.value !== "") {
+        hideerror(target);
+        return true;
+      } else {
+        showerror(target);
+        return false;
+      }
+    }
+
+
+  }
+  function validtime(target) {
+
+    let value = target.value.split(":")[0];
+    console.log(Number(value))
+    if (value !== "") {
+
+      if (Number(value) > 5 && Number(value) <= 24) {
+        console.log(3);
+        hideerror(target);
+        return true;
+      } else {
+        console.log(2);
+        showerror(target);
+        return false;
+      }
+    } else {
+      console.log(1);
+      showerror(target);
+      return false;
+    }
+  }
+
+  function validdate(target) {
+
+    let rexdate = new RegExp('^[0-9]{1,2}-[0-9]{1,2}-[0-9]{4}$');
+    if (rexdate.test(target.value)) {
+      hideerror(target);
+      return true
+    } else {
+      showerror(target);
+      return false
+    }
+
+  }
+  document.addEventListener('invalid', (function () {
+    return function (e) {
+      console.log(e.target.id);
+      e.preventDefault();
+      if (e.target.id === "Number_enable_intensions") { validnumer(e.target) }
+      else if (e.target.id === "Time_Of_even") {
+        validtime(e.target);
+      } else { validdate(e.target) }
+
+      // validtexareafuncion(e.target);
+
+      //document.getElementById("fname").focus();
+    };
+  })(), true);
+
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log(datemass);
+    let massdate = new Date(datemass);
+    console.log(datemass);
+    console.log(today);
+    console.log(massdate);
+    if (massdate < today) {
+      console.log("edycja po dacie");
+      disabledall();
+
+    } else {
+      console.log("edycja przed data lub dodaj");
+      disabledformdate();
+    }
+
+  });
+  function disabledall() {
+    submitbutton.disabled = true;
+    date.disabled = true;
+    time.disabled = true;
+    document.getElementById("Number_enable_intensions").disabled = true;
+    document.getElementById("formtitle").innerHTML = "Szczegóły mszy";
+    document.getElementById("Number_intension").disabled = true;
+    showediterror("Ta msza już się odbyła nie możesz jej edytować")
+
+  }
+  function disabledformdate() {
+
+    let val = document.getElementById("Number_intension").value;
+    /*console.log(val !== undefined);
+    console.log(val);
+    console.log(Number(val) > 0);*/
+    if (val !== undefined && Number(val) > 0) {
+      date.disabled = true;
+      time.disabled = true;
+      showediterror("Ta msza posiada intencje więc możliwa jest tylko edycja ilość intencji  ");
+    }
+  }
+  function showediterror(msg) {
+    var alertedit = document.createElement('div');
+    alertedit.id = 'alertedit';
+    alertedit.className = "alert alert-danger alerteditmarin";
+    alertedit.innerHTML = msg;
+    document.getElementById("buttongroup").appendChild(alertedit);
+  }
+
 </script>

@@ -1,28 +1,64 @@
 <h3 style="text-align:center w-100">Lista kwater</h3>
-<a class="btn btn-secondary" href="/gravequarters/addoredit">Dodaj kwatere</a>
+<a class="btn btn-secondary" href="/gravequarters/addoredit">Dodaj kwaterę</a>
 <table class="table table-striped">
- <thead>
- <tr>
- <th>Id kwatery </th>
- <th>Typ kwatery</th>
- <th>Czy jest oplacona</th>
- <th>emial dysponeta </th>
- 
- </tr>
- </thead>
- <tbody>
- {{#each list}}
- <tr>
- <td>{{this.IdGraveQuaters}}</td>
- <td>{{this.TypeOF}}</td>
- <td>{{this.PaymentString}}</td>
- <td>{{this.ovnerripid}}</td>
- <td>
- <a class="btn btn-primary btn-sm" href="/gravequarters/{{this._id}}">Edytuj</a>
- <a class="btn btn-danger btn-sm" href="/gravequarters/delete/{{this._id}}"
- onclick="return confirm('Czy jesteś pewien, że chcesz usunąć ten rekord?');">Usuń</a>
- </td>
- </tr>
- {{/each}}
- </tbody>
+    <thead>
+        <tr>
+            <th>Id kwatery </th>
+            <th>Typ kwatery</th>
+            <th>Czy jest opłacona</th>
+            <th>e mail dysponenta </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {{#each list}}
+        <tr>
+            <td>{{this.IdGraveQuaters}}</td>
+            <td>{{this.TypeOF}}</td>
+            <td>{{this.PaymentString}}</td>
+            <td>{{this.ovnerripid}}</td>
+            <td>
+                <a class="btn btn-primary btn-sm" href="/gravequarters/{{this._id}}">Edytuj</a>
+                <button class="btn btn-danger btn-sm"
+                    onclick="deletegrave('{{this.IdGraveQuaters}}','{{this._id}}')">Usuń</button>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
 </table>
+<script>
+    function deletegrave(nrquater, id) {
+       
+        if (confirm('Czy jesteś pewien, że chcesz usunąć kwaterę ' + nrquater + "?") == true) {
+            fetch("/gravequarters/delete?" + new URLSearchParams({
+                id: id,
+                nrquater: nrquater
+            }))
+                .then(function (response) {
+                    console.log(response.status);
+                    console.log(response)
+                    
+                    if (response.status == 207) {
+                        alert("Kwatera nie może zostać usunieta gdyż posiada ona pochówki");
+                    } else  if (response.status == 200) {
+                        alert("Kwatera została usunięta z bazy");
+                           setTimeout(() => {
+                       window.location.reload();
+                    }, 1500)
+                        
+                    } else {
+
+                        alert("Coś poszło  nie tak odśwież stronę i spróbuj ponownie")
+                    }
+                })
+                .catch(err => {
+                    alert("Coś poszło  nie tak odśwież stronę i spróbuj ponownie");
+                    console.log("Coś poszło  nie tak odśwież stronę i spróbuj ponownie" + err);
+
+                });
+        } else {
+
+        }
+
+    }
+</script>

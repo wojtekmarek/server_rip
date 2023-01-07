@@ -7,19 +7,22 @@
  <th>Id Pochówku</th>
  <th>Imię</th>
  <th>Nazwisko</th>
- <th>Rodzaj pochówku</th>
+ <th>Typ pochówku</th>
+ <th>Data urodzenia</th>
  <th>Data śmierci</th>
  <th>Data pochówku</th>
  <th>Numer kwatery</th> 
  </tr>
  </thead>
  <tbody>
+   
  {{#each list}}
  <tr> 
  <td>{{this._id}}</td>
  <td>{{this.Namedeceased}}</td>
  <td>{{this.LastNamedeceased}}</td>
  <td>{{this.Burialtype}}</td>
+ <td>{{this.DateOfBirthString}}</td>
  <td>{{this.DateOfDeathstring}}</td>
  <td>{{this.DateBurialstring}}</td>
  <td>{{this.GraveQuartersnumber}}</td>

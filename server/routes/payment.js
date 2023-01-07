@@ -5,6 +5,20 @@ router.get("/checkpaymentid",(req,res)=>{
     console.log(req.query);
     PaymentController.checkpaymentid(req.query.Intention,res);
 })
+router.get("/setarchive",(req,res)=>{
+    console.log(req.query);
+    PaymentController.setArchivestatus(req.query.forwhat,req.query.id);
+})
+
+
+router.get("/checkpaymenbytid",(req,res)=>{
+    
+    PaymentController.getpayment(req.query.tid,res);
+})
+router.get("/checkstatuspaymenbytid",(req,res)=>{
+    //console.log(req.query);
+    PaymentController.checkstatuspaymentid(req.query.id,res);
+})
 router.get("/list", (req, res) => {
     
     PaymentController.showlist(req,res);

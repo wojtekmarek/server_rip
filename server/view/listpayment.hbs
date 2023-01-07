@@ -15,35 +15,40 @@
     }
 </style>
 
-<div id="tablepaymentoption" class="divdisplayrow">
-<select id="filter">
+<div id="tablepaymentoption" class="divdisplayrow mb-3">
+<select id="filter" class="form-control mw250">
     <option value="all">Pokaż wszystkie</option>
-    <option value="current">Pokaż tylko aktualne </option>
+    <option value="overpay">Pokaż tylko status:opłacone</option>
+    <option value="cancel">Pokaż tylko status: anulowane </option>
+    <option value="waiting">Pokaż tylko status: oczekujące </option>
+    <option value="creted">Pokaż tylko status: utworzone </option>
+     <option value="archiv">Pokaż tylko status: archiwalna </option>
+    
 </select>
 </div>
 <table class="table table-striped">
  <thead>
  <tr>
- <th>Id</th>
- <th>Płatność za</th>
- <th>Data płatności</th>
- <th>Status</th>
- <th>Za </th>
+ <th class="align-middle text-center">Nr</th>
+ <th class="align-middle text-center">Płatność za</th>
+ <th class="align-middle text-center">Data płatności</th>
+ <th class="align-middle text-center">Status</th>
+ <th class="align-middle text-center">Id transakcji </th>
 
  </tr>
  </thead>
  <tbody id="tablepayment">
     {{#each list}}
     <tr>
-    <td class="tdid">{{this._id}}</td>
-    <td>{{this.Title}}</td>
-    <td>{{this.Date}}</td>
-    <td>{{this.Status}}</td>  
-    <td>{{this.For}}</td>   
+    <td class="align-middle text-center">{{inc @index}}</td>
+    <td class="align-middle text-center">{{this.Title}}</td>
+    <td class="align-middle text-center">{{this.Date}}</td>
+    <td class="align-middle text-center">{{this.Status}}</td>  
+    <td class="align-middle text-center">{{this.Transacionid}}</td>   
 
     
     <td>
-    <a class="btn btn-primary btn-sm" href="/payment/detail/{{this.id}}">Edytuj</a>
+    <a class="btn btn-primary btn-sm" href="/payment/detail/{{this.id}}">Szczegóły</a>
     </td>
     </tr>
     {{/each}}
@@ -54,75 +59,52 @@
     
     var listpayment={{{json list}}};
     console.log(listpayment);
-    var now=new Date();
-    
-    function showcurrent(){
-        var listcurrent=[];
-        var today=new Date(now.getFullYear(),(now.getMonth()),now.getDate());
-        console.log(typeof listpayment);
-        
-                for (const [key, payment] of Object.entries(listpayment)) {
-
-                    var paymentdate=new Date(payment.Date);
-                    /*console.log("typ zmienej : "+typeof paymentdate);
-                    console.log("data string "+ paymentdate);
-                    console.log("typ zmienej : "+typeof paymentdate);
-                    console.log("dzis: "+today);
-                    console.log("data numer "+ paymentdate.getTime());
-                    console.log("dzis numer: "+today.getTime());                    
-                     console.log("warunek: "+ paymentdate.getTime()>today.getTime());
-                     console.log(paymentdate>today);*/
-           if(paymentdate>today){
-                console.log("add to list");
-                listcurrent.push(mass);
-               // console.log(typeof mass.Date);
-               // console.log(mass.Date.slice(0,10).split("-").reverse().join("-"));
-            }else{}
-        };
-        console.log(listcurrent);
-       document.getElementById("tablepayment").innerHTML=""; 
+   
+    function showtd(list){
+         document.getElementById("tablepayment").innerHTML = "";
      
-        for(i=0;i<listcurrent.length;i++)
+        for(i=0;i<list.length;i++)
             {let tablerow = document.createElement('tr');
             tablerow.id='tr'+i;   
+        
             tablerow.innerHTML="<tr>"
-                +'<td class="tdid">'+listcurrent[i]._id+"</td>"
-                +"<td>"+listcurrent[i].Title+"</td>"
-                +"<td>"+listcurrent[i].Date_payment.slice(0,10).split("-").reverse().join("-")+"</td>"
-                +"<td>"+listcurrent[i].Staus+"</td>"                
-                +"<td>"
-                +'<a class="btn btn-primary btn-sm" href="/mass/editview/'+listcurrent[i]._id+'">Edytuj</a>'
+                +"<td class='align-middle text-center'>" + (i+1) +"</td>"
+                +"<td class='align-middle text-center'>"+list[i].Title+"</td>"
+                +"<td class='align-middle text-center'>"+list[i].Date_payment.slice(0,10).split("-").reverse().join("-")+"</td>"
+                +"<td class='align-middle text-center'>"+list[i].Status+"</td>"
+                 +"<td class='align-middle text-center'>"+list[i].Transacionid+"</td>"                
+                +"<td class='align-middle text-center'>"
+                +'<a class="btn btn-primary btn-sm" href="/payment/detail/'+list[i]._id+'">Szczegóły</a>'
                 +"</td>"
                 +"</tr>";
              document.getElementById("tablepayment").appendChild(tablerow);
-             console.log(tablerow);
+             //console.log(tablerow);
         } 
+    }
+
+    function filter(filtr){
+        var listfilter=[];
+
+        for (const [key, element] of Object.entries(listpayment)) {
+        
+            console.log(element.Status);
+            if(element.Status===filtr)
+            {listfilter.push(element);}
+
+        }
+
+        showtd(listfilter);
+    
+        
+              
                 
     }
      function showall(){
        
-       document.getElementById("tablepayment").innerHTML=""; 
-     
-        for(i=0;i<listpayment.length;i++)
-            {let tablerow = document.createElement('tr');
-            tablerow.id='tr'+i;   
-            tablerow.innerHTML="<tr>"
-                +'<td class="tdid">'+listpayment[i]._id+"</td>"
-                +"<td>"+listpayment[i].Date_Of_even.slice(0,10).split("-").reverse().join("-")+"</td>"
-                +"<td>"+listpayment[i].Date_Of_even.slice(11,16)+"</td>"
-                +"<td>"+listpayment[i].Number_enable_intensions+"</td>"
-                +"<td>"+listpayment[i].Number_intension+"</td>"
-                +"<td>"
-                +'<a class="btn btn-primary btn-sm" href="/mass/editview/'+listpayment[i]._id+'">Edytuj</a>'
-                +'<a class="btn btn-danger btn-sm" href="/mass/delete/'+listpayment[i]._id+'"'
-                +'onclick="return confirm("Czy jesteś pewien, że chcesz usunąć ten rekord?");">Usuń</a>'
-                +"</td>"
-                +"</tr>";
-             document.getElementById("tablepayment").appendChild(tablerow);
-             console.log(tablerow);
-        } 
+       showtd(listpayment);
                 
     }
+   
 
     document.getElementById("filter").addEventListener("change",(event)=>{
         //console.log(event.target.value);
@@ -130,11 +112,26 @@
             case "all":
                 showall();
             break;
-            case "current":
-                showcurrent();
+            case "overpay":
+                filter("Opłacona");
+            break;
+            case "waiting":
+                filter("Oczekująca na płatność");
+            break;
+            case "cancel":
+                filter("Anulowana");
+            break;
+            case "creted":
+                filter("Utworzona");
+                  break;
+            case "archiv":
+                filter("Archiwalna");
             break;
             default:console.log("somthing wron by filter chceck this");
         }
   });
+  /*
+ 
   
+  */
 </script>

@@ -1,7 +1,13 @@
 const router = require("express").Router()
-const {User,update,insert, register} = require('../models/schema/User')
+const {User,update,insert,UserController} = require('../models/schema/User')
 
-       router.get("/userdata",async (req, res) => {
+router.get("/saveuserdata",(req,res)=>{
+       console.log(req.query);
+       UserController.saveuserdata(req.query,res);
+       
+
+})
+router.get("/userdata",async (req, res) => {
               const {id} = req.query;
               console.log(id)
             const user =  await User.findById(id)
@@ -45,9 +51,10 @@ const {User,update,insert, register} = require('../models/schema/User')
        })
        router.post("/registeruser", (req, res) => {
         //add validate data
-        register(req, res)
+        UserController.register(req.body, res)
         //dodac przekierowanie
        })
+      
        router.get("/:id", (req, res) => {
         User.findById(req.params.id, (err, doc) => {
         if (!err) {

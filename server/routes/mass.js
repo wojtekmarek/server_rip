@@ -43,10 +43,7 @@ router.post("/editmassdb", async (req, res) => {
 
 })
 router.post("/checkavailableaddinstans", async (req, res) => {
-    //console.log(req.body);
     MassController.checkavailableaddinstans(req.body, res);
-
-
 })
 
 module.exports = router

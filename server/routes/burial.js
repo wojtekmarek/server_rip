@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const{BurialControler,update,insert,showadd,showedit,showlist,showlistclient,burialexhumation}=require("../models/schema/Burials")
+const{BurialControler,update,insert,showadd,showedit,showlist,showlistclient}=require("../models/schema/Burials")
 
 router.get("/serchforclient", (req, res) => {
     //console.log(req);

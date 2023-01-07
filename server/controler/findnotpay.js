@@ -1,9 +1,10 @@
 
 
-const {findnotpay} = require("../models/schema/GraveQuarters");
+
+    const {GraveController} = require("../models/schema/GraveQuarters");
 
 async function findnotpaysetpayfield(req,res){
-    const docs =await findnotpay();
+    const docs =await GraveController.findnotpay();
     //console.log(docs+" out");
     console.log(typeof docs);
     console.log(Object.keys(docs).length);

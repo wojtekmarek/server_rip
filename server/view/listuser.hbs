@@ -1,28 +1,63 @@
-
-<h3 style="text-align:center">Lista Urzytkowników</h3>
-<a class="btn btn-secondary" href="/userdb/addoreditu">Dodaj user</a>
+<h3 style="text-align:center">Lista Użytkowników</h3>
+<a class="btn btn-secondary" href="/userdb/addoreditu">Dodaj użytkownika</a>
 <table class="table table-striped">
- <thead>
- <tr>
- <th>Email</th>
- <th>Hasło</th>
- <th>Zweryfikowany</th>
- <th></th>
- </tr>
- </thead>
- <tbody>
- {{#each list}}
- <tr>
- <td>{{this.email}}</td>
- <td>{{this.password}}</td>
- <td>{{this.status}}</td>
- 
- <td>
- <a class="btn btn-primary btn-sm" href="/userdb/{{this._id}}">Edytuj</a>
- <a class="btn btn-danger btn-sm" href="/userdb/deleteuser/{{this._id}}"
- onclick="return confirm('Czy jesteś pewien, że chcesz usunąć ten rekord?');">Usuń</a>
- </td>
- </tr>
- {{/each}}
- </tbody>
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Hasło</th>
+            <th>Zweryfikowany</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each list}}
+        <tr>
+            <td>{{this.email}}</td>
+            <td>{{this.password}}</td>
+            <td>{{this.status}}</td>
+
+            <td>
+                <a class="btn btn-primary btn-sm" href="/userdb/{{this._id}}">Edytuj</a>
+                <button class="btn btn-danger btn-sm" onclick="deleteuser('{{this.email}}','{{this.id}}')">Usuń</button>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
 </table>
+<script>
+
+    function deleteuser(email, id) {
+        //href="/userdb/deleteuser/62ab938e567b12fdc858eaa3"
+        if (confirm('Czy jesteś pewien, że chcesz usunąć użytkownika' + email + "?") == true) {
+            fetch("/ovnerrip/checkcandelete?" + new URLSearchParams({
+                id: id,
+                email: email
+            }))
+                .then(function (response) {
+                    console.log(response.status);
+                    console.log(response)
+                    
+                    if (response.status == 200) {
+                        alert("Konto użytkownika nie może zostać usunietę gdyż posiada ono kwatery");
+                    } else  if (response.status == 207) {
+                        alert("Konto użytkownika zostało usunięte");
+                           setTimeout(() => {
+                       window.location.reload();
+                    }, 2000)
+                        
+                    } else {
+
+                        alert("Coś poszło  nie tak odświerz strone i sprubuj ponownie")
+                    }
+                })
+                .catch(err => {
+                    alert("Coś poszło  nie tak odśwież stronę i spróbuj ponowniee");
+                    console.log("Coś poszło  nie tak odśwież stronę i spróbuj ponownie" + err);
+
+                });
+        } else {
+
+        }
+
+    }
+</script>

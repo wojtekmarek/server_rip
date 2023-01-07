@@ -1,10 +1,6 @@
-const { response } = require("express");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 var Schema = mongoose.Schema;
-/*const {Payment,PaymentSchema}=require("./Payment");
-const {Mass,MassSchema}=require("./Mass");
-const{UserSchema}=require("./User");*/
 const IntentionShema = new mongoose.Schema({
 
 
@@ -61,7 +57,7 @@ const IntentionController = {
         // console.log(docs[0]);
         //  console.log(docs[0].massdate[0].Date_Of_even);
         docs.forEach(element => {
-          console.log(element);
+          //console.log(element);
           element.Date = element.massdate[0].Date_Of_even.toISOString().slice(0, 10).split("-").reverse().join("-");
           element.Time = element.massdate[0].Date_Of_even.toISOString().slice(11, 16);
           element.Massid = element.massdate[0]._id;
@@ -72,46 +68,80 @@ const IntentionController = {
           list: docs,
 
         });
- 
+
 
       } else {
-        console.log("Błąd pobierania danych /inten/list" + err)
+        console.log("Błąd pobierania danych /inten/list" + err);
+        res.status(500);
+        res.send("Błąd pobierania danych dla Intencji");
+        ;
       }
     });
 
 
   },
+  validdeleteintencion: async function (req, res) {
+    return new Promise((resolve, reject) => {
+      if (req.id !== undefined && req.Massid !== undefined && req.decrement !== undefined && req.paymentstatus !== undefined) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+
+    })
+  },
+  setpayidforinstanse:function(id){
+    return new Promise((resolve, reject) => {
+      resolve(ObjectId(id));
+
+    })
+  },
   deleteintencion: async function (req, res) {
+    //zmiany wedle dokumentacji 
+    //ustawiane statusu płatnoći 
     const { PaymentController } = require("./Payment");
-    PaymentController.deletepayment({ Intention: req.id })
+    console.log(req);
+    this.setpayidforinstanse(req.id)
+    .then(rezult=>{
+      console.log(rezult);
+      PaymentController.setstatuspayment(rezult,req.paymentstatus)
       .then(response => {
+        console.log(response[0]);
         if (response[0]) {
-          console.log("paymentdelete=>deletemassnumber")
-          const { MassController } = require("./Mass");
-          MassController.subtractionintens(req.Massid)
-            .then(response => {
-              console.log("deletemassnumber=>deleteintens")
-              if (response[0]) {
-                Intention.findByIdAndRemove(req.id, (err, doc) => {
-                  if (!err) {
-                    res.json({ status: true });
-                  } else {
-                    console.log("Błąd podczas usuwania: " + err);
-                    res.json({ Status: "faile", Blad: err });
-                  }
-                })
+          Intention.findByIdAndRemove(req.id, (err, doc) => {
+            if (!err) {
+              console.log("paymentdelete=>deletemassnumber")
+              if (req.decrement) {
+                const { MassController } = require("./Mass");
+                MassController.subtractionintens(req.Massid)
+                  .then(response => {
+                    console.log("deletemassnumber=>deleteintens")
+                    if (response[0]) {
+
+                      res.json({ status: true });
+
+                    } else {
+                      res.json({ Status: "faile", Blad: response[1] })
+                    }
+                  })
               } else {
-                res.json({ Status: "faile", Blad: response[1] })
+                res.status(200);
+                res.json({ status: true });
               }
 
-            })
-        } else {
+            } else {
+              console.log("Błąd podczas usuwania: " + err);
+              res.json({ Status: "faile", Blad: err });
+            }
+          })
+        }
+        else {
           res.json({ Status: "faile", Blad: response[1] })
         }
 
-
       })
-
+    })
+   
   },
   showedit: function (req, res) {
     console.log(req.id);
@@ -251,7 +281,7 @@ const IntentionController = {
                       res.send("Anulowanie się powiodło");
                     } else {
                       res.status(500);
-                  res.send("Anulowanie intencji się nie powiodło");
+                      res.send("Anulowanie intencji się nie powiodło");
                     }
                   })
                 } else {
@@ -274,61 +304,64 @@ const IntentionController = {
     }
   }
   ,
-  editintencion:function(req,res){
-    Intention.findOneAndUpdate({_id:ObjectId(req.Intencion)},{$set:{
-      Textintens: req.Textintens,
-      Mass: req.Mass,
-    }}
-    , (err, doc) => {
-      if(!err){
-        const { PaymentController } = require("./Payment");
-        PaymentController.updateAmount(req.Intencion,req.Amount)
-        .then(response=>{
-          if(response)
-          {
-            res.status(200);
-            res.send("Edycja powiodła się zostaniesz przekierowany do podsumowania");
-
-          }else{
-            res.status(500);
-            res.send("Edycja ofiary za intencje nie powiodła się spróbuj jeszczę raz");
-          }
-        })
-      }else{
-        res.status(500);
-            res.send("Edycja nie powiodła się spróbuj jeszczę raz");
+  editintencion: function (req, res) {
+    Intention.findOneAndUpdate({ _id: ObjectId(req.Intencion) }, {
+      $set: {
+        Textintens: req.Textintens,
+        Mass: req.Mass,
       }
-    })
+    }
+      , (err, doc) => {
+        if (!err) {
+          const { PaymentController } = require("./Payment");
+          PaymentController.updateAmount(req.Intencion, req.Amount)
+            .then(response => {
+              if (response) {
+                res.status(200);
+                res.send("Edycja powiodła się zostaniesz przekierowany do podsumowania");
+
+              } else {
+                res.status(500);
+                res.send("Edycja ofiary za intencje nie powiodła się spróbuj jeszczę raz");
+              }
+            })
+        } else {
+          res.status(500);
+          res.send("Edycja nie powiodła się spróbuj jeszczę raz");
+        }
+      })
   },
-  getintectionforclient:function(req,res){
+  getintectionforclient: function (req, res) {
     //Ovner
     console.log(req);
     Intention.aggregate([
       {
-        $match: { Ovner: ObjectId(req)} },
-      {$lookup:
+        $match: { Ovner: ObjectId(req) }
+      },
       {
-        from: 'masses',
-        localField: 'Mass',
-        foreignField: '_id',
-        as: 'massdate'
-      }
-    }]).exec(function (err, docs) {
-      console.log(docs);
-      if (!err) {
-        if(docs[0]!=undefined){
+        $lookup:
+        {
+          from: 'masses',
+          localField: 'Mass',
+          foreignField: '_id',
+          as: 'massdate'
+        }
+      }]).exec(function (err, docs) {
+        console.log(docs);
+        if (!err) {
+          if (docs[0] != undefined) {
             res.status(200);
             res.send(docs);
-        }else{
-            res.status(404);
+          } else {
+            res.status(200);
             res.send("Klijent nie posiada intencji");
+          }
+        } else {
+          res.status(500);
+          res.send("Bład pobierania intencji dal klient" + err);
         }
-    }else{
-        res.status(500);
-        res.send("Bład pobierania intencji dal klient"+err);
-    }
-    })
-    
+      })
+
 
   }
 

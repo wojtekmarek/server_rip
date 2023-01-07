@@ -1,187 +1,188 @@
-<h3 style="text-align:center">Lista mszy</h3>
 <style>
-    .tdid{
+    .tdid {
         max-width: 140px;
     }
-    .divdisplayrow{
+
+    .divdisplayrow {
         width: 100%;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        
+
     }
-    #tablemass{
+
+    #tablemass {
         width: 100%;
     }
 </style>
 <script>
 
-    function deletemass(id){
-      if (confirm('Czy jesteś pewien, że chcesz usunąć Mszę'+id+"?") == true) {
-        fetch("/mass/checkcandelete/"+id)
-        .then(function(response) {
-            console.log("res");
-            console.log(response);
-          return response.json();
-        })
-        .then(data=>{
-            console.log(data);
-            if(data.intencion)
-            {
-                alert("Msza nie może być usunieta bo posiada przypisane intencje");
-            }else{
-              /* fetch("/mass/delete/"+id)
-                .then(function(response) {
-                    if(response.json().status=true)
-                    {
-                        window.location.reload();
-                    }else{
-                       
-                        alert("coś poszło  nie tak odświerz strone i sprubuj ponownie")
+    function deletemass(id,nr) {
+        if (confirm('Czy jesteś pewien, że chcesz usunąć Mszę ' + nr + "?") == true) {
+            fetch("/mass/checkcandelete/" + id)
+                .then(function (response) {
+                    console.log("res");
+                    console.log(response);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                    if (data.intencion) {
+                        alert("Msza nie może być usunięta bo posiada przypisane intencje");
+                    } else {
+                        fetch("/mass/delete/" + id)
+                            .then(function (response) {
+                                if (response.json().status = true) {
+                                    alert("Msza została usunięta z bazy danych");
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 2000)
+
+                                } else {
+
+                                    alert("Coś poszło  nie tak odświerz strone i sprubuj ponownie")
+                                }
+                            })
                     }
-        })*/
-            }
-        })
-       .catch(err =>{
-            
-                console.log("Booo"+err);
-            
-          
-        });
-     } else {
-   
-  } 
-    
+                })
+                .catch(err => {
+                     alert("Coś poszło  nie tak odśwież stronę i spróbuj ponowniee");
+                    console.log("Coś poszło  nie tak odśwież stronę i spróbuj ponownie" + err);
+
+
+                });
+        } else {
+
+        }
+
     }
+    
 </script>
-<div id="tablemassoption" class="divdisplayrow">
-    <a class="btn btn-secondary" href="/mass/addview">Dodaj Msze</a>
-<select id="filter">
-    <option value="all">Pokaż wszystkie</option>
-    <option value="current">Pokaż tylko aktualne </option>
-</select>
+
+<h3 style="text-align:center">Lista mszy</h3>
+
+<div id="tablemassoption" class="divdisplayrow  mb-2">
+    <a class="btn btn-secondary" href="/mass/addview">Dodaj mszę</a>
+    <select id="filter">
+        <option value="all">Pokaż wszystkie</option>
+        <option value="current">Pokaż tylko aktualne </option>
+    </select>
 </div>
 <table class="table table-striped">
- <thead>
- <tr>
- <th>Id</th>
- <th>Data mszy</th>
- <th>Godzina mszy</th>
- <th>Ilośc dostępnych intencji</th>
- <th>Ilość intencji</th>
- </tr>
- </thead>
- <tbody id="tablemass">
-    {{#each list}}
-    <tr>
-    <td class="tdid">{{this._id}}</td>
-    <td>{{this.Date}}</td>
-    <td>{{this.Time}}</td>
-    <td>{{this.Number_enable_intensions}}</td>
-    <td>{{this.Number_intension}}</td>
+    <thead>
+        <tr>
+            <th class="align-middle text-center" >Nr</th>
+            <th class="align-middle text-center">Data mszy</th>
+            <th class="align-middle text-center">Godzina mszy</th>
+            <th class="align-middle text-center">Ilość dostępnych intencji</th>
+            <th class="align-middle text-center">Ilość intencji</th>
+        </tr>
+    </thead>
+    <tbody id="tablemass">
+        {{#each list}}
 
-    
-    <td>
-    <a class="btn btn-primary btn-sm" href="/mass/editview/{{this.id}}">Edytuj</a>
-    <button  class="btn btn-danger btn-sm" 
-    onclick="deletemass('{{this.id}}')" >Usuń</button>
-    </td>
-    </tr>
-    {{/each}}
- </tbody>
+        <tr>
+            <td class="tdid align-middle text-center">{{inc @index}}</td>
+            <td class="align-middle text-center">{{this.Date}}</td>
+            <td class="align-middle text-center">{{this.Time}}</td>
+            <td class="align-middle text-center">{{this.Number_enable_intensions}}</td>
+            <td class="align-middle text-center">{{this.Number_intension}}</td>
+
+
+            <td>
+                <a class="btn btn-primary btn-sm btn-width" href="/mass/editview/{{this.id}}">Edytuj</a>
+                <button class="btn btn-danger btn-sm btn-width" onclick="deletemass('{{this.id}}','{{inc @index}}')">Usuń</button>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
 </table>
 
-<script >
-    
-    var listmass={{{json list}}};
+<script>
+
+    var listmass = {{{ json list }}};
     console.log(listmass);
 
-    var now=new Date();
-    
-    function showcurrent(){
-        var listcurrent=[];
-        var today=new Date(now.getFullYear(),(now.getMonth()),now.getDate());
-        console.log(typeof listmass);
-        
-                for (const [key, mass] of Object.entries(listmass)) {
+    var now = new Date();
 
-                    var massdate=new Date(mass.Date_Of_even);
-                    /*console.log("typ zmienej : "+typeof massdate);
-                    console.log("data string "+ massdate);
-                    console.log("typ zmienej : "+typeof massdate);
-                    console.log("dzis: "+today);
-                    console.log("data numer "+ massdate.getTime());
-                    console.log("dzis numer: "+today.getTime());                    
-                     console.log("warunek: "+ massdate.getTime()>today.getTime());
-                     console.log(massdate>today);*/
-           if(massdate>today){
-                console.log("add to list");
+    function showcurrent() {
+        var listcurrent = [];
+        var today = new Date(now.getFullYear(), (now.getMonth()), now.getDate());
+
+
+        for (const [key, mass] of Object.entries(listmass)) {
+
+            var massdate = new Date(mass.Date_Of_even);
+
+            if (massdate > today) {
+
                 listcurrent.push(mass);
-               // console.log(typeof mass.Date);
-               // console.log(mass.Date.slice(0,10).split("-").reverse().join("-"));
-            }else{}
+
+            } else { }
         };
-        console.log(listcurrent);
-       document.getElementById("tablemass").innerHTML=""; 
-     
-        for(i=0;i<listcurrent.length;i++)
-            {let tablerow = document.createElement('tr');
-            tablerow.id='tr'+i;   
-            tablerow.innerHTML="<tr>"
-                +'<td class="tdid">'+listcurrent[i]._id+"</td>"
-                +"<td>"+listcurrent[i].Date_Of_even.slice(0,10).split("-").reverse().join("-")+"</td>"
-                +"<td>"+listcurrent[i].Date_Of_even.slice(11,16)+"</td>"
-                +"<td>"+listcurrent[i].Number_enable_intensions+"</td>"
-                +"<td>"+listcurrent[i].Number_intension+"</td>"
-                +"<td>"
-                +'<a class="btn btn-primary btn-sm" href="/mass/editview/'+listcurrent[i]._id+'">Edytuj</a>'
-                +'<button  class="btn btn-danger btn-sm" '
-                +' onclick="deletemass('
-                +"'"+listcurrent[i]._id+"'"
-                +')" >Usuń</button>'
-                +"</td>"
-                +"</tr>";
-             document.getElementById("tablemass").appendChild(tablerow);
-             console.log(tablerow);
-        } 
-                
+
+        document.getElementById("tablemass").innerHTML = "";
+
+        for (i = 0; i < listcurrent.length; i++) {
+            
+            let tablerow = document.createElement('tr');
+            tablerow.id = 'tr' + i;
+            tablerow.innerHTML = "<tr>"
+                + '<td class="tdid">' + (i+1) + "</td>"
+                + "<td>" + listcurrent[i].Date_Of_even.slice(0, 10).split("-").reverse().join("-") + "</td>"
+                + "<td>" + listcurrent[i].Date_Of_even.slice(11, 16) + "</td>"
+                + "<td>" + listcurrent[i].Number_enable_intensions + "</td>"
+                + "<td>" + listcurrent[i].Number_intension + "</td>"
+                + "<td>"
+                + '<a class="btn btn-primary btn-sm" href="/mass/editview/' + listcurrent[i]._id + '">Edytuj</a>'
+                + '<button  class="btn btn-danger btn-sm mr-2" '
+                + ' onclick="deletemass('
+                + "'" + listcurrent[i]._id + "',"
+                +"'"+(i+1)+"'"
+                + ')" >Usuń</button>'
+                + "</td>"
+                + "</tr>";
+            document.getElementById("tablemass").appendChild(tablerow);
+
+        }
+
     }
-     function showall(){
-       
-       document.getElementById("tablemass").innerHTML=""; 
-     
-        for(i=0;i<listmass.length;i++)
-            {let tablerow = document.createElement('tr');
-            tablerow.id='tr'+i;   
-            tablerow.innerHTML="<tr>"
-                +'<td class="tdid">'+listmass[i]._id+"</td>"
-                +"<td>"+listmass[i].Date_Of_even.slice(0,10).split("-").reverse().join("-")+"</td>"
-                +"<td>"+listmass[i].Date_Of_even.slice(11,16)+"</td>"
-                +"<td>"+listmass[i].Number_enable_intensions+"</td>"
-                +"<td>"+listmass[i].Number_intension+"</td>"
-                +"<td>"
-                +'<a class="btn btn-primary btn-sm" href="/mass/editview/'+listmass[i]._id+'">Edytuj</a>'
-                +'<a class="btn btn-danger btn-sm" href="/mass/delete/'+listmass[i]._id+'"'
-                +'onclick="return confirm("Czy jesteś pewien, że chcesz usunąć ten rekord?");">Usuń</a>'
-                +"</td>"
-                +"</tr>";
-             document.getElementById("tablemass").appendChild(tablerow);
-             console.log(tablerow);
-        } 
-                
+    function showall() {
+
+        document.getElementById("tablemass").innerHTML = "";
+
+        for (i = 0; i < listmass.length; i++) {
+            let tablerow = document.createElement('tr');
+            tablerow.id = 'tr' + i;
+            tablerow.innerHTML = "<tr>"
+                + '<td class="tdid">' +(i+1)+ "</td>"
+                + "<td>" + listmass[i].Date_Of_even.slice(0, 10).split("-").reverse().join("-") + "</td>"
+                + "<td>" + listmass[i].Date_Of_even.slice(11, 16) + "</td>"
+                + "<td>" + listmass[i].Number_enable_intensions + "</td>"
+                + "<td>" + listmass[i].Number_intension + "</td>"
+                + "<td>"
+                + '<a class="btn btn-primary btn-sm mr-2" href="/mass/editview/' + listmass[i]._id + '","'+(i+1)+'">Edytuj</a>'
+                + '<a class="btn btn-danger btn-sm" href="/mass/delete/' + listmass[i]._id + '"'
+                + 'onclick="return confirm("Czy jesteś pewien, że chcesz usunąć ten rekord?");">Usuń</a>'
+                + "</td>"
+                + "</tr>";
+            document.getElementById("tablemass").appendChild(tablerow);
+
+        }
+
     }
 
-    document.getElementById("filter").addEventListener("change",(event)=>{
-        //console.log(event.target.value);
-        switch(event.target.value){
+    document.getElementById("filter").addEventListener("change", (event) => {
+
+        switch (event.target.value) {
             case "all":
                 showall();
-            break;
+                break;
             case "current":
                 showcurrent();
-            break;
-            default:console.log("somthing wron by filter chceck this");
+                break;
+            default: console.log("Coś poszło nie tak z filtracją danych");
         }
-  });
-  
+    });
+
 </script>

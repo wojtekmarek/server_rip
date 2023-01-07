@@ -8,9 +8,7 @@ router.get("/sendquaterdetail", async (req, res) => {
     GraveController.sendquaterdetails(req.query.id,res);
    })
 
-router.get("/list", (req, res) => {
-    GraveController.showlist(req,res);
-   })
+
    router.get("/addoredit", async (req, res) => {
     GraveController.showadd(req,res);
     
@@ -22,6 +20,13 @@ router.get("/list", (req, res) => {
         GraveController.update(req, res);
     }
    })
+   router.get("/delete", (req, res) => {
+    console.log(req.query)
+    GraveController.deletegrave(req.query,res);
+   })
+   router.get("/list", (req, res) => {
+    GraveController.showlist(req,res);
+   })
    router.get("/check", (req, res) => {
     //console.log("ok path");
     GraveController.checkburial(req,res);
@@ -29,9 +34,7 @@ router.get("/list", (req, res) => {
    router.get("/:id", (req, res) => {
     GraveController.showedit(req,res);
    })
-   router.get("/delete/:id", (req, res) => {
-    GraveController.deletegrave(req,res);
-   })
+ 
  
  
 

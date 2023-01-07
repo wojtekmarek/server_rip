@@ -1,81 +1,90 @@
-
-
 <h3 style="text-align:center">Lista intencji</h3>
 <table class="table table-striped">
- <thead>
- <tr>
- <th>Id Intencji</th>
- <th>Treść</th>
- <th>Data</th>
- <th>Godzina mszy</th>
- <th>Zatwierdzona</th>
- </tr>
- </thead>
- <tbody>
- {{#each list}}
- <tr>
- <td>{{this._id}}</td>
- <td>{{this.Textintens}}</td>
- <td>{{this.Date}}</td>
- <td>{{this.Time}}</td>
- <td> {{this.Acceptedstring}}</td>
- 
- <td>
- <a class="btn btn-primary btn-sm" href="/inten/editview/{{this._id}}">Edytuj</a>
-  <button  class="btn btn-danger btn-sm" 
-    onclick="deleteintencion('{{this._id}}','{{this.Massid}}')" >Usuń</button>
- 
- </td>
- </tr>
- {{/each}}
- </tbody>
+    <thead>
+        <tr>
+            <th>Id Intencji</th>
+            <th>Treść</th>
+            <th>Data</th>
+            <th>Godzina mszy</th>
+            <th>Zatwierdzona</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each list}}
+        <tr>
+            <td>{{this._id}}</td>
+            <td style="max-width:250px">{{this.Textintens}}</td>
+            <td>{{this.Date}}</td>
+            <td>{{this.Time}}</td>
+            <td> {{this.Acceptedstring}}</td>
+
+            <td>
+                <a class="btn btn-primary btn-sm" href="/inten/editview/{{this._id}}">Edytuj</a>
+                <button class="btn btn-danger btn-sm"
+                    onclick="deleteintencion('{{this._id}}','{{this.Massid}}','{{this.Date}}')">Usuń</button>
+
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
 </table>
-<script >
-    
-    var listintens={{{json list}}};
+<script>
+
+    var listintens = {{{ json list }}};
     console.log(listintens);
-
-
-    function deleteintencion(id,Massid){
-        console.log(id);
-        console.log(Massid);
-      if (confirm('Czy jesteś pewien, że chcesz usunąć  intencje  '+id+"?") == true) {
-        fetch("/inten/delete?"+new URLSearchParams({
-              id: id,
-              Massid: Massid,}).toString()
-            )
-        .then(function(response) {
-            console.log("res");
-            console.log(response);
-          return response.json();
-        })
-        .then(data=>{
-            console.log(data);
-            if(data.intencion)
-            {
-                alert("Msza nie może być usunieta bo posiada przypisane intencje");
-            }else{
-               fetch("/mass/delete/"+id)
-                .then(function(response) {
-                    if(response.json().status=true)
-                    {
-                        window.location.reload();
-                    }else{
-                       
-                        alert("coś poszło  nie tak odświerz strone i sprubuj ponownie");
-                    }
-        })
+    function preparedatatosend(date) {
+        return new Promise((resolve, reject) => {
+            let today = new Date;
+            let intensdate = new Date(date.split("-").reverse().join("-"));
+            if (intensdate < today) {
+                console.log("archiwalna");
+                resolve(["Archiwalna", false])
+            } else {
+                console.log("anulowana");
+                resolve(["Anulowana", false])
             }
-        })
-       .catch(err =>{
-            
-                console.log("Booo"+err);
-            
-          
         });
-     } else {
-   
-  } 
-    
+    }
+
+    async function deleteintencion(id, Massid, date) {
+        //do poprawy cała funkcja wedle dokumentacji
+        // console.log(id);
+        //console.log(Massid);
+
+
+        if (confirm('Czy jesteś pewien, że chcesz usunąć  intencje  ' + id + "?") == true) {
+            await preparedatatosend(date)
+                .then(res => {
+                    fetch("/inten/delete?" + new URLSearchParams({
+                        id: id,
+                        Massid: Massid,
+                        decrement: res[1],
+                        paymentstatus: res[0]
+                    }).toString()
+                    )
+                        .then(response=> {
+                            console.log(response)
+                            if (response.json().status = true) {
+
+                                alert("Intencja została usunieta ");
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1000)
+
+                            } else {
+
+                                alert("Coś poszło  nie tak odświerz strone i spróbuj ponownie");
+                            }
+                        })
+
+                        .catch(err => {
+
+                            console.log("Booo" + err);
+
+
+                        });
+
+                })
+        }
     }
 </script>

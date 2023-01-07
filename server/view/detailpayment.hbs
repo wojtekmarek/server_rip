@@ -1,1 +1,71 @@
-w trakcie realizacji...
+<style>
+ .formuser {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    width: 400px;
+    height: 100%;
+    justify-content: center;
+}
+</style>
+
+<div class="formuser">
+<h3>{{viewTitle}}</h3>
+
+
+ <div class="form-group">
+ <label>Płatność za</label>
+ <input type="text" class="form-control" name="Title" disabled placeholder="{{payment.Title}}"
+ value="{{payment.Title}}">
+ </div>
+ <div class="form-group">
+ <label>Status</label>
+ <input type="text" class="form-control" name="Status" disabled placeholder="{{payment.Status}}"
+ value="{{payment.Status}}">
+ </div>
+  <div class="form-group">
+ <label>Data płatności:</label>
+ <input type="text" class="form-control" name="Date_payment" disabled placeholder="{{paymentedit.Date}}"
+ value="{{paymentedit.Date}}">
+ </div>
+ <div class="form-group">
+  <label>Data utworzenia:</label>
+ <input type="text" class="form-control" disabled name="createdat" placeholder="{{paymentedit.createdat}}"
+ value="{{paymentedit.createdat}}">
+ </div>
+ {{#if paymentedit.notarchive}}
+  <div class="form-group">
+  <label>Id {{paymentedit.payfor}}:</label>
+ <input type="text" class="form-control" disabled name="payforvalue" placeholder="{{paymentedit.payforvalue}}"
+ value="{{paymentedit.payforvalue}}">
+ </div>
+ {{/if}}
+  <div class="form-group">
+  <label>Id transakcji:</label>
+ <input type="text" class="form-control" disabled name="Transacionid" placeholder="{{payment.Transacionid}}"
+ value="{{payment.Transacionid}}">
+ </div>
+  <div class="form-group">
+  <label>Id użytkownika:</label>
+ <input type="text" class="form-control" disabled name="User" placeholder="{{payment.User}}"
+ value="{{payment.User}}">
+ </div> 
+ <div class="form-group">
+  <label>Kwota:</label>
+ <input type="text" class="form-control" disabled name="Amount" placeholder="{{payment.Amount}}"
+ value="{{payment.Amount}}">
+ </div>
+  
+ <div class="form-group d-flex flex-column align-items-center">
+  <a  class="btn btn-info btn-width180 mb-2" target="_blank" href="/userdb/{{payment.User}}">Pokaż Użytkownika</a>
+   {{#if paymentedit.notarchive}}
+   <a  class="btn btn-info  btn-width180 mb-2 "  target="_blank" href="{{paymentedit.payforlink}}{{paymentedit.payforvalue}}">Pokaż szczegóły {{paymentedit.payfor}} </a>
+ {{/if}}
+ <a class="btn btn-secondary  btn-width180 mb-2" href="/payment/list">Pokaz listę</a>
+ </div>
+
+</div>
+<script>
+    var listpayment = {{{ json payment }}};
+    console.log(listpayment);
+</script>

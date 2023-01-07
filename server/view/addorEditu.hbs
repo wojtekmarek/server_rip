@@ -1,4 +1,15 @@
 
+<style>
+ .formuser {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    width: 400px;
+    height: 100%;
+    justify-content: center;
+}
+</style>
+<div class="formuser">
 <h3>{{viewTitle}}</h3>
 <form action="{{action}}" method="POST" autocomplete="off">
  <input type="hidden" name="_id" value="{{User._id}}">
@@ -9,7 +20,7 @@
  </div>
   <div class="form-group">
  <label>Haslo</label>
- <input type="text" class="form-control" name="password" placeholder="{{User.password}}"
+ <input type="text" class="form-control" name="password" pattern="(?=^.{8,}$)((?=.*\d)(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"placeholder="{{User.password}}"
  value="{{User.password}}">
  </div>
    <div class="form-group">
@@ -25,3 +36,4 @@
  <a class="btn btn-secondary" href="/userdb/listuser">Pokaz listę</a>
  </div>
 </form>
+</div>

@@ -1,41 +1,74 @@
-<h3 style="text-align:center w-100">Lista Dysponetów kwater</h3>
-<a class="btn btn-secondary" href="/ovnerrip/addoredit">Dodaj dysponeta kwatery</a>
+<h3 style="text-align:center w-100">Lista dysponentów kwater</h3>
+<a class="btn btn-secondary" href="/ovnerrip/addovner">Dodaj dysponenta kwatery</a>
 <table class="table table-striped">
- <thead>
- <tr>
- <th>Imię </th>
- <th>Nazwisko</th>
- <th>Email</th>
- <th>Ulica</th>
- <th>Numer domu</th>
- <th>Numer mieszkania</th>
- <th>Miasto</th>
- <th>Pesel</th>
- <th></th>
- </tr>
- </thead>
- <tbody>
- {{#each list}}
- <tr>
- <td>{{this.Name}}</td>
- <td>{{this.LastName}}</td>
- <td>{{this.email}}</td>
- <td>{{this.Street}}</td>
- <td>{{this.HomeNumber}}</td>
- <td>{{this.HometwoNumber}}</td>
- <td>{{this.city}}</td>
- <td>{{this.Pesel}}</td>
- <td>
- <a class="btn btn-primary btn-sm" href="/ovnerrip/{{this._id}}">Edytuj</a>
- <a class="btn btn-danger btn-sm" href="/ovnerrip/delete/{{this._id}}&&{{this.email}}"
- onclick="return confirm('Czy jesteś pewien, że chcesz usunąć ten rekord?');">Usuń</a>
- </td>
- </tr>
- {{/each}}
- </tbody>
+    <thead>
+        <tr>
+            <th>Imię </th>
+            <th>Nazwisko</th>
+            <th>Email</th>
+            <th>Ulica</th>
+            <th>Numer domu</th>
+            <th>Numer mieszkania</th>
+            <th>Miasto</th>
+            <th>Pesel</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each list}}
+        <tr>
+            <td>{{this.Name}}</td>
+            <td>{{this.LastName}}</td>
+            <td>{{this.email}}</td>
+            <td>{{this.Street}}</td>
+            <td>{{this.HomeNumber}}</td>
+            <td>{{this.HometwoNumber}}</td>
+            <td>{{this.city}}</td>
+            <td>{{this.Pesel}}</td>
+            <td>
+                <a class="btn btn-primary btn-sm" href="/ovnerrip/{{this._id}}">Edytuj</a>
+                <a class="btn btn-danger btn-sm" href="/ovnerrip/delete/{{this._id}}&&{{this.email}}"
+                   onclick="deleteovnergrave('{{this.email}}','{{this._id}}')">Usuń</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
 </table>
 <script>
-    if(document.location.href.match("error")=="error"){
-        alert("Nie można usunąć dysponeta kwatery , gdyż przypisane są do niego kwatery. Na początku zmień właściciela kwater.");
+
+  function deleteovnergrave(email, id) {
+       
+        if (confirm('Czy jesteś pewien, że chcesz usunąć dysponeta ' + email + "?") == true) {
+            fetch("/ovnerrip/delete?" + new URLSearchParams({
+                id: id,
+                email: email
+            }))
+                .then(function (response) {
+                    console.log(response.status);
+                    console.log(response)
+                    
+                    if (response.status == 207) {
+                        alert("Dysponet kwatery nie może zostać usuniety gdyż posiada on kwatery");
+                    } else  if (response.status == 200) {
+                        alert("Dysponent kwatery został usunięty z bazy");
+                           setTimeout(() => {
+                       window.location.reload();
+                    }, 2000)
+                        
+                    } else {
+
+                        alert("Coś poszło  nie tak odśwież stronę i spróbuj ponownie")
+                    }
+                })
+                .catch(err => {
+                    alert("Coś poszło  nie tak odśwież stronę i spróbuj ponownie");
+                    console.log("Coś poszło  nie tak odśwież stronę i spróbuj ponownie" + err);
+
+                });
+        } else {
+
+        }
+
     }
-    </script>
+
+</script>

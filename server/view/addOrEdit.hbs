@@ -1,61 +1,356 @@
+<style>
+  .errorafter {
+    display: block;
+    border-color: red;
+  }
 
-<h3>{{viewTitle}}</h3>
-<form action="{{action}}" method="POST" autocomplete="off">
- <input type="hidden" name="_id" value="{{OvnerRip._id}}">
- <div class="form-group">
- <label>Imię</label>
- <input type="text" class="form-control" name="Name" placeholder="Imię"
- value="{{OvnerRip.Name}}">
- </div>
- <div class="form-group">
- <label>Nazwisko</label>
- <input type="text" class="form-control" name="LastName" placeholder="Nazwisko"
- value="{{OvnerRip.LastName}}">
- </div>
-  <div class="form-group col-md-6">
-      <label>Dysponent grobu</label>
-      <select class="form-control"  name="ovner" placeholder=""
-        value="{{OvnerRip.ovner}}" required>
-          {{#each listu}}
-              <option value="{{this.email}}">{{this.email}}</option>
-          {{/each}}
+
+  .errorafterName::after {
+    content: "Dla pola imię dozwolene są tylko litery";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    left: -31px;
+  }
+
+  .errorafterLastName::after {
+    content: "Dla pola nazwisko dozwolene są tylko litery";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    left: -65px;
+  }
+
+  .errorafterHomeNumber::after {
+    content: "Nieporawny format tylko cyfry lub cyfry z literą";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    left: -98px;
+  }
+
+  .errorafterHometwoNumber::after {
+    content: "Nieporawny format tylko cyfry lub cyfry z literą";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    left: -134px;
+  }
+
+  .errorafterPesel::after {
+    content: "Nieporawny numer pesel";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    left: -35px;
+  }
+
+  .errorafterStreet::after {
+    content: "Dla pola ulica dozwolene są tylko litery";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    left: -34px;
+  }
+  .errorafterovner::after {
+    content: "Musisz wybrać z listy";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    left: -123px;
+  }
+
+  .erroraftercity::after {
+    content: "Dla pola miasto dozwolene są tylko litery";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    left: -48px;
+  }
+
+  .formovner {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    width: 470px;
+    margin-top: 20px;
+  }
+</style>
+<div class="formovner">
+  <h3>{{viewTitle}}</h3>
+  <form action="{{action}}" method="POST" id="formovner" autocomplete="off">
+    <input type="hidden" name="_id" value="{{OvnerRip._id}}">
+    <div class="form-group ">
+      <label id="divovner">Dysponent grobu</label>
+      <select class="form-control" name="ovner" {{editdisable}} id="ovner" placeholder="" value="{{OvnerRip.ovner}}"
+        required>
+        <option value="">Wybierz z listy</option>
+        {{#each listu}}
+        <option value="{{this.email}}">{{this.email}}</option>
+        {{/each}}
       </select>
-      
- <div class="form-group">
- <label>Email</label>
- <input type="text" class="form-control" name="email" placeholder="OvnerRip.email"
- value="{{OvnerRip.email}}" {{editdisable}}>
- </div>
-  <div class="form-group">
- <label>Ulica</label>
- <input type="text" class="form-control" name="Street" placeholder="Ulica"
- value="{{OvnerRip.Street}}">
- </div>
-   <div class="form-group">
- <label>Numer domu </label>
- <input type="string" class="form-control" name="HomeNumber" placeholder="nrDomu.mieszkania"
- value="{{OvnerRip.HomeNumber}}">
- </div>
- <div class="form-group">
- <label>Numer mieszkania </label>
- <input type="string" class="form-control" name="HometwoNumber" placeholder="nrDomu.mieszkania"
- value="{{OvnerRip.HometwoNumber}}">
- </div>
- <div class="form-group col-md-6">
- <label>City</label>
- <input type="text" class="form-control" name="city" placeholder="City"
- value="{{OvnerRip.city}}">
- </div>
-  <div class="form-group col-md-6">
-    <label>Pesel</label>
-    <input type="number" class="form-control" name="Pesel" placeholder="Pesel"
-      value="{{OvnerRip.Pesel}}">
-  </div>
-   
-   </div>
+    </div>
+    <div class="form-group">
+      <label id="divName">Imię</label>
+      <input type="text" class="form-control" name="Name" id="Name" placeholder="Imię" value="{{OvnerRip.Name}}">
+    </div>
+    <div class="form-group">
+      <label id="divLastName">Nazwisko</label>
+      <input type="text" class="form-control" name="LastName" id="LastName" placeholder="Nazwisko"
+        value="{{OvnerRip.LastName}}">
+    </div>
 
- <div class="form-group">
- <button type="submit" class="btn btn-info">Zapisz</button>
- <a class="btn btn-secondary" href="/ovnerrip/list">Pokaz listę</a>
- </div>
-</form>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="text" class="form-control" name="emailshow" id="emailshow" disabled placeholder="email"
+        value="{{OvnerRip.email}}">
+         <input type="hidden" class="form-control" name="email" id="email"  placeholder="email"
+        value="{{OvnerRip.email}}">
+    </div>
+    <div class="form-group">
+      <label id="divStreet">Ulica</label>
+      <input type="text" class="form-control" name="Street" id="Street" placeholder="Ulica" value="{{OvnerRip.Street}}">
+    </div>
+    <div class="form-group">
+      <label id="divHomeNumber">Numer domu </label>
+      <input type="string" class="form-control" name="HomeNumber" id="HomeNumber" placeholder="nr domu"
+        value="{{OvnerRip.HomeNumber}}">
+    </div>
+    <div class="form-group">
+      <label id="divHometwoNumber">Numer mieszkania </label>
+      <input type="string" class="form-control" name="HometwoNumber" id="HometwoNumber" placeholder="nr mieszkania"
+        value="{{OvnerRip.HometwoNumber}}">
+    </div>
+    <div class="form-group ">
+      <label id="divcity">Miasto</label>
+      <input type="text" class="form-control" name="city" id="city" placeholder="Miasto" value="{{OvnerRip.city}}">
+    </div>
+    <div class="form-group ">
+      <label id="divPesel">Pesel</label>
+      <input type="text" class="form-control" name="Pesel" id="Pesel" require patterrn="[1-9]{11}" placeholder="Pesel"
+        value="{{OvnerRip.Pesel}}">
+    </div>
+
+
+
+    <div class="form-group mt-4">
+      <button type="button" onclick="validbeforesend();" class="btn btn-info">Zapisz</button>
+      <a class="btn btn-secondary" href="/ovnerrip/list">Pokaz listę</a>
+    </div>
+  </form>
+</div>
+
+<script>
+
+  function peselvalidator(pesel) {
+    /*console.log(pesel);
+    //pesel=toString(pesel);
+    console.log(typeof pesel);
+    console.log(pesel);
+   console.log(typeof pesel);*/
+    var dzien = parseInt(pesel.substring(4, 6), 10);
+    var wagi = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
+    var suma = 0;
+
+    for (var i = 0; i < wagi.length; i++) {
+      suma += (parseInt(pesel.substring(i, i + 1), 10) * wagi[i]);
+    }
+    suma = 10 - (suma % 10);
+    /*console.log(dzien);        
+    console.log(suma);
+    console.log(parseInt(pesel.substring(10, 11), 10));
+    console.log(dzien!==0&&dzien<=31&&suma===parseInt(pesel.substring(10, 11), 10));
+    console.log(dzien!==0);
+    console.log(dzien<=31);
+    console.log(suma===parseInt(pesel.substring(10, 11), 10));
+    */
+    if (dzien !== 0 && dzien <= 31 && suma === parseInt(pesel.substring(10, 11), 10)) {
+      return true;
+    } else {
+      return false;
+    }
+
+  }
+  function showerror(target) {
+    document.getElementById("div" + target.id).classList.add("errorafter" + target.id);
+    target.classList.add("errorafter");
+  }
+  function hideerror(target) {
+    document.getElementById("div" + target.id).classList.remove("errorafter" + target.id);
+    target.classList.remove("errorafter");
+  }
+  function errorview(target, rez) {
+    if (!rez) {
+      showerror(target);
+
+    } else {
+      hideerror(target);
+
+    }
+  }
+  async function validfuncion(event) {
+    await validfield(event.id)
+      .then(rez => {
+        errorview(event, rez);
+        if (rez) {
+          console.log("validfuncion false");
+          return false;
+        } else {
+          console.log("validfuncion false");
+          return true;
+        }
+      })
+  }
+  function emailvalidate() {
+    let email = document.getElementById("email").value;
+    
+    if (email !== "" && email !== "email") {
+      return true;
+    }
+    else {
+      showerror(document.getElementById("ovner"));
+      return false;
+    }
+  }
+ async  function validall(){
+    return new Promise(async (resolve, reject) => {
+      let list = ["Name", "LastName", "HomeNumber", "HometwoNumber", "Pesel", "Street", "city"]
+     var errorfield=[];
+     //zmiana petli na for 
+     for(i=0;i<=6;){
+      let target= await document.getElementById(list[i])
+      // console.log(target)
+      if(!validfuncion(target)){
+        //console.log("1");
+         errorfield.push(target.id);
+      }
+       
+       i++;
+       if(i==6){
+        resolve(errorfield);
+       }
+     }
+    })
+  }
+
+  async function validbeforesend() {
+   
+  validall()
+    .then(errorfield=>{
+     console.log(errorfield);
+      console.log(emailvalidate());
+      console.log(emailvalidate() && errorfield.length === 0);
+      
+  
+    
+
+    if (emailvalidate() && errorfield.length === 0) {
+     // console.log("wyslij");
+      document.getElementById("formovner").submit();
+    }else{
+      
+    }
+    })
+    
+    
+  }
+  function validfield(name) {
+
+    return new Promise((resolve, reject) => {
+      var value = document.getElementById(name).value;
+      //console.log(value);
+      switch (name) {
+        case "Name":
+          let rexname = new RegExp('^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+$');
+          //console.log("check name");
+          resolve(rexname.test(value));
+          break;
+        case "HomeNumber":
+          if (value !== "") {
+            let rexNumber = new RegExp('^[1-9]*(?:[-]?(?:[a-zA-Z]+|[1-9]*))?$');
+            resolve(rexNumber.test(value));
+          } else {
+            resolve(false);
+          }
+
+          break;
+        case "HometwoNumber":
+          if (value !== "") {
+            let rexNumber = new RegExp('^[1-9]*(?:[-]?(?:[a-zA-Z]+|[1-9]*))?$');
+            resolve(rexNumber.test(value));
+          } else {
+            resolve(false);
+          }
+          break;
+        case "LastName":
+          let rexLastName = new RegExp('^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+$');
+          resolve(rexLastName.test(value));
+          break;
+        case "Pesel":
+          resolve(this.peselvalidator(value));
+          break;
+        case "Street":
+          let rexStreet = new RegExp('^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ ]+$');
+          resolve(rexStreet.test(value));
+          break;
+        case "city":
+          let rexcity = new RegExp('^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+$');
+          resolve(rexcity.test(value));
+          break;
+        default: {
+          console.log("Something wrong switch validataor");
+          resolve(false);
+        }
+
+      }
+
+    });
+  }
+
+  document.getElementById("ovner").addEventListener('change', (event) => {
+    //console.log(document.getElementById("ovner").value);
+    document.getElementById("email").value = document.getElementById("ovner").value;
+    document.getElementById("emailshow").value = document.getElementById("ovner").value;
+    hideerror(document.getElementById("ovner"));
+  });
+  document.getElementById("Name").addEventListener('change', async (event) => {
+    validfuncion(event.target);
+  });
+  document.getElementById("LastName").addEventListener('change', async (event) => {
+    validfuncion(event.target);
+  });
+  document.getElementById("Street").addEventListener('change', async (event) => {
+    validfuncion(event.target);
+  });
+  document.getElementById("HomeNumber").addEventListener('change', async (event) => {
+    validfuncion(event.target);
+  });
+  document.getElementById("HometwoNumber").addEventListener('change', async (event) => {
+    validfuncion(event.target);
+  });
+  document.getElementById("city").addEventListener('change', async (event) => {
+    validfuncion(event.target);
+  });
+  document.getElementById("Pesel").addEventListener('change', async (event) => {
+    validfuncion(event.target);
+  });
+
+
+  //validacja 
+</script>

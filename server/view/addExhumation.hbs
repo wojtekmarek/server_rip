@@ -1,88 +1,300 @@
-<h3>{{viewTitle}}</h3>
-<form action="{{action}}" method="POST" autocomplete="off">
- <input type="hidden" name="_idExhumation" value="{{exhumation.IdExhumation}}">
- 
- <div class="form-group">
-<label>Cel ekshumacji</label>
-  <select  class="form-control" name="PurposeExhumation" placeholder="{{exhumation.PurposeExhumation}}"
- value="{{exhumation.PurposeExhumation}}" required>
-<option value="Przeniesienie">Przeniesienie</option>
-    <option value="Badania sekcyjne">Badania sekcyjne</option>
-    <option value="Pogłepienie grobu">Pogłepienie grobu</option>
-    </select>
- </div>
-<div class="form-group">
- <label>Data ekshumacji(dzień-miesiąc-rok)</label>
- <input type="text" class="form-control" name="DateExhumation" id="DateExhumation"   pattern="^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$" placeholder="{{exhumation.DateExhumation}}"
- value="{{exhumation.DateExhumation}}" required>
- </div>
- <div class="form-group">
- <label>Data ponownego pochówku(dzień-miesiąc-rok)</label>
- <input type="text" class="form-control" name="Datereburial" id="Datereburial" pattern="^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$" placeholder="{{exhumation.Datereburial}}"
- value="{{exhumation.Datereburial}}" required>
- </div>
-  <div class="form-group">
- <label>Zmiana kwatery</label>
- <select type="boolean" class="form-control" name="ChangeOfBurialPlace"  required>
-    <option value="true">Tak</option>
-     <option value="false">Nie</option>
- </select> 
- </div>
-    <div class="form-group">
- <label>Opis</label>
- <textarea rows="10" cols="50" type="text" class="form-control" name="Scribe" placeholder="{{exhumation.Scribe}}"
- value="{{exhumation.Scribe}}" required pattern="{1,999}"></textarea>
- </div>
-     <div class="form-group">
- <label>Numer pochówku</label>
- <select class="form-control" {{idburaildisable}} name="BurialNumber">
-    {{#each listburial}}
-    <option value="{{this.id}}">{{this.id}}<option>
-        {{/each}}
-</select>
-{{#if idburailbool}}
- 
-<input type="hidden" name="BurialNumber" value="{{listburial.0.id}}">
-{{/if}}
- </div>
- <div class="form-group">
-    
- <button onclick="return checkdate()" type="submit" class="btn btn-info">Zapisz</button>
- <a class="btn btn-secondary" href="/exhumation/list">Pokaz listę</a>
- </div>
+<style>
+   .formeksumation {
+      display: flex;
+      flex-direction: column;
+      align-self: center;
+      width: 400px;
+      height: 100%;
+      justify-content: center;
+   }
+
+  .errorafterPurposeExhumation::after {
+    content: "Wybierz z listy";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 69px;
+    left: -103px;
+}
+
+ .errorafterDateExhumation::after {
+    content: "Uzupełnij pole zgodnie z wytycznymi powyżej";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    margin-left: -200px;
+    position: relative;
+    top: 68px;
+    left: -51px;
+}
+.errorafterDateExhumationtwo::after {
+    content: "Data ekshumacji musi być późniejsza niż ponownego pochówku";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    margin-left: -313px;
+    position: relative;
+    top: 68px;
+    left: 61px;
+}
+
+.errorafterDatereburialtwo:after {
+    content: "Data ekshumacji musi być późniejsza niż ponownego pochówku";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    margin-left: -398px;
+    position: relative;
+    top: 68px;
+    left: 61px;
+}
+
+ .errorafterDatereburial:after {
+    content: "Uzupełnij pole zgodnie z wytycznymi powyżej";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    margin-left: -264px;
+    position: relative;
+    top: 68px;
+    left: -73px;
+}
+
+.errorafterChangeOfBurialPlace:after {
+    content: "Wybierz z listy";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    left: -111px;
+}
+
+   .errorafterScribe::after {
+    content: "Dla pola niedozwole są znaki '<' i '>'";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 283px;
+    left: -33px;
+}
+.errorafterBurialNumber::after {
+    content: "Wybierz z listy";
+    color: red;
+    width: 20px;
+    margin-bottom: -20px;
+    position: relative;
+    top: 68px;
+    left: -125px;
+}
+
+   .errorafter {
+      display: block;
+      border-color: red;
+   }
+</style>
+<form action="{{action}}" class="formeksumation mt-3" method="POST" autocomplete="off">
+   <h3>{{viewTitle}}</h3>
+   <input type="hidden" name="_idExhumation" value="{{exhumation._id}}">
+
+   <div class="form-group">
+      <label id="divPurposeExhumation">Cel ekshumacji</label>
+      <select class="form-control" id="PurposeExhumation" {{edit}} name="PurposeExhumation"
+          value="{{exhumation.PurposeExhumation}}" required>
+          <option value="{{exhumation.PurposeExhumation}}">{{#if edit}}  aktualny stan: {{exhumation.PurposeExhumation}} {{else}}Wybierz z listy {{/if}}</option>
+      
+         <option value="Przeniesienie">Przeniesienie z kwatery</option>
+         <option value="Badania sekcyjne">Badania sekcyjne</option>
+         <option value="Pogłepienie grobu">Pogłębienie grobu</option>
+      </select>
+   </div>
+   <div class="form-group">
+      <label id="divDateExhumation">Data ekshumacji(dzień-miesiąc-rok)</label>
+      <input type="text" class="form-control" {{edit}} name="DateExhumation" id="DateExhumation"
+         pattern="^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$"
+         placeholder="{{DateExhumation}}" value="{{DateExhumation}}" required>
+   </div>
+   <div class="form-group">
+      <label id="divDatereburial">Data ponownego pochówku(dzień-miesiąc-rok)</label>
+      <input type="text" class="form-control" name="Datereburial" id="Datereburial"
+         pattern="^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$"
+         placeholder="{{Datereburial}}" value="{{Datereburial}}" required>
+   </div>
+   <div class="form-group">
+      <label id="divChangeOfBurialPlace">Zmiana kwatery</label>
+      <select type="boolean" class="form-control" id="ChangeOfBurialPlace" {{edit}} name="ChangeOfBurialPlace" required>
+         <option value="{{exhumation.PurposeExhumation}}">{{#if edit}}  aktualny stan: {{#if exhumation.ChangeOfBurialPlace}} Tak{{else}}Nie {{/if}}
+            {{else}}Wybierz z listy {{/if}}</option>
+         <option value="true">Tak</option>
+         <option value="false">Nie</option>
+      </select>
+   </div>
+   <div class="form-group">
+      <label id="divScribe">Opis</label>
+      <textarea rows="10" cols="50" type="text" class="form-control" id="Scribe" name="Scribe"
+          value="{{exhumation.Scribe}}" required pattern="{1,999}">{{exhumation.Scribe}}</textarea>
+   </div>
+   <div class="form-group">
+      <label id="divBurialNumber">Numer pochówku</label>
+
+      {{#if idburailbool}}
+      <input type="text" class="form-control" id="BurialNumbershow" name="BurialNumbershow" disabled value="{{listburial.0.id}}" >
+      <input type="hidden" id="BurialNumber" name="BurialNumber" value="{{listburial.0.id}}" required>
+      {{else}}
+      <select class="form-control" {{idburaildisable}} id="BurialNumber" name="BurialNumber" required>
+         <option value="">Wybierz z listy </option>
+         {{#each listburial}}
+         <option value="{{this.id}}">{{this.id}}
+         <option>
+            {{/each}}
+      </select>
+      {{/if}}
+   </div>
+   <div class="form-group mt-4">
+
+      <button type="submit" onclick="return check()"  class="btn btn-info ">Zapisz</button>
+      <a class="btn btn-secondary" href="/exhumation/list">Pokaz listę</a>
+   </div>
 </form>
 <script>
-    function checkdate(){
-        var datetwo=document.getElementById("Datereburial").value;
-        var dateone =document.getElementById("DateExhumation").value;
-      
-        if(dateone != "" && datetwo !=""){
-            console.log("checkif");
-             datetwo=datetwo.split('-');
-            dateone =dateone.split("-");
-             var ehumactiondate = new Date(dateone[2],Number(dateone[1])-1,dateone[0]);
-             var burialdate= new Date(datetwo[2],Number(datetwo[1])-1,datetwo[0])
-             console.log(burialdate);
-             console.log(ehumactiondate);
-             if(burialdate >= ehumactiondate )
-             {
-                return true;
-             }
-             else{
-                
-                alert("Data ponownego pochówka musi byz późniejsza niż data eksumacji");
-             return false;}
-             
-        }else{
-                return false;
-             }
-     }
-      
-     document.addEventListener("DOMContentLoaded", () => {
-        var DatereBurial=document.getElementById("Datereburial");
-        var DateExhumation=document.getElementById("DateExhumation");
-        DatereBurial.addEventListener('change', (event) => {checkdate();});
-        DateExhumation.addEventListener('change', (event) => {checkdate();});
-     });
-     
+
+   //onclick="return checkdate()" 
+console.log("load script");
+
+   function showerror(target) {
+      console.log(target);
+      document.getElementById("div" + target.id).classList.add("errorafter" + target.id);
+      target.classList.add("errorafter");
+
+   }
+     function showerrorvalid(target) {
+      document.getElementById("div" + target.id).classList.add("errorafter" + target.id+"two");
+      target.classList.add("errorafter");
+
+   }
+   function hideerrorvalid(target) {
+      document.getElementById("div" + target.id).classList.remove("errorafter" + target.id+"two");
+      target.classList.remove("errorafter");
+   }
+   function hideerror(target) {
+      document.getElementById("div" + target.id).classList.remove("errorafter" + target.id);
+      target.classList.remove("errorafter");
+   }
+   function validdate(target) {
+
+      let rexdate = new RegExp('^[0-9]{1,2}-[0-9]{1,2}-[0-9]{4}$');
+      if (rexdate.test(target.value)) {
+         hideerror(target);
+         return true
+      } else {
+         showerror(target);
+         return false
+      }
+
+   }
+   function validdateselect(target) {
+      if (target.value !== "") {
+         hideerror(target);
+         return true
+      } else {
+         showerror(target);
+         return false
+      }
+   }
+   function validtexareafuncion(target) {
+      if (target.value.includes("<") || target.value.includes(">") || target.value === "") {
+
+         showerror(target);
+
+      }
+      else {
+         hideerror(target);
+
+      }
+   }
+
+   document.addEventListener('invalid', (function () {
+      return function (e) {
+         console.log(e.target.id);
+         e.preventDefault();
+
+         if (e.target.id === "BurialNumber" || e.target.id === "ChangeOfBurialPlace" || e.target.id === "PurposeExhumation") {
+            validdateselect(e.target);
+         } else if (e.target.id === "Scribe") {
+            validtexareafuncion(e.target);
+         } else {
+            validdate(e.target);
+            
+         }
+
+      };
+   })(), true);
+   function check() {
+     return checkdate(document.getElementById("DateExhumation"));
+   }
+   function checkdate(target) {
+      var datetwo = document.getElementById("Datereburial").value;
+      var dateone = document.getElementById("DateExhumation").value;
+   
+      if (dateone != "" && datetwo != ""&&validdate(document.getElementById("Datereburial"))&&validdate(document.getElementById("DateExhumation"))) {
+         console.log("checkif");
+         datetwo = datetwo.split('-');
+         dateone = dateone.split("-");
+         var ehumactiondate = new Date(dateone[2], Number(dateone[1]) - 1, dateone[0]);
+         var burialdate = new Date(datetwo[2], Number(datetwo[1]) - 1, datetwo[0])
+         console.log(burialdate);
+         console.log(ehumactiondate);
+         if (burialdate >= ehumactiondate) {
+            hideerrorvalid(document.getElementById("Datereburial"));
+            hideerrorvalid(document.getElementById("DateExhumation"));
+            return true;
+            
+         }
+         else {
+
+            showerrorvalid(target);
+
+            return false;
+         }
+
+      } else {
+         validdate(target);
+         return false;
+      }
+   }
+
+   document.addEventListener("DOMContentLoaded", () => {
+      var DatereBurial = document.getElementById("Datereburial");
+      var DateExhumation = document.getElementById("DateExhumation");
+      DatereBurial.addEventListener('change', (event) => { 
+         console.log("a")
+          console.log(event.target)
+                checkdate(event.target);
+       
+           });
+      DateExhumation.addEventListener('change', (event) => {
+       console.log("a")
+          console.log(event.target)
+                checkdate(event.target);
+           });
+      document.getElementById("PurposeExhumation").addEventListener('change', async (event) => {
+
+    validdateselect(event.target);
+  });
+   document.getElementById("ChangeOfBurialPlace").addEventListener('change', async (event) => {
+
+    validdateselect(event.target);
+  });
+    document.getElementById("Scribe").addEventListener('change', async (event) => {
+
+    validtexareafuncion(event.target);
+  });
+     document.getElementById("BurialNumber").addEventListener('change', async (event) => {
+
+    validdateselect(event.target);
+  });
+   });
+
 </script>

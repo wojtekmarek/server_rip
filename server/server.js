@@ -44,7 +44,7 @@ app.use(express.urlencoded({
     extended: true
    }))
    app.set("views", path.join(__dirname, "/view/"))
-   
+  
    app.engine(
     "hbs",
     exphbs.engine({
@@ -53,14 +53,16 @@ app.use(express.urlencoded({
     defaultLayout: "layout",
     layoutsDir: __dirname+'/view',
     partialsDir: __dirname + '/view/partials/',
-    helpers:{json: function (context) {return JSON.stringify(context); }} 	
+    helpers:{json: function (context) {return JSON.stringify(context); },
+   inc:function(value, options)
+   {
+       return parseInt(value) + 1;
+   }} 	
     })
    )
+   
+   
    app.set("view engine", "hbs")
-
-
-
-
 //tablice route
 
 app.use('/', require("./routes/auth")

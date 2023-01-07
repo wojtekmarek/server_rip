@@ -8,12 +8,20 @@ router.get("/list", (req, res) => {
 router.get("/editview/:id", (req,res)=>{
     IntentionController.showedit(req.params,res);
 })
-router.get("/delete", (req, res) => {
-    //console.log(req.query);
+router.get("/delete", async (req, res) => {
+   await IntentionController.validdeleteintencion(req.query,res)
+   .then(valid=>{
+    if(valid){
     IntentionController.deleteintencion(req.query,res);
+   }else{
+    res.status(400);
+    res.send("Nieprawidłowe dane żadania");
+   }
+})
+   
    })
 router.get("/checkpaystatus",(req,res)=>{
-    console.log(req.body);
+    console.log(req.body.id);
     IntentionController.checkpaystatus(req.body.id,res);
 })
 
@@ -36,7 +44,6 @@ router.post("/cancel",(req,res)=>{
 })
 
 router.post("/editintencion",(req,res)=>{
-    console.log(req.body);
    IntentionController.editintencion(req.body,res);
 })
 router.post("/update",(req,res)=>{

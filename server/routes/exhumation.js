@@ -1,24 +1,24 @@
 const router = require("express").Router();
-const{showlist}=require("../models/schema/Exhumation")
-const{showadd,add,showedit,ExumationController}=require("../models/schema/Exhumation");
+
+const{ExumationController}=require("../models/schema/Exhumation");
 
 
 
     router.get("/list", (req, res) => {
-    showlist(req,res);
+      ExumationController.showlist(req,res);
    })
    router.get("/listforclient", (req, res) => {
     console.log(req.body);
    })
    
    router.get("/add", (req, res) => {
-    showadd(req,res);
+    ExumationController.showadd(req,res);
    })
    router.get("/edit/:id", (req, res) => {
-    console.log(req.query);
-   console.log(req.body);
+    
+   //console.log(req.params);
    
-    showedit(req.query,res);
+   ExumationController.showedit(req.params,res);
    })
    
    router.get("/getdataexhumationforclient", (req, res) => {
@@ -28,10 +28,17 @@ const{showadd,add,showedit,ExumationController}=require("../models/schema/Exhuma
    
   
    })
-
+   router.get("/delete", (req, res) => {
+    console.log(req.query)
+    ExumationController.delete(req.query,res);
+   })
    router.post("/addtomongobase", (req, res) => {
     //console.log(req.body);   
-    add(req.body,res);
+    ExumationController.add(req.body,res);
+   })
+   router.post("/update", (req, res) => {
+    console.log(req.body);   
+    ExumationController.update(req.body,res);
    })
 
 

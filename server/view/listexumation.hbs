@@ -1,5 +1,5 @@
-<h3 style="text-align:center w-100">lista Pochówków</h3>
-<a class="btn btn-secondary" href='/exhumation/add/?name=add'>Dodaj Ekshumacje</a>
+<h3 style="text-align:center w-100 mt-2">Lista Ekshumacji</h3>
+<a class="btn btn-secondary mb-2" href='/exhumation/add/?name=add'>Dodaj Ekshumacje</a>
 <table class="table table-striped">
  <thead>
  <tr>
@@ -7,7 +7,7 @@
  <th>Cel ekshumacji</th>
  <th>Data ekshumacji</th>
  <th>Data ponownego pochówku</th>
- <th>opis</th>
+ <th>Opis</th>
  </tr>
  </thead>
  <tbody>
@@ -18,12 +18,45 @@
  <td>{{this.DateExhumationString}}</td>
  <td>{{this.DatereburialString}}</td>
  <td>{{this.Scribe}}</td>
- <td>
- <a class="btn btn-primary btn-sm" href="/exhumation/edit/{{this._id}}">Edytuj</a>
- <a class="btn btn-danger btn-sm" href="/exhumation/delete/{{this._id}}"
- onclick="return confirm('Niestety rekordu nie można usunąć na tym poziomie uprawnień. Zgłoś się do administratora systemu.');">Usuń</a>
+ <td class="d-flex flex-row">
+ <a class="btn btn-primary btn-sm mr-2" href="/exhumation/edit/{{this._id}}">Edytuj</a>
+ <button class="btn btn-danger btn-sm" 
+ onclick='deleteeksumation("{{this._id}}")'>Usuń</button>
  </td>
  </tr>
  {{/each}}
  </tbody>
 </table>
+<script>
+    function deleteeksumation(id) {
+       
+        if (confirm('Niestety rekordu nie można usunąć na tym poziomie uprawnień. Kliknięcie ok  spowoduje nie wyświetlanie rekordu. Jeżeli chcesz usunąć rekord zgłoś się do administratora systemu. ' ) == true) {
+            fetch("/exhumation/delete?" + new URLSearchParams({
+                id: id
+            }))
+                .then(function (response) {
+                    console.log(response.status);
+                    console.log(response)
+                    
+                     if (response.status == 200) {
+                        alert("Eksumacja od tej pory będzie niewidoczna.");
+                           setTimeout(() => {
+                       window.location.reload();
+                    }, 1500)
+                        
+                    } else {
+
+                        alert("Coś poszło  nie tak odśwież stronę i spróbuj ponownie")
+                    }
+                })
+                .catch(err => {
+                    alert("Coś poszło  nie tak odśwież stronę i spróbuj ponownie");
+                    console.log("Coś poszło  nie tak odśwież stronę i spróbuj ponownie" + err);
+
+                });
+        } else {
+
+        }
+
+    }
+</script>

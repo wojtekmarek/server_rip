@@ -1,7 +1,7 @@
 const router = require("express").Router()
 const {Announcement,insert,update,deleteanons,getanonse}  = require('../models/Announcement ');
 const knex = require('knex');
-const { query } = require("express");
+
 
 router.get('/try', async(req, res)=>{
     const anonse= await Announcement.query()
@@ -66,14 +66,20 @@ router.get('/addview', (req, res)=>{
     });
     router.get('/editview/:id', async(req, res)=>{
         var anons= await getanonse(req.params.id)
+        var status
        if(anons){
         //console.log(anons);
-            
+            if(anons.status==="visible"){
+                status="widoczne";
+            }else{
+                status="niewidoczne";
+            }
         res.render("addoreditannonse", {
             action:"/anonse/editanonse",
             viewTitle:"Edytuj ogłoszenie",
-            Anonse:anons
-            
+            Anonse:anons,
+            edit:true,
+            displaystatusanonse:status         
             })
        }
            
