@@ -163,7 +163,7 @@ const IntentionController = {
         console.log(docs);
         console.log(docs[0].massdate[0]);
 
-        res.render("addoreditIntention", {
+        res.render("addoreditintention", {
           viewTitle: "Edycja Intencji",
           action: "/inten/update",
           Intention: docs[0],

@@ -182,7 +182,7 @@ const ExumationController={
                     let DateExhumation=doc.DateExhumation.toISOString().slice(0,10).split("-").reverse().join("-");
                     let Datereburial=doc.Datereburial.toISOString().slice(0,10).split("-").reverse().join("-");
                      
-                    res.render("addExhumation", {
+                    res.render("addexhumation", {
                         viewTitle: "Edytuj eksumacje",
                         action:"/exhumation/update" ,
                         listburial:[{id:doc.Burial}],

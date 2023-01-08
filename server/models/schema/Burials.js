@@ -54,7 +54,7 @@ async function showedit(req, res) {
             doc.DateBurialstring = doc.DateBurial.toISOString().slice(0, 10).split("-").reverse().join("-");
             doc.DateOfBirthString = doc.DateOfBirth.toISOString().slice(0, 10).split("-").reverse().join("-");
             console.log(doc.DateOfBirthString);
-            res.render("editBurial", {
+            res.render("editburial", {
                 viewTitle: "Edytuj pochówek",
                 action: "/burial/addtomongobase",
                 burial: doc,
