@@ -23,7 +23,7 @@
     "joi-password-complexity": "^5.1.0",
     "jsonwebtoken": "^9.0.0",
     "knex": "^2.1.0",
-    "mongoose": "^6.3.5",
+    "mongoose": "^6.11.3",
     "mout": "^1.2.4",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
